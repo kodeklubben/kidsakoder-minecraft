@@ -27,16 +27,17 @@ def contact():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	""" Login page """
-	if request.method == 'POST':
-		processLogin()
-	else:
-		return render_template(
-			'login.html',
-			title = 'Logg inn',
-			year=datetime.now().year
-			)
-	
+    """ Login page """
+    if request.method == 'POST':
+        processLogin()
+    else:
+        return render_template(
+            'login.html',
+            title = 'Logg inn',
+            year=datetime.now().year
+            )
+
+
 
 
 
