@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
@@ -60,3 +61,32 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+
+# PTVS analysis
+.ptvs/
+
+# Build results
+/bin/
+/obj/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Auto-generated web.config
+/web.config
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Mac desktop service store files
+.DS_Store
