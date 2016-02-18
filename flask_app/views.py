@@ -3,8 +3,9 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request
+from flask import render_template, request, session
 from flask_app import app
+import var_file
 
 @app.route('/')
 def home():
@@ -13,6 +14,7 @@ def home():
         'index.html',
         title='Hjem',
         year=datetime.now().year,
+        app_name = var_file.app_name
     )
 
 @app.route('/kontakt')
@@ -22,7 +24,8 @@ def contact():
         'contact.html',
         title='Kontakt',
         year=datetime.now().year,
-        message='Your contact page.'
+        message='Your contact page.',
+        app_name = var_file.app_name
     )
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -34,8 +37,9 @@ def login():
         return render_template(
             'login.html',
             title = 'Logg inn',
-            year=datetime.now().year
-            )
+            year=datetime.now().year,
+            app_name = var_file.app_name
+        )
 
 
 
