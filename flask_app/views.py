@@ -19,8 +19,8 @@ def home():
     
     return render_template(
         'index.html',
-        title='Hjem',
-        year=datetime.now().year,
+        title = 'Hjem',
+        year = datetime.now().year,
         app_name = var_file.app_name
     )
 
@@ -29,28 +29,29 @@ def contact():
     """Renders the contact page."""
     return render_template(
         'contact.html',
-        title='Kontakt',
-        year=datetime.now().year,
-        message='Your contact page.',
+        title = 'Kontakt',
+        year = datetime.now().year,
+        message = 'Your contact page.',
         app_name = var_file.app_name
     )
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """ Login page """
-    if request.method == 'POST':
-        session['username'] = request.form.get('username')
-        return redirect(url_for('home'))
-        #processLogin()
+    if 'username' not in session:
+        if request.method == 'POST':
+            #processLogin()
+            session['username'] = request.form.get('username')
+            return redirect(url_for('home'))
+        else:
+            return render_template(
+                'login.html',
+                title = 'Logg inn',
+                year = datetime.now().year,
+                app_name = var_file.app_name
+            )
     else:
-        
-        return render_template(
-            'login.html',
-            title = 'Logg inn',
-            year=datetime.now().year,
-            app_name = var_file.app_name
-        )
-
+        return redirect(url_for('home'))
 
 
 
