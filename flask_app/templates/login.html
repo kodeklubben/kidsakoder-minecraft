@@ -3,19 +3,23 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <h2>Logg inn</h2>
         <p>
-            Her kommer inloggingsfelt. Etter hvert.
             <form name="login" action="index_submit" method="get" accept-charset="utf-8">
                 <ul>
-                    <li><label for="username"> Brukernavn: <br></label>
-                            <input type="text" name="username" placeholder="Skriv brukernavn her" required>
-                    </li><br>
-                    <li><label for="password"> Passord: <br></label>
-                        <input type="password" name="password" placeholder="Skriv passord her" required>
-                    </li><br>
-                    <input type="submit" value="Login">
+                    <!-- Username. Adds text field to fill in username, as well as a label for the field-->
+                    <label for="username"> Brukernavn: </label><br>
+                    <input type="text" name="username" placeholder="Skriv brukernavn her" required>
+                    <br><br>
+                    
+                    <!-- Password. Adds a password field to fill in password, as well as a label for the field-->
+                    <label for="password"> Passord: </label><br>
+                    <input type="password" name="password" placeholder="Skriv passord her" required>
+                    <br><br>
+                    
+                    <!--Submit. Adds login-button-->
+                    <input type="submit" value="Logg inn">
                 </ul>
             </form>
         </p>
