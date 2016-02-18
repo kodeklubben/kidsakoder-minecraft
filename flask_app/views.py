@@ -34,8 +34,8 @@ def login():
         return render_template(
             'login.html',
             title = 'Logg inn',
-            year=datetime.now().year
-            )
+            year = datetime.now().year
+        )
 
 
 
