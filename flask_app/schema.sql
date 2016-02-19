@@ -9,3 +9,5 @@ CREATE TABLE meetings (
   map_id INTEGER NOT NULL,
   FOREIGN KEY(map_id) REFERENCES maps(id)
 );
+INSERT INTO maps (file_reference) VALUES ('maps/mymap');
+INSERT INTO meetings (time, map_id) VALUES ('1992-12-18 15:10:20.101', 1);

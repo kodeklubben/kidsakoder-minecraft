@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+    <ul class=meetings>
+    {% for meeting in meetings %}
+        <li><h1>{{ meeting.time }}</h1></li>
+    {%  endfor %}
+    </ul>
+{% endblock %}
