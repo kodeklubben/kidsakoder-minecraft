@@ -5,6 +5,7 @@ Routes and views for the flask application.
 from datetime import datetime
 from flask import render_template, request, session, escape, redirect, url_for
 from flask_app import app
+from functools import wraps
 import var_file
 
 app.secret_key = var_file.secret_key
@@ -14,7 +15,8 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'username' in session:
             return f(*args, **kwargs)
-        return redirect(url_for('login', next_page=request.url))
+        session['redirect_page'] = request.url
+        return redirect(url_for('login'))
     return decorated_function
 
 @app.route('/')
@@ -41,7 +43,7 @@ def contact():
     )
 
 @app.route('/login', methods=['GET', 'POST'])
-def login(next_page = url_for('home')):
+def login():
     """ Login page """
     if 'username' in session:
         # If user is already logged in, redirect to home
@@ -50,7 +52,8 @@ def login(next_page = url_for('home')):
     if request.method == 'POST':
         #processLogin()
         session['username'] = request.form.get('username', None)
-        return redirect(next_page)
+        
+        return redirect( session.pop('redirect_page', url_for('home')) )
     return render_template(
         'login.html',
         title = 'Logg inn',
@@ -59,7 +62,6 @@ def login(next_page = url_for('home')):
     )
 
 @app.route('/logout')
-@login_required
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
