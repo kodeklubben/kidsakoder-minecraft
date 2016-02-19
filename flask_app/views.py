@@ -9,14 +9,18 @@ import var_file
 
 app.secret_key = var_file.secret_key
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in session:
+            return f(*args, **kwargs)
+        return redirect(url_for('login', next_page=request.url))
+    return decorated_function
+
 @app.route('/')
+@login_required
 def home():
     """Renders the home page."""
-    if 'username' in session:
-        return 'jalla ' + escape(session['username'])
-    else:
-        return redirect(url_for('login'))
-    
     return render_template(
         'index.html',
         title = 'Hjem',
@@ -25,6 +29,7 @@ def home():
     )
 
 @app.route('/kontakt')
+@login_required
 def contact():
     """Renders the contact page."""
     return render_template(
@@ -36,22 +41,24 @@ def contact():
     )
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login(next_page = url_for('home')):
     """ Login page """
-    if 'username' not in session:
-        if request.method == 'POST':
-            #processLogin()
-            session['username'] = request.form.get('username')
-            return redirect(url_for('home'))
-        else:
-            return render_template(
-                'login.html',
-                title = 'Logg inn',
-                year = datetime.now().year,
-                app_name = var_file.app_name
-            )
-    else:
+    if 'username' in session:
+        # If user is already logged in, redirect to home
         return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        #processLogin()
+        session['username'] = request.form.get('username', None)
+        return redirect(next_page)
+    else:
+        return render_template(
+            'login.html',
+            title = 'Logg inn',
+            year = datetime.now().year,
+            app_name = var_file.app_name
+        )
+
 
 
 
