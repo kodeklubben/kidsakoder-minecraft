@@ -51,18 +51,15 @@ def login(next_page = url_for('home')):
         #processLogin()
         session['username'] = request.form.get('username', None)
         return redirect(next_page)
-    else:
-        return render_template(
-            'login.html',
-            title = 'Logg inn',
-            year = datetime.now().year,
-            app_name = var_file.app_name
-        )
+    return render_template(
+        'login.html',
+        title = 'Logg inn',
+        year = datetime.now().year,
+        app_name = var_file.app_name
+    )
 
-
-
-
-
-
-
-
+@app.route('/logout')
+@login_required
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
