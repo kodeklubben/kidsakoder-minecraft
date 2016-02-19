@@ -3,8 +3,9 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request
+from flask import render_template, request, g
 from flask_app import app
+
 
 @app.route('/')
 def home():
@@ -15,6 +16,7 @@ def home():
         year=datetime.now().year,
     )
 
+
 @app.route('/kontakt')
 def contact():
     """Renders the contact page."""
@@ -24,6 +26,7 @@ def contact():
         year=datetime.now().year,
         message='Your contact page.'
     )
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -38,9 +41,9 @@ def login():
         )
 
 
-
-
-
-
-
-
+@app.route('/database', methods=['GET'])
+def database():
+    """ Test page for database """
+    cur = g.db.execute("select title, text from entries order by id desc")
+    meetings = [dict(time=row[1]) for row in cur.fetchall]
+    render_template('database.html', meetings)
