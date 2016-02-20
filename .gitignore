@@ -21,6 +21,7 @@ lib64/
 parts/
 sdist/
 var/
+
 *.egg-info/
 .installed.cfg
 *.egg
@@ -74,7 +75,7 @@ target/
 *.suo
 *.user
 *.sln.docstates
-
+*.db
 # Auto-generated web.config
 /web.config
 
