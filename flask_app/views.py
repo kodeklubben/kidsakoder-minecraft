@@ -44,6 +44,6 @@ def login():
 @app.route('/database', methods=['GET'])
 def database():
     """ Test page for database """
-    cur = g.db.execute("select time from meetings order by id desc")
-    meetings = [dict(time=row[0]) for row in cur.fetchall()]
+    cur = g.db.execute("select title, time from meetings order by id desc")
+    meetings = [dict(title=row[0], time=row[1]) for row in cur.fetchall()]
     return render_template('database.html', meetings=meetings)
