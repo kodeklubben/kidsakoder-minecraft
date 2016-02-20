@@ -52,8 +52,8 @@ def database():
 
 @app.route('/add_meeting', methods=['POST'])
 def add_meeting():
-    g.db.execute("insert into meetings (title, time, map_id) VALUES (?, ?, ?)",
-                 [request.form['title'], request.form['time'], request.form['map_id']])
+    g.db.execute("insert into meetings (title, time, map_id, creator) VALUES (?, ?, ?, ?)",
+                 [request.form['title'], request.form['time'], request.form['map_id'], 'kari'])
     g.db.commit()
     flash('Nytt møte lagt til!')
     return redirect(url_for('database'))
