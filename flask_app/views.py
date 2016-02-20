@@ -45,15 +45,15 @@ def login():
 def database():
     """ Test page for database """
 
-    cur = g.db.execute("select title, time from meetings order by id desc")
-    meetings = [dict(title=row[0], time=row[1]) for row in cur.fetchall()]
+    cur = g.db.execute("select title, time, participants from meetings order by id desc")
+    meetings = [dict(title=row[0], time=row[1], participants=row[2]) for row in cur.fetchall()]
     return render_template('database.html', meetings=meetings)
 
 
 @app.route('/add_meeting', methods=['POST'])
 def add_meeting():
-    g.db.execute("insert into meetings (title, time, map_id, creator) VALUES (?, ?, ?, ?)",
-                 [request.form['title'], request.form['time'], request.form['map_id'], 'kari'])
+    g.db.execute("insert into meetings (title, time, participants, map_id, creator) VALUES (?, ?, ?, ?, ?)",
+                 [request.form['title'], request.form['time'], request.form['participants'], request.form['map_id'], 'kari'])
     g.db.commit()
     flash('Nytt møte lagt til!')
     return redirect(url_for('database'))
