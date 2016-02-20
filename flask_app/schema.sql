@@ -8,7 +8,7 @@ CREATE TABLE meetings (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   time TEXT NOT NULL, /* YYYY-MM-DD HH:MM:SS.SSS */
-  map_id INTEGER NOT NULL,
+  map_id INTEGER,
   FOREIGN KEY(map_id) REFERENCES maps(id)
 );
 INSERT INTO maps (file_reference) VALUES ('maps/mymap');

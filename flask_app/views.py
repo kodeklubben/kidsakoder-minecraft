@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, g
+from flask import render_template, request, g, redirect, url_for, flash
 from flask_app import app
 
 
@@ -41,9 +41,19 @@ def login():
         )
 
 
-@app.route('/database', methods=['GET'])
+@app.route('/database', methods=['GET', 'POST'])
 def database():
     """ Test page for database """
+
     cur = g.db.execute("select title, time from meetings order by id desc")
     meetings = [dict(title=row[0], time=row[1]) for row in cur.fetchall()]
     return render_template('database.html', meetings=meetings)
+
+
+@app.route('/add_meeting', methods=['POST'])
+def add_meeting():
+    g.db.execute("insert into meetings (title, time, map_id) VALUES (?, ?, ?)",
+                 [request.form['title'], request.form['time'], request.form['map_id']])
+    g.db.commit()
+    flash('Nytt møte lagt til!')
+    return redirect(url_for('database'))
