@@ -90,3 +90,4 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+flask_app/secret_key.py

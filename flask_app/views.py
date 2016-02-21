@@ -3,12 +3,9 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, session, escape, redirect, url_for
+from flask import render_template, request, session, redirect, url_for
 from flask_app import app
 from functools import wraps
-import var_file
-
-app.secret_key = var_file.secret_key
 
 def login_required(f):
     @wraps(f)
@@ -17,6 +14,7 @@ def login_required(f):
             return f(*args, **kwargs)
         session['redirect_page'] = request.url
         return redirect(url_for('login'))
+    
     return decorated_function
 
 @app.route('/')
@@ -27,7 +25,7 @@ def home():
         'index.html',
         title = 'Hjem',
         year = datetime.now().year,
-        app_name = var_file.app_name
+        app_name = app.config['APP_NAME']
     )
 
 @app.route('/kontakt')
@@ -39,7 +37,7 @@ def contact():
         title = 'Kontakt',
         year = datetime.now().year,
         message = 'Your contact page.',
-        app_name = var_file.app_name
+        app_name = app.config['APP_NAME']
     )
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -58,7 +56,7 @@ def login():
         'login.html',
         title = 'Logg inn',
         year = datetime.now().year,
-        app_name = var_file.app_name
+        app_name = app.config['APP_NAME']
     )
 
 @app.route('/logout')
