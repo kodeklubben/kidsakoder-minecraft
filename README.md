@@ -17,7 +17,7 @@ Generate a secret key by running the following in the ```flask_app``` folder:
 ```
 python gen_secret_key.py
 ```
-Then the database needs to be initialized. Start a python prompt:
+Then the database needs to be initialized. Start a python prompt in the root repository folder:
 ```
 python
 ```
