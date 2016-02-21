@@ -22,7 +22,6 @@ python runserver.py
 feat/       Features
 bugfix/     Bug fixes
 exp/        Experimental
-(If using / in repo name, waffle will interpret as cross repo reference and not move issue automatically)
 ```
 
 ##### Examples
