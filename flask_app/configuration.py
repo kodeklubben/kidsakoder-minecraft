@@ -14,8 +14,7 @@ class Production(object):
 
 class Development(Production):
     DEBUG = True
-    #SERVER_NAME
 
 #class VM_dev(Development):
-    #SERVER_NAME
+    #SERVER_NAME = '0.0.0.0'
     

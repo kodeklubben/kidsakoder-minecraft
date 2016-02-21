@@ -14,6 +14,7 @@ def login_required(f):
             return f(*args, **kwargs)
         session['redirect_page'] = request.url
         return redirect(url_for('login'))
+    
     return decorated_function
 
 @app.route('/')
