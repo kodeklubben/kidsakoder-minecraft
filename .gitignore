@@ -21,6 +21,7 @@ lib64/
 parts/
 sdist/
 var/
+
 *.egg-info/
 .installed.cfg
 *.egg
@@ -74,7 +75,7 @@ target/
 *.suo
 *.user
 *.sln.docstates
-
+*.db
 # Auto-generated web.config
 /web.config
 
@@ -90,4 +91,7 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+# Config file, may contain passwords etc.
+*.config
+
 flask_app/secret_key.py

@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, session, redirect, url_for
+from flask import render_template, request, session, redirect, url_for, g, flash
 from flask_app import app
 from functools import wraps
 
@@ -17,6 +17,7 @@ def login_required(f):
     
     return decorated_function
 
+
 @app.route('/')
 @login_required
 def home():
@@ -27,6 +28,7 @@ def home():
         year = datetime.now().year,
         app_name = app.config['APP_NAME']
     )
+
 
 @app.route('/kontakt')
 @login_required
@@ -40,6 +42,7 @@ def contact():
         app_name = app.config['APP_NAME']
     )
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """ Login page """
@@ -50,8 +53,8 @@ def login():
     if request.method == 'POST':
         #processLogin()
         session['username'] = request.form.get('username', None)
-        
         return redirect( session.pop('redirect_page', url_for('home')) )
+    
     return render_template(
         'login.html',
         title = 'Logg inn',
@@ -63,3 +66,22 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/database', methods=['GET', 'POST'])
+@login_required
+def database():
+    """ Test page for database """
+
+    cur = g.db.execute("select title, time, participants from meetings order by id desc")
+    meetings = [dict(title=row[0], time=row[1], participants=row[2]) for row in cur.fetchall()]
+    return render_template('database.html', meetings=meetings)
+
+
+@app.route('/add_meeting', methods=['POST'])
+@login_required
+def add_meeting():
+    g.db.execute("insert into meetings (title, time, participants, map_id, creator) VALUES (?, ?, ?, ?, ?)",
+                 [request.form['title'], request.form['time'], request.form['participants'], request.form['map_id'], 'kari'])
+    g.db.commit()
+    flash('Nytt mote lagt til!')
+    return redirect(url_for('database'))
