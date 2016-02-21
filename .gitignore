@@ -93,3 +93,5 @@ $RECYCLE.BIN/
 .DS_Store
 # Config file, may contain passwords etc.
 *.config
+
+flask_app/secret_key.py
