@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, session, escape, redirect, url_for
+from flask import render_template, request, session, redirect, url_for
 from flask_app import app
 from functools import wraps
 
