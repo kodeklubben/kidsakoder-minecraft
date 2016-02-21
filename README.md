@@ -12,15 +12,10 @@ pip install -r requirements.txt
 
 #### Running Flask locally
 To run Flask locally on ```http://localhost:5000```, you need to do the following:
-First you need a config file with location for the database and a secret key.
-Create any plain text file with:
+
+Generate a secret key by running the following in the ```flask_app``` folder:
 ```
-DATABASE='path/to/database.db' # Folders need to be created
-SECRET_KEY='development key' # this can be anything
-```
-Then run set the variable in a unix console with:
-```
-export APP_SETTINGS='settings.config'
+python gen_secret_key.py
 ```
 Then the database needs to be initialized. Start a python prompt:
 ```
