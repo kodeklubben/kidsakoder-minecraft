@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - Kode-Kidza</title>
+    <title>{{ title }} - {{ app_name }}</title>
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     <script src="/static/scripts/modernizr-2.6.2.js"></script>
@@ -18,12 +18,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/" class="navbar-brand">Kode-Kidza</a>
+                <a href="/" class="navbar-brand">{{ app_name }}</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('home') }}">Hjem</a></li>
                     <li><a href="{{ url_for('contact') }}">Kontakt</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logg ut</a></li>
                 </ul>
             </div>
         </div>
@@ -33,7 +34,7 @@
         {% block content %}{% endblock %}
         <hr />
         <footer>
-            <p>&copy; {{ year }} - Kode-Kidza</p>
+            <p>&copy; {{ year }} - {{ app_name }}</p>
         </footer>
     </div>
 
