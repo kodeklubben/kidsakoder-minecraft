@@ -1,7 +1,7 @@
 """
 Configuration file
 
-Change configuration in __init__.py
+Change what configuration is used in __init__.py
 """
 
 from secret_key import secret_key
