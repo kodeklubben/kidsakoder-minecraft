@@ -1,6 +1,9 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 20px;
     padding-bottom: 20px;
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -14,6 +17,17 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.navbar {
+    background-color: #b1daae;
+    border-radius: 5px;
+    border-color: transparent;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.navbar-toggle {
 }
 
 /* styles for validation helpers */
