@@ -40,7 +40,7 @@ exp_        Experimental
 (If using / in branch name, waffle will interpret as cross repo reference and not move issue automatically)
 ```
 #### Pull requests
-When creating pull requests, use the keyword 'closes' to group with issue in waffle.
+When creating pull requests, use the keyword ```closes``` to group with issue in waffle.
 ```
 feat_add-flask closes #33
 ```
