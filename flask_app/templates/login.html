@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10">
+        <h2>Logg inn</h2>
+        <p>
+            <form name="login" action="{{ url_for('login') }}" method="POST" accept-charset="utf-8">
+                <ul>
+                    <!-- Username. Adds text field to fill in username, as well as a label for the field-->
+                    <label for="username"> Brukernavn: </label><br>
+                    <input type="text" name="username" placeholder="Skriv brukernavn her" required>
+                    <br><br>
+                    
+                    <!-- Password. Adds a password field to fill in password, as well as a label for the field-->
+                    <label for="password"> Passord: </label><br>
+                    <input type="password" name="password" placeholder="Skriv passord her" required>
+                    <br><br>
+                    
+                    <!--Submit. Adds login-button-->
+                    <input type="submit" value="Logg inn">
+                </ul>
+            </form>
+        </p>
+    </div>
+</div>
+
+{% endblock %}
