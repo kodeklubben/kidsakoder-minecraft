@@ -74,7 +74,12 @@ def database():
 
     cur = g.db.execute("select title, time, participants from meetings order by id desc")
     meetings = [dict(title=row[0], time=row[1], participants=row[2]) for row in cur.fetchall()]
-    return render_template('database.html', meetings=meetings)
+    return render_template('database.html',
+                           meetings=meetings,
+                           title = 'Database test',
+                           year = datetime.now().year,
+                           app_name = app.config['APP_NAME']
+                           )
 
 
 @app.route('/add_meeting', methods=['POST'])
