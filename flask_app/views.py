@@ -6,7 +6,9 @@ from datetime import datetime
 from flask import render_template, request, session, redirect, url_for, g, flash
 from flask_app import app
 from functools import wraps
+from flask.ext import login
 
+"""
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -16,7 +18,7 @@ def login_required(f):
         return redirect(url_for('login'))
     
     return decorated_function
-
+"""
 
 @app.route('/')
 @login_required
