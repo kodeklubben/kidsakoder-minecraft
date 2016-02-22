@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Flask-Login initialization
 login_manager = login.LoginManager()
 login_manager.init_app(app)
-@login_manager.user_user_loader
+@login_manager.user_loader
 def load_user(user_id):
     return models.User.get(user_id)
 

@@ -7,6 +7,8 @@ from flask import render_template, request, session, redirect, url_for, g, flash
 from flask_app import app
 from functools import wraps
 from flask.ext import login
+from flask.ext.login import login_required
+from models import User
 
 """
 def login_required(f):
@@ -53,8 +55,11 @@ def login():
         return redirect(url_for('home'))
     
     if request.method == 'POST':
-        #processLogin()
-        session['username'] = request.form.get('username', None)
+        user = User.get(request.form.get('username'))
+        if user.check_password(request.form.get('password')):
+            login.login_user(user)
+        
+        #session['username'] = request.form.get('username', None)
         return redirect( session.pop('redirect_page', url_for('home')) )
     
     return render_template(

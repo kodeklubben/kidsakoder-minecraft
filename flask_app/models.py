@@ -6,11 +6,14 @@ class User(object):
         self.username = username
         self.set_password(password)
     
+    @classmethod
     def get(cls, username):
         # Get user details from db
         # Return None if invalid user
-        password = 'jalla'
-        return cls(username, password)
+        if username == 'admin':
+            password = 'laOssKodeIminecraft'
+            return cls(username, password)
+        return None
 
     def set_password(self, password):
         self.pw_hash = generate_password_hash(password, method='pbkdf2:sha512:100000', salt_length=32)
