@@ -34,15 +34,19 @@ python runserver.py
 ## Coding conventions
 #### Branch naming
 ```
-feat/       Features
-bugfix/     Bug fixes
-exp/        Experimental
+feat_       Features
+bugfix_     Bug fixes
+exp_        Experimental
 (If using / in branch name, waffle will interpret as cross repo reference and not move issue automatically)
 ```
-
+#### Pull requests
+When creating pull requests, use closes keyword to group with issue in waffle.
+```
+feat_add-flask closes #33
+```
 ##### Examples
 ```
-feat/add-flask-#33          A new feature branch for adding Flask in issue #33
-bugfix/typo-in-header-#21   A bug fix branch to fix a typo in issue #21
-exp/testing-mysql           An experimental branch for testing my-sql
+feat_add-flask-#33          A new feature branch for adding Flask in issue #33
+bugfix_typo-in-header-#21   A bug fix branch to fix a typo in issue #21
+exp_testing-mysql           An experimental branch for testing my-sql
 ```
