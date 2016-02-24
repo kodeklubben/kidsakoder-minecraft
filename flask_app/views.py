@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Routes and views for the flask application.
 """
@@ -25,6 +26,10 @@ def login_required(f):
 
 
 @app.route('/')
+@app.route('/hjem')
+@app.route('/home')
+@app.route('/indeks')
+@app.route('/index')
 @login_required
 def home():
     """Renders the home page."""
@@ -37,6 +42,7 @@ def home():
 
 
 @app.route('/kontakt')
+@app.route('/contact')
 @login_required
 def contact():
     """Renders the contact page."""
@@ -49,6 +55,8 @@ def contact():
     )
 
 
+@app.route('/logg_inn', methods=['GET', 'POST'])
+@app.route('/logginn', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """ Login page """
@@ -68,7 +76,8 @@ def login():
         app_name=app.config['APP_NAME']
     )
 
-
+@app.route('/logg_ut')
+@app.route('/loggut')
 @app.route('/logout')
 def logout():
     session.pop('username', None)
@@ -89,7 +98,9 @@ def database():
                            app_name=app.config['APP_NAME']
                            )
 
-
+@app.route('/nytt_mote', methods=['GET', 'POST'])
+@app.route('/nyttmote', methods=['GET', 'POST'])
+@app.route('/newmeeting', methods=['GET', 'POST'])
 @app.route('/new_meeting', methods=['GET', 'POST'])
 @login_required
 def new_meeting():
@@ -101,8 +112,10 @@ def new_meeting():
         app_name=app.config['APP_NAME']
     )
 
-
+@app.route('/legg_til_mote', methods=['POST'])
+@app.route('/leggtilmote', methods=['POST'])
 @app.route('/add_meeting', methods=['POST'])
+@app.route('/addmeeting', methods=['POST'])
 @login_required
 def add_meeting():
     meeting = Meeting(creator_id='1', title=request.form['title'], time=request.form['time'],
@@ -112,7 +125,20 @@ def add_meeting():
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 
+@app.errorhandler(401)
+def custom_401(error):
+    return render_template(
+    '401.html',
+    title = '401',
+    year = datetime.now().year,
+    app_name = app.config['APP_NAME']
+    ), 401    
 
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+def page_not_found(error):
+    return render_template(
+    '404.html',
+    title = '404',
+    year = datetime.now().year,
+    app_name = app.config['APP_NAME']
+    ), 404
