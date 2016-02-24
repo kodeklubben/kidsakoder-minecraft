@@ -4,6 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, session, redirect, url_for, g, flash
+from sqlalchemy import select
 
 from flask.ext.app.alchemy_database import engine
 from flask.ext.app.alchemy_schema import meetings
@@ -77,11 +78,12 @@ def logout():
 @login_required
 def database():
     """ Test page for database """
-
-    cur = g.db.execute("select title, time, participants from meetings order by id desc")
-    meetings = [dict(title=row[0], time=row[1], participants=row[2]) for row in cur.fetchall()]
+    selection = select([meetings])
+    result = g.db.execute(selection)
+    output = [dict(title=row[meetings.c.title], time=row[meetings.c.time], participants=row[meetings.c.participants])
+              for row in result.fetchall()]
     return render_template('database.html',
-                           meetings=meetings,
+                           meetings=output,
                            title='Database test',
                            year=datetime.now().year,
                            app_name=app.config['APP_NAME']
