@@ -1,3 +1,4 @@
+from flask import g
 from sqlalchemy import create_engine
 
 from flask.ext.app import app
