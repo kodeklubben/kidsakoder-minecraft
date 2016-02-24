@@ -5,8 +5,13 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, session, redirect, url_for, g, flash
+from sqlalchemy import select
+
+from flask.ext.app.database import engine
+from flask.ext.app.schema import meetings
 from flask_app import app
 from functools import wraps
+
 
 def login_required(f):
     @wraps(f)
@@ -15,7 +20,7 @@ def login_required(f):
             return f(*args, **kwargs)
         session['redirect_page'] = request.url
         return redirect(url_for('login'))
-    
+
     return decorated_function
 
 
@@ -29,9 +34,9 @@ def home():
     """Renders the home page."""
     return render_template(
         'index.html',
-        title = 'Hjem',
-        year = datetime.now().year,
-        app_name = app.config['APP_NAME']
+        title='Hjem',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
     )
 
 
@@ -42,10 +47,10 @@ def contact():
     """Renders the contact page."""
     return render_template(
         'contact.html',
-        title = 'Kontakt',
-        year = datetime.now().year,
-        message = 'Your contact page.',
-        app_name = app.config['APP_NAME']
+        title='Kontakt',
+        year=datetime.now().year,
+        message='Your contact page.',
+        app_name=app.config['APP_NAME']
     )
 
 
@@ -57,17 +62,17 @@ def login():
     if 'username' in session:
         # If user is already logged in, redirect to home
         return redirect(url_for('home'))
-    
+
     if request.method == 'POST':
-        #processLogin()
+        # processLogin()
         session['username'] = request.form.get('username', None)
-        return redirect( session.pop('redirect_page', url_for('home')) )
-    
+        return redirect(session.pop('redirect_page', url_for('home')))
+
     return render_template(
         'login.html',
-        title = 'Logg inn',
-        year = datetime.now().year,
-        app_name = app.config['APP_NAME']
+        title='Logg inn',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
     )
 
 @app.route('/logg_ut')
@@ -77,24 +82,24 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+
 @app.route('/database', methods=['GET', 'POST'])
 @login_required
 def database():
     """ Test page for database """
-
-    cur = g.db.execute("select title, time, participants from meetings order by id desc")
-    meetings = [dict(title=row[0], time=row[1], participants=row[2]) for row in cur.fetchall()]
+    selection = select([meetings])
+    result = g.db.execute(selection)
+    output = [dict(title=row[meetings.c.title], time=row[meetings.c.time], participants=row[meetings.c.participants])
+              for row in result.fetchall()]
     return render_template('database.html',
-                           meetings=meetings,
-                           title = 'Database test',
-                           year = datetime.now().year,
-                           app_name = app.config['APP_NAME']
+                           meetings=output,
+                           title='Database test',
+                           year=datetime.now().year,
+                           app_name=app.config['APP_NAME']
                            )
 
 @app.route('/nytt_mote', methods=['GET', 'POST'])
-#@app.route('/nytt_møte', methods=['GET', 'POST'])   #problematisk med æ/ø/å
 @app.route('/nyttmote', methods=['GET', 'POST'])
-#@app.route('/nyttmøte', methods=['GET', 'POST'])   #problematisk med æ/ø/å
 @app.route('/newmeeting', methods=['GET', 'POST'])
 @app.route('/new_meeting', methods=['GET', 'POST'])
 @login_required
@@ -108,16 +113,14 @@ def new_meeting():
     )
 
 @app.route('/legg_til_mote', methods=['POST'])
-#@app.route('/legg_til_møte', methods=['POST'])   #problematisk med æ/ø/å
 @app.route('/leggtilmote', methods=['POST'])
-#@app.route('/leggtilmøte', methods=['POST'])   #problematisk med æ/ø/å
 @app.route('/add_meeting', methods=['POST'])
 @app.route('/addmeeting', methods=['POST'])
 @login_required
 def add_meeting():
-    g.db.execute("insert into meetings (title, time, participants, map_id, creator) VALUES (?, ?, ?, ?, ?)",
-                 [request.form['title'], request.form['time'], request.form['participants'], request.form['map_id'], 'kari'])
-    g.db.commit()
+    insert = meetings.insert().values(creator_id='1', title=request.form['title'], time=request.form['time'],
+                                      participants=request.form['participants'], map_id=request.form['map_id'])
+    g.db.execute(insert)
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 

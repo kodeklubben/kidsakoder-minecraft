@@ -15,7 +15,7 @@ class Production(object):
 
 class Development(Production):
     DEBUG = True
-    DATABASE = 'database.db'
+    DATABASE = 'sqlite:///database.db'
 
 #class VM_dev(Development):
     #SERVER_NAME = '0.0.0.0'
