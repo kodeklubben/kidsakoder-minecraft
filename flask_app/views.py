@@ -89,16 +89,18 @@ def database():
                            app_name=app.config['APP_NAME']
                            )
 
+
 @app.route('/new_meeting', methods=['GET', 'POST'])
 @login_required
 def new_meeting():
     """Renders the meeting creation page"""
     return render_template(
         'new_meeting.html',
-        title = 'New Meeting',
-        year = datetime.now().year,
-        app_name = app.config['APP_NAME']
+        title='New Meeting',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
     )
+
 
 @app.route('/add_meeting', methods=['POST'])
 @login_required
@@ -108,7 +110,8 @@ def add_meeting():
     g.db.execute(insert)
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
-    
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
