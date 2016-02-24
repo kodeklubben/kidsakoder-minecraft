@@ -1,2 +1,3 @@
+werkzeug
 Flask<1
 sqlalchemy<=1
