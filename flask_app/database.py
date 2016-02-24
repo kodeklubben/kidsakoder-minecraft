@@ -1,19 +1,19 @@
-from contextlib import closing
-
-import sqlite3
 from flask import g
-from flask_app import app
+from sqlalchemy import create_engine
+
+from flask.ext.app import app
+from flask.ext.app.schema import metadata
+
+engine = create_engine(app.config['DATABASE'], echo=True)
 
 
 def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    return engine.connect()
 
 
 def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+    metadata.drop_all(engine)  # Empties the database
+    metadata.create_all(engine)  # Creates all tables from metadata definition
 
 
 @app.before_request

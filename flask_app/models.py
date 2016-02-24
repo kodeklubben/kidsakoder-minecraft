@@ -13,6 +13,7 @@ class User(object):
         if username == 'admin':
             password = 'laOssKodeIminecraft'
             return cls(username, password)
+        
         return None
 
     def set_password(self, password):
