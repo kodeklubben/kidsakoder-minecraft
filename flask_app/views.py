@@ -6,8 +6,8 @@ from datetime import datetime
 from flask import render_template, request, session, redirect, url_for, g, flash
 from sqlalchemy import select
 
-from flask.ext.app.alchemy_database import engine
-from flask.ext.app.alchemy_schema import meetings
+from flask.ext.app.database import engine
+from flask.ext.app.schema import meetings
 from flask_app import app
 from functools import wraps
 
