@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from flask.ext.app import app
 from flask.ext.app.schema import metadata
 
-engine = create_engine(app.config['DATABASE_ALCHEMY'], echo=True)
+engine = create_engine(app.config['DATABASE'], echo=True)
 
 
 def connect_db():
