@@ -89,6 +89,16 @@ def database():
                            app_name=app.config['APP_NAME']
                            )
 
+@app.route('/new_meeting', methods=['GET', 'POST'])
+@login_required
+def new_meeting():
+    """Renders the meeting creation page"""
+    return render_template(
+        'new_meeting.html',
+        title = 'New Meeting',
+        year = datetime.now().year,
+        app_name = app.config['APP_NAME']
+    )
 
 @app.route('/add_meeting', methods=['POST'])
 @login_required

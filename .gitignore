@@ -96,7 +96,5 @@ $RECYCLE.BIN/
 
 flask_app/secret_key.py
 
-#VM stuff
-saltstack/
-Vagrantfile
+# Vagrant directory
 .vagrant/
