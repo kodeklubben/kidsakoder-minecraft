@@ -3,13 +3,14 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, session, redirect, url_for, g, flash
-from sqlalchemy import select
-
-from flask.ext.app.database import engine
-from flask.ext.app.schema import meetings
-from flask_app import app
 from functools import wraps
+
+from flask import render_template, request, session, redirect, url_for, flash
+
+from flask_app.models import Meeting
+from flask.ext.app.database import db_session
+
+from flask_app import app
 
 
 def login_required(f):
@@ -78,10 +79,9 @@ def logout():
 @login_required
 def database():
     """ Test page for database """
-    selection = select([meetings])
-    result = g.db.execute(selection)
-    output = [dict(title=row[meetings.c.title], time=row[meetings.c.time], participants=row[meetings.c.participants])
-              for row in result.fetchall()]
+    all_meetings = Meeting.query.all()
+    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
+              for meeting in all_meetings]
     return render_template('database.html',
                            meetings=output,
                            title='Database test',
@@ -105,9 +105,10 @@ def new_meeting():
 @app.route('/add_meeting', methods=['POST'])
 @login_required
 def add_meeting():
-    insert = meetings.insert().values(creator_id='1', title=request.form['title'], time=request.form['time'],
-                                      participants=request.form['participants'], map_id=request.form['map_id'])
-    g.db.execute(insert)
+    meeting = Meeting(creator_id='1', title=request.form['title'], time=request.form['time'],
+                      participants=request.form['participants'], world_id=request.form['map_id'])
+    db_session.add(meeting)
+    db_session.commit()
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 
