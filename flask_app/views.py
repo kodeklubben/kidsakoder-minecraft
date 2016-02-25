@@ -67,10 +67,19 @@ def login():
     if request.method == 'POST':
         # processLogin()
         username = request.form['username']
-        user = User.query(User.name == username)
-        session['user'] = user
-        session['username'] = username
-        return redirect(session.pop('redirect_page', url_for('home')))
+        password = request.form['password']
+        user = User.query.filter(User.username == username).first()
+        if user:
+            auth = user.check_password(password)
+            if auth:
+                session['username'] = user.username
+                return redirect(session.pop('redirect_page', url_for('home')))
+            else:
+                # TODO handle wrong password
+                return redirect(url_for('login'))
+        else:
+            # TODO handle user not found
+            return redirect(url_for('login'))
 
     return render_template(
         'login.html',
@@ -78,6 +87,7 @@ def login():
         year=datetime.now().year,
         app_name=app.config['APP_NAME']
     )
+
 
 @app.route('/logg_ut')
 @app.route('/loggut')
@@ -101,6 +111,7 @@ def database():
                            app_name=app.config['APP_NAME']
                            )
 
+
 @app.route('/nytt_mote', methods=['GET', 'POST'])
 @app.route('/nyttmote', methods=['GET', 'POST'])
 @app.route('/newmeeting', methods=['GET', 'POST'])
@@ -115,6 +126,7 @@ def new_meeting():
         app_name=app.config['APP_NAME']
     )
 
+
 @app.route('/legg_til_mote', methods=['POST'])
 @app.route('/leggtilmote', methods=['POST'])
 @app.route('/add_meeting', methods=['POST'])
@@ -128,20 +140,22 @@ def add_meeting():
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 
+
 @app.errorhandler(401)
 def custom_401(error):
     return render_template(
-    '401.html',
-    title = '401',
-    year = datetime.now().year,
-    app_name = app.config['APP_NAME']
-    ), 401    
+        '401.html',
+        title='401',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
+    ), 401
+
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template(
-    '404.html',
-    title = '404',
-    year = datetime.now().year,
-    app_name = app.config['APP_NAME']
+        '404.html',
+        title='404',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
     ), 404
