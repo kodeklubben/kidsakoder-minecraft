@@ -4,15 +4,16 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, session, redirect, url_for, g, flash
-from sqlalchemy import select
+#from sqlalchemy import select
 
-from flask.ext.app.database import engine
-from flask.ext.app.schema import meetings
+#from flask.ext.app.database import engine
+#from flask.ext.app.schema import meetings
 from flask_app import app
-from functools import wraps
-from flask.ext import login
-from flask.ext.login import login_required
+#from functools import wraps
+#from flask.ext import login
+#from flask.ext.login import login_required
 from models import User
+from flask_user import login_required
 
 """
 def login_required(f):
@@ -27,7 +28,7 @@ def login_required(f):
 """
 
 @app.route('/')
-@login_required
+#@login_required
 def home():
     """Renders the home page."""
     return render_template(
