@@ -8,7 +8,7 @@ from functools import wraps
 
 from flask import render_template, request, session, redirect, url_for, flash
 
-from flask_app.models import Meeting
+from flask_app.models import Meeting, User
 from flask.ext.app.database import db_session
 
 from flask_app import app
@@ -66,7 +66,10 @@ def login():
 
     if request.method == 'POST':
         # processLogin()
-        session['username'] = request.form.get('username', None)
+        username = request.form['username']
+        user = User.query(User.name == username)
+        session['user'] = user
+        session['username'] = username
         return redirect(session.pop('redirect_page', url_for('home')))
 
     return render_template(
