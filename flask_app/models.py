@@ -1,20 +1,20 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_user import UserMixin
+from flask_security import UserMixin, RoleMixin
 from flask_app import db
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key = True)
-    
-    #username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(200), nullable=False, server_default='')
-    reset_password_token = db.Column(db.String(100), nullable=False, server_default='')
+    id = db.Column(db.Integer, primary_key=True)
     
     email = db.Column(db.String(255), nullable=False, unique=True)
+    password = db.Column(db.String(255), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
     confirmed_at = db.Column(db.DateTime())
+    roles = db.Relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     
-    active = db.Column('is_active', db.Boolean, nullable=False, server_default='0')
-    first_name = db.Column(db.String(100), nullable=False, server_default='')
-    last_name = db.Column(db.String(100), nullable=False, server_default='')
+    #username = db.Column(db.String(50), nullable=False, unique=True)
+    #reset_password_token = db.Column(db.String(100), nullable=False)
+    #first_name = db.Column(db.String(100), nullable=False, server_default='')
+    #last_name = db.Column(db.String(100), nullable=False, server_default='')
 """
     def __init__(self, username, password):
         self.username = username
@@ -47,6 +47,12 @@ class User(db.Model, UserMixin):
         # Must return Unicode string
         return self.username
 """
+
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
 #Hot to test:        
 # me = User('yourusername', 'password12345678987654321')
 # me.pw_hash

@@ -14,6 +14,7 @@ class Production(object):
     #SESSION_COOKIE_SECURE = True # Should be set when using https
     CSRF_ENABLED = True
     
+"""
     # Flask-User Features
     USER_ENABLE_CHANGE_PASSWORD    = True      # Allow users to change their password
     USER_ENABLE_CHANGE_USERNAME    = False      # Allow users to change their username
@@ -67,6 +68,7 @@ class Production(object):
     USER_SHOW_USERNAME_EMAIL_DOES_NOT_EXIST = USER_ENABLE_REGISTRATION
                                                    # Show 'Username/Email does not exist' error message
                                                    # instead of 'Incorrect Username/Email and/or password'
+"""
 
 class Development(Production):
     DEBUG = True
