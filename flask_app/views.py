@@ -51,10 +51,10 @@ def contact():
         app_name=app.config['APP_NAME']
     )
 
-
+"""
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """ Login page """
+    # Login page
     if 'username' in session:
         # If user is already logged in, redirect to home
         return redirect(url_for('home'))
@@ -78,7 +78,7 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
-
+"""
 
 @app.route('/database', methods=['GET', 'POST'])
 @login_required

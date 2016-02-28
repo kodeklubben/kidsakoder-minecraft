@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_security import UserMixin, RoleMixin
-from flask_app import db
+from flask_app import db, roles_users
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,10 +9,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     confirmed_at = db.Column(db.DateTime())
-    roles = db.Relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     
-    #username = db.Column(db.String(50), nullable=False, unique=True)
-    #reset_password_token = db.Column(db.String(100), nullable=False)
     #first_name = db.Column(db.String(100), nullable=False, server_default='')
     #last_name = db.Column(db.String(100), nullable=False, server_default='')
 """
