@@ -98,3 +98,4 @@ flask_app/secret_key.py
 
 # Vagrant directory
 .vagrant/
+uninstall.txt
