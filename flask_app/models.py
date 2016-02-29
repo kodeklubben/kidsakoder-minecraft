@@ -10,8 +10,15 @@ class User(Base):
     username = Column('username', String(50))
     fullname = Column('fullname', String(50))
     email = Column('email', String(50))
-    pw_hash = Column('pw_hash', String(200))
+    pw_hash = Column('pw_hash', String(250))
     reset = Column('reset', Boolean)
+
+    def __repr__(self):
+        return "<User(username='%s', fullname='%s', email='%s', pw_hash='%s', reset='%s')>" % (self.username,
+                                                                                               self.fullname,
+                                                                                               self.email,
+                                                                                               self.pw_hash,
+                                                                                               self.reset)
 
     def __init__(self, username, password, fullname, email, reset):
         self.username = username
@@ -42,6 +49,14 @@ class Meeting(Base):
     time = Column('time', String(23))  # YYYY-MM-DD HH:MM:SS.SSS
     participants = Column('participants', Integer)
     world_id = Column('world_id', None, ForeignKey('worlds.id'))
+
+    def __repr__(self):
+        return "<Meeting(creator_id='%s', title='%s'," \
+               " time='%s', participants='%s', world_id='%s')>" % (self.creator_id,
+                                                                   self.title,
+                                                                   self.time,
+                                                                   self.participants,
+                                                                   self.world_id)
 
     def __init__(self, creator_id, title, time, participants, world_id):
         self.creator_id = creator_id
