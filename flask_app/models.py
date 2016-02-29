@@ -1,6 +1,8 @@
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_security import UserMixin, RoleMixin
 from flask_app import db, roles_users
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,12 +48,13 @@ class User(db.Model, UserMixin):
         return self.username
 """
 
+
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
-#Hot to test:        
+# Hot to test:
 # me = User('yourusername', 'password12345678987654321')
 # me.pw_hash
 # me.check_password('password12345678987654321')
