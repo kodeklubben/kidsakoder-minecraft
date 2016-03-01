@@ -3,21 +3,21 @@
 Routes and views for the flask application.
 """
 
-from flask_app import app
-from flask import render_template, request, session, redirect, url_for, g, flash
 from datetime import datetime
-from flask_security import login_required
+from flask import render_template, request, session, redirect, url_for, g, flash
+from flask_app import app
 from models import Meeting, User
-from database import db_session
+from database import db
+from flask_security import login_required
 
 
-@app.route('/')
-@app.route('/hjem')
-@app.route('/home')
 @app.route('/index')
+@app.route('/home')
+@app.route('/hjem')
+@app.route('/')
 @login_required
 def home():
-    """Renders the home page."""
+    """ Renders the home page. """
     return render_template(
         'index.html',
         title='Hjem',
@@ -26,11 +26,11 @@ def home():
     )
 
 
-@app.route('/kontakt')
 @app.route('/contact')
+@app.route('/kontakt')
 @login_required
 def contact():
-    """Renders the contact page."""
+    """ Renders the contact page. """
     return render_template(
         'contact.html',
         title='Kontakt',
@@ -40,28 +40,29 @@ def contact():
     )
 
 
-@app.route('/database', methods=['GET', 'POST'])
+@app.route('/database')
 @login_required
 def database():
     """ Test page for database """
     all_meetings = Meeting.query.all()
     output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
               for meeting in all_meetings]
-    return render_template('database.html',
-                           meetings=output,
-                           title='Database test',
-                           year=datetime.now().year,
-                           app_name=app.config['APP_NAME']
-                           )
+    return render_template(
+        'database.html',
+        meetings=output,
+        title='Database test',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
+    )
 
 
-@app.route('/nytt_mote', methods=['GET', 'POST'])
-@app.route('/nyttmote', methods=['GET', 'POST'])
-@app.route('/new_meeting', methods=['GET', 'POST'])
-@app.route('/newmeeting', methods=['GET', 'POST'])
+@app.route('/newmeeting')
+@app.route('/new_meeting')
+@app.route('/nyttmote')
+@app.route('/nytt_mote')
 @login_required
 def new_meeting():
-    """Renders the meeting creation page"""
+    """ Renders the meeting creation page """
     return render_template(
         'new_meeting.html',
         title='New Meeting',
@@ -70,16 +71,17 @@ def new_meeting():
     )
 
 
-@app.route('/legg_til_mote', methods=['POST'])
-@app.route('/leggtilmote', methods=['POST'])
-@app.route('/add_meeting', methods=['POST'])
 @app.route('/addmeeting', methods=['POST'])
+@app.route('/add_meeting', methods=['POST'])
+@app.route('/leggtilmote', methods=['POST'])
+@app.route('/legg_til_mote', methods=['POST'])
 @login_required
 def add_meeting():
-    meeting = Meeting(creator_id='1', title=request.form['title'], time=request.form['time'],
+    """ Add meeting POST form handler """
+    meeting = Meeting(user_id='1', title=request.form['title'], time=request.form['time'],
                       participants=request.form['participants'], world_id=request.form['map_id'])
-    db_session.add(meeting)
-    db_session.commit()
+    db.session.add(meeting)
+    db.session.commit()
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 
