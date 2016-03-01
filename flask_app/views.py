@@ -4,35 +4,20 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from functools import wraps
-
-from flask import render_template, request, session, redirect, url_for, flash
-
-from flask_app.models import Meeting, User
-from flask.ext.app.database import db_session
-
+from flask import render_template, request, session, redirect, url_for, g, flash
 from flask_app import app
+from models import Meeting, User
+from database import db
+from flask_security import login_required
 
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'username' in session:
-            return f(*args, **kwargs)
-        session['redirect_page'] = request.url
-        return redirect(url_for('login'))
-
-    return decorated_function
-
-
-@app.route('/')
-@app.route('/hjem')
-@app.route('/home')
-@app.route('/indeks')
 @app.route('/index')
+@app.route('/home')
+@app.route('/hjem')
+@app.route('/')
 @login_required
 def home():
-    """Renders the home page."""
+    """ Renders the home page. """
     return render_template(
         'index.html',
         title='Hjem',
@@ -41,11 +26,11 @@ def home():
     )
 
 
-@app.route('/kontakt')
 @app.route('/contact')
+@app.route('/kontakt')
 @login_required
 def contact():
-    """Renders the contact page."""
+    """ Renders the contact page. """
     return render_template(
         'contact.html',
         title='Kontakt',
@@ -55,70 +40,29 @@ def contact():
     )
 
 
-@app.route('/logg_inn', methods=['GET', 'POST'])
-@app.route('/logginn', methods=['GET', 'POST'])
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    """ Login page """
-    if 'username' in session:
-        # If user is already logged in, redirect to home
-        return redirect(url_for('home'))
-
-    if request.method == 'POST':
-        # processLogin()
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter(User.username == username).first()
-        if user:
-            auth = user.check_password(password)
-            if auth:
-                session['username'] = user.username
-                return redirect(session.pop('redirect_page', url_for('home')))
-            else:
-                # TODO handle wrong password
-                return redirect(url_for('login'))
-        else:
-            # TODO handle user not found
-            return redirect(url_for('login'))
-
-    return render_template(
-        'login.html',
-        title='Logg inn',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME']
-    )
-
-
-@app.route('/logg_ut')
-@app.route('/loggut')
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
-
-
-@app.route('/database', methods=['GET', 'POST'])
+@app.route('/database')
 @login_required
 def database():
     """ Test page for database """
     all_meetings = Meeting.query.all()
     output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
               for meeting in all_meetings]
-    return render_template('database.html',
-                           meetings=output,
-                           title='Database test',
-                           year=datetime.now().year,
-                           app_name=app.config['APP_NAME']
-                           )
+    return render_template(
+        'database.html',
+        meetings=output,
+        title='Database test',
+        year=datetime.now().year,
+        app_name=app.config['APP_NAME']
+    )
 
 
-@app.route('/nytt_mote', methods=['GET', 'POST'])
-@app.route('/nyttmote', methods=['GET', 'POST'])
-@app.route('/newmeeting', methods=['GET', 'POST'])
-@app.route('/new_meeting', methods=['GET', 'POST'])
+@app.route('/newmeeting')
+@app.route('/new_meeting')
+@app.route('/nyttmote')
+@app.route('/nytt_mote')
 @login_required
 def new_meeting():
-    """Renders the meeting creation page"""
+    """ Renders the meeting creation page """
     return render_template(
         'new_meeting.html',
         title='New Meeting',
@@ -127,16 +71,17 @@ def new_meeting():
     )
 
 
-@app.route('/legg_til_mote', methods=['POST'])
-@app.route('/leggtilmote', methods=['POST'])
-@app.route('/add_meeting', methods=['POST'])
 @app.route('/addmeeting', methods=['POST'])
+@app.route('/add_meeting', methods=['POST'])
+@app.route('/leggtilmote', methods=['POST'])
+@app.route('/legg_til_mote', methods=['POST'])
 @login_required
 def add_meeting():
-    meeting = Meeting(creator_id='1', title=request.form['title'], time=request.form['time'],
+    """ Add meeting POST form handler """
+    meeting = Meeting(user_id='1', title=request.form['title'], time=request.form['time'],
                       participants=request.form['participants'], world_id=request.form['map_id'])
-    db_session.add(meeting)
-    db_session.commit()
+    db.session.add(meeting)
+    db.session.commit()
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 

@@ -1,3 +1,4 @@
+"""
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 
 metadata = MetaData()
@@ -20,3 +21,4 @@ meetings = Table('meetings', metadata,
 maps = Table('maps', metadata,
              Column('id', Integer, primary_key=True)
              )
+"""

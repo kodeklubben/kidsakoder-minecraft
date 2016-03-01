@@ -94,7 +94,12 @@ $RECYCLE.BIN/
 # Config file, may contain passwords etc.
 *.config
 
+# Secret configs
 flask_app/secret_key.py
 
 # Vagrant directory
 .vagrant/
+uninstall.txt
+
+# JetBrains
+.idea/

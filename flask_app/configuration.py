@@ -12,10 +12,14 @@ class Production(object):
     SECRET_KEY = secret_key
     #DATABASE = 'path/to/database.db'
     #SESSION_COOKIE_SECURE = True # Should be set when using https
+    CSRF_ENABLED = True
+
+    SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
+    SECURITY_PASSWORD_SALT = 'salt'
 
 class Development(Production):
     DEBUG = True
-    DATABASE = 'sqlite:///database.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
 
 #class VM_dev(Development):
     #SERVER_NAME = '0.0.0.0'
