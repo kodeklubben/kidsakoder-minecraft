@@ -76,6 +76,16 @@ def add_meeting():
     return redirect(url_for('database'))
 
 
+@app.route('/fra_kart')
+@login_required
+def from_map():
+    """ Renders the map area selection page """
+    return render_template(
+        'map/minecraft_kartverket.html',
+        title='Kart'
+    )
+
+
 @app.errorhandler(401)
 def custom_401(error):
     return render_template(

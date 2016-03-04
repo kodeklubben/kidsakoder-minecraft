@@ -3,15 +3,27 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Kartverket</h2>
-        <p>
-            Lag en ny verden fra et utsnitt fra et kart over Norge.
-        </p>
-        <p><a class="btn btn-default">Velg</a></p>
+    <div class="col-sm-6 col-md-4">
+    <a href="{{ url_for('from_map') }}" style="text-decoration: none">
+        <div class="thumbnail btn btn-default" style="white-space: normal">
+
+        <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 9em"></span>
+
+        <div class="caption">
+
+            <h2>Kartverket</h2>
+            <p>
+                Lag en ny verden fra et utsnitt av et kart over Norge.
+            </p>
+
+        </div>
+
+        </div>
+    </a>
     </div>
 
     <div class="col-md-4">
+
         <h2>Lagret mal</h2>
         <p>
             Lag en ny verden basert på en av dine lagrede maler.
