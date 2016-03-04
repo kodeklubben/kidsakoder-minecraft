@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - {{ app_name }}</title>
+    <title>{{ title }} - {{ config.APP_NAME }}</title>
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     <script src="/static/scripts/modernizr-2.6.2.js"></script>
@@ -18,23 +18,26 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/" class="navbar-brand">{{ app_name }}</a>
+                <a href="/" class="navbar-brand">{{ config.APP_NAME }}</a>
             </div>
             <div class="navbar-collapse collapse">
+                {% if current_user.is_authenticated %}
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('home') }}">Hjem</a></li>
                     <li><a href="{{ url_for('contact') }}">Kontakt</a></li>
                     <li><a href="{{ url_for_security('logout') }}">Logg ut</a></li>
+                    <li><a href="{{ url_for_security('logout') }}"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ current_user.email }}</a></li>
                 </ul>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <div class="container body-content">
+        {% include "security/_messages.html" %}
         {% block content %}{% endblock %}
         <hr />
         <footer>
-            <p>&copy; {{ year }} - {{ app_name }}</p>
+            <p>&copy; {{ year }} - {{ config.APP_NAME }}</p>
         </footer>
     </div>
 
