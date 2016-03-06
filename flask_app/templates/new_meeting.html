@@ -6,6 +6,9 @@
 <form method="post">
     <dl>
         {{ render_field_with_errors(form.name) }}
+        {{ render_field_with_errors(form.startTime) }}
+        {{ render_field_with_errors(form.participants) }}
+        {{ render_field_with_errors(form.endTime) }}
     </dl>
 </form>
 

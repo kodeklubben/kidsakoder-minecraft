@@ -64,7 +64,7 @@ def database():
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = FormTest(request.form)
+    form = MeetingForm(request.form)
     if request.method == 'POST' and form.validate():
 
         """ Temporary redirect to contact """
@@ -78,8 +78,11 @@ def new_meeting():
         form=form
     )
 
-class FormTest(Form):
+class MeetingForm(Form):
     name = TextField('Name', [validators.Length(min=4, max=25)])
+    startTime = TextField('Start Time')
+    endTime = TextField('End Time')
+    participants = TextField('Participants')
 
 
 @app.route('/addmeeting', methods=['POST'])
