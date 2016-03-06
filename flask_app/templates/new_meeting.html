@@ -25,8 +25,10 @@
     </div>
 </form>
 
-<div class="row">
-    <div class="col-md-4 gen-choise">
+<hr>
+
+<div class="row gen-choise">
+    <div class="col-md-4">
         <h2>Kartverket</h2>
         <p>
             Lag en ny verden fra et utsnitt fra et kart over Norge.
@@ -34,7 +36,7 @@
         <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
     </div>
 
-    <div class="col-md-4 gen-choise">
+    <div class="col-md-4">
         <h2>Lagret mal</h2>
         <p>
             Lag en ny verden basert på en av dine lagrede maler.
@@ -42,7 +44,7 @@
         <p><a class="btn btn-default" id="template-btn">Velg</a></p>
     </div>
 
-    <div class="col-md-4 gen-choise">
+    <div class="col-md-4">
         <h2>Last opp</h2>
         <p>
             Last opp en verden fra din datamaskin.
@@ -51,25 +53,27 @@
     </div>
 </div>
 
-<div class="row" id="kartverket" style="display: none">
+<div class="row" >
+    <div id="kartverket" style="display: none">
 
-    <!-- Placeholder -->
-    <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
+        <!-- Placeholder -->
+        <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
 
-</div>
+    </div>
 
-<div class="row" id="template" style="display: none">
+    <div id="template" style="display: none">
 
-    <!-- Placeholder -->
-    <div style="background-color: red; width: 500px; height: 400px; margin: auto;"></div>
+        <!-- Placeholder -->
+        <div style="background-color: red; width: 500px; height: 400px; margin: auto;"></div>
 
-</div>
+    </div>
 
-<div class="row" id="upload" style="display: none">
+    <div id="upload" style="display: none">
 
-    <!-- Placeholder -->
-    <div style="background-color: yellow; width: 500px; height: 400px; margin: auto;"></div>
+        <!-- Placeholder -->
+        <div style="background-color: yellow; width: 500px; height: 400px; margin: auto;"></div>
 
+    </div>
 </div>
 
 {% endblock %}
