@@ -26,15 +26,15 @@
 </form>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 gen-choise">
         <h2>Kartverket</h2>
         <p>
             Lag en ny verden fra et utsnitt fra et kart over Norge.
         </p>
-        <p><a class="btn btn-default">Velg</a></p>
+        <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 gen-choise">
         <h2>Lagret mal</h2>
         <p>
             Lag en ny verden basert på en av dine lagrede maler.
@@ -42,7 +42,7 @@
         <p><a class="btn btn-default">Velg</a></p>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 gen-choise">
         <h2>Last opp</h2>
         <p>
             Last opp en verden fra din datamaskin.
@@ -57,5 +57,18 @@
     <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
 
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type=text/javascript>
+    $(document).ready(function(){
+        $("#kartverket-btn").click(function(){
+            $(".gen-choise").hide();
+            $("#kartverket").show();
+        });
+    });
+</script>
 
 {% endblock %}
