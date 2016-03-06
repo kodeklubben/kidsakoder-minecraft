@@ -54,6 +54,8 @@
 </div>
 
 <div class="row" >
+    <p><a class="btn btn-default" id="back" style="display: none">Back</a></p>
+
     <div id="kartverket" style="display: none">
 
         <!-- Placeholder -->
@@ -85,6 +87,7 @@
         $("#kartverket-btn").click(function(){
             $(".gen-choise").hide();
             $("#kartverket").show();
+            $("#back").show();
         });
     });
 
@@ -92,6 +95,7 @@
         $("#template-btn").click(function(){
             $(".gen-choise").hide();
             $("#template").show();
+            $("#back").show();
         });
     });
 
@@ -99,6 +103,17 @@
         $("#uplode-btn").click(function(){
             $(".gen-choise").hide();
             $("#upload").show();
+            $("#back").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#back").click(function(){
+            $("#kartverket").hide();
+            $("#template").hide();
+            $("#upload").hide();
+            $("#back").hide();
+            $(".gen-choise").show();
         });
     });
 </script>
