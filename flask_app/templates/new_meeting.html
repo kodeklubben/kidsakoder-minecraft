@@ -39,7 +39,7 @@
         <p>
             Lag en ny verden basert på en av dine lagrede maler.
         </p>
-        <p><a class="btn btn-default">Velg</a></p>
+        <p><a class="btn btn-default" id="template-btn">Velg</a></p>
     </div>
 
     <div class="col-md-4 gen-choise">
@@ -47,7 +47,7 @@
         <p>
             Last opp en verden fra din datamaskin.
         </p>
-        <p><a class="btn btn-default">Velg</a></p>
+        <p><a class="btn btn-default" id="uplode-btn">Velg</a></p>
     </div>
 </div>
 
@@ -55,6 +55,20 @@
 
     <!-- Placeholder -->
     <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
+
+</div>
+
+<div class="row" id="template" style="display: none">
+
+    <!-- Placeholder -->
+    <div style="background-color: red; width: 500px; height: 400px; margin: auto;"></div>
+
+</div>
+
+<div class="row" id="upload" style="display: none">
+
+    <!-- Placeholder -->
+    <div style="background-color: yellow; width: 500px; height: 400px; margin: auto;"></div>
 
 </div>
 
@@ -67,6 +81,20 @@
         $("#kartverket-btn").click(function(){
             $(".gen-choise").hide();
             $("#kartverket").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#template-btn").click(function(){
+            $(".gen-choise").hide();
+            $("#template").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#uplode-btn").click(function(){
+            $(".gen-choise").hide();
+            $("#upload").show();
         });
     });
 </script>
