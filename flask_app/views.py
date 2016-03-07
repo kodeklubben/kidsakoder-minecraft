@@ -3,10 +3,9 @@
 Routes and views for the flask application.
 """
 
-from datetime import datetime
-from flask import render_template, request, session, redirect, url_for, g, flash
+from flask import render_template, request, redirect, url_for, flash
 from flask_app import app
-from models import Meeting, User
+from models import Meeting
 from database import db
 from flask_security import login_required
 from wtforms import Form, TextField, validators
@@ -22,8 +21,6 @@ def home():
     return render_template(
         'index.html',
         title='Hjem',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME']
     )
 
 
@@ -34,10 +31,7 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt',
-        year=datetime.now().year,
-        message='Your contact page.',
-        app_name=app.config['APP_NAME']
+        title='Kontakt oss',
     )
 
 
@@ -51,9 +45,7 @@ def database():
     return render_template(
         'database.html',
         meetings=output,
-        title='Database test',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME']
+        title='Database test'
     )
 
 
@@ -73,8 +65,6 @@ def new_meeting():
     return render_template(
         'new_meeting.html',
         title='New Meeting',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME'],
         form=form
     )
 
@@ -104,9 +94,7 @@ def add_meeting():
 def custom_401(error):
     return render_template(
         '401.html',
-        title='401',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME']
+        title='401'
     ), 401
 
 
@@ -114,7 +102,5 @@ def custom_401(error):
 def page_not_found(error):
     return render_template(
         '404.html',
-        title='404',
-        year=datetime.now().year,
-        app_name=app.config['APP_NAME']
+        title='404'
     ), 404

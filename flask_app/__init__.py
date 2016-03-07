@@ -17,5 +17,11 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 
+from datetime import datetime
+@app.context_processor
+def inject_year():
+    """ Make year available in templates """
+    return dict(year=datetime.now().year)
+
 # Do last
 import flask_app.views
