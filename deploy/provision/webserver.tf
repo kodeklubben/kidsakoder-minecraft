@@ -8,15 +8,15 @@ resource "azure_hosted_service" "web_hosted_service" {
 }
 
 ### Instance
-resource "azure_instance" "nat" {
-    name = "${azure_virtual_network.network.id}-nat"
+resource "azure_instance" "webserver" {
+    name = "kidsakoder-instance-webserver"
     image = "Ubuntu Server 14.04 LTS"
     size = "Basic_A1"
     location = "North Europe"
 
     hosted_service_name = "${azure_hosted_service.web_hosted_service.name}"
     storage_service_name = "${azure_storage_service.storage.name}"
-    virtual_network = "${azure_virtual_network.network.id}"
+    virtual_network = "${azure_virtual_network.azure_test_network.id}"
 
     subnet = "public"
     username = "${var.ssh_username}"
@@ -41,29 +41,19 @@ resource "azure_instance" "nat" {
         password = "${var.ssh_user_password}"
     }
 
-    # Copy salt-master config
+    # Copy saltstack dir with config, states and pillar
     provisioner "file" {
-        source = "../saltstack/etc/minion.conf"
-        destination = "/etc/salt/minion"
+        source = "../saltstack"
+        destination = "/tmp/saltstack"
     }
 
-    # Copy salt-master pillars
-    provisioner "file" {
-        source = "../saltstack/pillar"
-        destination = "/srv/pillar"
-    }
-
-    # Copy salt-master states
-    provisioner "file" {
-        source = "../saltstack/salt"
-        destination = "/srv/salt"
-    }
-
+    # Copy provisioning script
     provisioner "file" {
         source = "provision.sh"
         destination = "/tmp/provision.sh"
     }
 
+    # Run provisioning script as sudo
     provisioner "remote-exec" {
         inline = [
           "chmod +x /tmp/provision.sh",
@@ -76,7 +66,9 @@ resource "azure_instance" "nat" {
 resource "dnsimple_record" "webserver_a_record" {
     domain = "${var.dnsimple_domain}"
     name = "${var.webserver_a_record}"
-    value = "${azure_instance.nat.vip_address}"
+    value = "${azure_instance.webserver.vip_address}"
     type = "A"
     ttl = 360
+
+    depends_on = ["azure_instance.webserver"]
 }

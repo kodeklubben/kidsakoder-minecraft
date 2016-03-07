@@ -94,8 +94,9 @@ $RECYCLE.BIN/
 # Config file, may contain passwords etc.
 *.config
 
-# Secret configs
+# Secret configs and files
 flask_app/secret_key.py
+*.publishsettings
 
 # Vagrant directory
 .vagrant/
@@ -104,9 +105,7 @@ uninstall.txt
 # JetBrains
 .idea/
 
-# Secret files
-secret.*
-
 # Terraform
 *.tfstate
 *.backup
+*.tfvars

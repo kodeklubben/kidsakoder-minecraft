@@ -1,5 +1,5 @@
 ### Virtual Network
-resource "azure_virtual_network" "network" {
+resource "azure_virtual_network" "azure_test_network" {
     name = "kidsakoder-test-network"
     address_space = ["10.128.0.0/16"]
     location = "North Europe"
