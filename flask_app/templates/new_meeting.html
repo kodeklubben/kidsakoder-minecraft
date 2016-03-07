@@ -3,78 +3,87 @@
 
 {% block content %}
 
-<form method="post">
-    <div class="row">
-        <div class="col-md-6">
-            {{ render_field_with_errors(form.name) }}
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#world-tab">Generer verden</a></li>
+    <li><a href="#meeting-tab">Møteinfo</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="world-tab">
+        <div class="row" id="gen-choise">
+            <div class="col-md-4">
+                <h2>Kartverket</h2>
+                <p>
+                    Lag en ny verden fra et utsnitt fra et kart over Norge.
+                </p>
+                <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
+            </div>
+
+            <div class="col-md-4">
+                <h2>Lagret mal</h2>
+                <p>
+                    Lag en ny verden basert på en av dine lagrede maler.
+                </p>
+                <p><a class="btn btn-default" id="template-btn">Velg</a></p>
+            </div>
+
+            <div class="col-md-4">
+                <h2>Last opp</h2>
+                <p>
+                    Last opp en verden fra din datamaskin.
+                </p>
+                <p><a class="btn btn-default" id="uplode-btn">Velg</a></p>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            {{ render_field_with_errors(form.startTime) }}
+        <div class="row col-md-12">
+            <p><a class="btn btn-default" id="back" style="display: none">Back</a></p>
+
+            <div id="kartverket" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
+
+            </div>
+
+            <div id="template" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: red; width: 500px; height: 400px; margin: auto;"></div>
+
+            </div>
+
+            <div id="upload" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: yellow; width: 500px; height: 400px; margin: auto;"></div>
+
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            {{ render_field_with_errors(form.participants) }}
-        </div>
+    <div class="tab-pane fade" id="meeting-tab">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.name) }}
+                </div>
 
-        <div class="col-md-6">
-            {{ render_field_with_errors(form.endTime) }}
-        </div>
-    </div>
-</form>
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.startTime) }}
+                </div>
+            </div>
 
-<hr>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.participants) }}
+                </div>
 
-<div class="row gen-choise">
-    <div class="col-md-4">
-        <h2>Kartverket</h2>
-        <p>
-            Lag en ny verden fra et utsnitt fra et kart over Norge.
-        </p>
-        <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
-    </div>
-
-    <div class="col-md-4">
-        <h2>Lagret mal</h2>
-        <p>
-            Lag en ny verden basert på en av dine lagrede maler.
-        </p>
-        <p><a class="btn btn-default" id="template-btn">Velg</a></p>
-    </div>
-
-    <div class="col-md-4">
-        <h2>Last opp</h2>
-        <p>
-            Last opp en verden fra din datamaskin.
-        </p>
-        <p><a class="btn btn-default" id="uplode-btn">Velg</a></p>
-    </div>
-</div>
-
-<div class="row" >
-    <p><a class="btn btn-default" id="back" style="display: none">Back</a></p>
-
-    <div id="kartverket" style="display: none">
-
-        <!-- Placeholder -->
-        <div style="background-color: green; width: 500px; height: 400px; margin: auto;"></div>
-
-    </div>
-
-    <div id="template" style="display: none">
-
-        <!-- Placeholder -->
-        <div style="background-color: red; width: 500px; height: 400px; margin: auto;"></div>
-
-    </div>
-
-    <div id="upload" style="display: none">
-
-        <!-- Placeholder -->
-        <div style="background-color: yellow; width: 500px; height: 400px; margin: auto;"></div>
-
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.endTime) }}
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -84,8 +93,15 @@
 
 <script type=text/javascript>
     $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+            $(this).tab('show');
+        });
+    });
+
+
+    $(document).ready(function(){
         $("#kartverket-btn").click(function(){
-            $(".gen-choise").hide();
+            $("#gen-choise").hide();
             $("#kartverket").show();
             $("#back").show();
         });
@@ -93,7 +109,7 @@
 
     $(document).ready(function(){
         $("#template-btn").click(function(){
-            $(".gen-choise").hide();
+            $("#gen-choise").hide();
             $("#template").show();
             $("#back").show();
         });
@@ -101,7 +117,7 @@
 
     $(document).ready(function(){
         $("#uplode-btn").click(function(){
-            $(".gen-choise").hide();
+            $("#gen-choise").hide();
             $("#upload").show();
             $("#back").show();
         });
@@ -113,7 +129,7 @@
             $("#template").hide();
             $("#upload").hide();
             $("#back").hide();
-            $(".gen-choise").show();
+            $("#gen-choise").show();
         });
     });
 </script>
