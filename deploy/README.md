@@ -22,7 +22,8 @@ Follow the guide on how to [install Terraform](https://www.terraform.io/intro/ge
 
 #### Azure 
 ##### Authentication
-In order to authenticate with Azure, Terraform needs a **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings). Rename the file to `secret.publishsettings` and place it `provision/`.
+In order to authenticate with Azure, Terraform needs a **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings). 
+Rename the file to `secret.publishsettings` and place it under `provision/`.
 ##### SSH Settings
 As of right now, only authentication with username and password via SSH works.
 Use the [terraform.tfvars.example](provision/terraform.tfvars.example) as a template and fill in the SSH settings in `provision/terraform.tfvars`.  
