@@ -79,10 +79,10 @@ def new_meeting():
     )
 
 class MeetingForm(Form):
-    name = TextField('Name', [validators.Length(min=4, max=25)])
-    startTime = TextField('Start Time')
-    endTime = TextField('End Time')
-    participants = TextField('Participants')
+    name = TextField('Navn', [validators.Length(min=4, max=25)])
+    startTime = TextField('Start Tidspunkt')
+    endTime = TextField('Slutt Tidspunkt')
+    participants = TextField('Medlemmer')
 
 
 @app.route('/addmeeting', methods=['POST'])
