@@ -96,6 +96,8 @@ $RECYCLE.BIN/
 
 # Secret configs and files
 flask_app/secret_key.py
+#
+# Azure publish settings
 *.publishsettings
 
 # Vagrant directory
