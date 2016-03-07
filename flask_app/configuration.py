@@ -16,6 +16,8 @@ class Production(object):
 
     SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     SECURITY_PASSWORD_SALT = 'salt'
+    
+    SECURITY_REGISTERABLE = True
 
 class Development(Production):
     DEBUG = True
