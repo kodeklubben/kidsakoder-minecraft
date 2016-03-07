@@ -8,6 +8,7 @@ from flask_app import app
 from models import Meeting
 from database import db
 from flask_security import login_required
+import urllib2
 
 
 @app.route('/index')
@@ -84,6 +85,20 @@ def from_map():
         'map/minecraft_kartverket.html',
         title='Kart'
     )
+
+
+@app.route('/mc_world_url', methods=['POST'])
+@login_required
+def mc_world_url():
+    """ Pass MC world url to server """
+    # TODO Check if sane link
+    url = request.form['url']
+    print url
+    response = urllib2.urlopen(url)
+    with open('mc_world.zip', 'wb') as world_file:
+        world_file.write(response.read())
+        return 'Verden overført'
+    return 'Error'
 
 
 @app.errorhandler(401)
