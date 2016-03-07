@@ -103,3 +103,10 @@ uninstall.txt
 
 # JetBrains
 .idea/
+
+# Secret files
+secret.*
+
+# Terraform
+*.tfstate
+*.backup
