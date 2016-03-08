@@ -25,11 +25,20 @@
             <div class="navbar-collapse collapse">
                 {% if current_user.is_authenticated %}
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('contact') }}">Kontakt</a></li>
+                    <li><a href="{{ url_for('contact') }}">
+                        <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
+                        Kontakt</a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{{ url_for_security('logout') }}">Logg ut</a></li>
-                    <li><a href="{{ url_for_security('logout') }}"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ current_user.email }}</a></li>
+                    <li><a href="{{ url_for_security('logout') }}">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        Logg ut</a>
+                    </li>
+                    <li><a href="{{ url_for_security('logout') }}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        {{ current_user.email }}</a>
+                    </li>
 
                 </ul>
                 {% endif %}

@@ -101,7 +101,7 @@ def mc_world_url():
         return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
     response = urllib2.urlopen(url)
     with open('mc_world.zip', 'wb') as world_file:
-        # TODO save in relevant place
+        # TODO save in a relevant place
         world_file.write(response.read())
         return '<p>Verden overført</p>'
     return '<p>Noe gikk galt!</p>'
