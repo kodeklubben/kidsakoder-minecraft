@@ -78,11 +78,12 @@
     <form id="form" enctype="application/x-www-form-urlencoded"
           onsubmit='return dataDist.orderData();' method="POST">
         <div class="btn-group-vertical" role="group" aria-label="..."
-             style="overflow-y:hidden;">
+             style="overflow-y:hidden;width:100%">
             <input type="text" autocomplete="off" id="world_name"
-                   class="form-control" pattern='^[^\\/?%*:|"<>\.]+$'
+                   class="form-control hidden" pattern='^[^\\/?%*:|"<>\.]+$'
                    placeholder="Navn på verden"
-                   aria-describedby="basic-addon1">
+                   aria-describedby="basic-addon1"
+                   value="Kodeklubben">
             <button type="button" id="draw" class="btn btn-default">
                 <span title="Draw a box to specify download area. Maximum area is 64 km2"
                       class="glyphicon glyphicon-pencil" aria-hidden="true"> Tegn</span>
