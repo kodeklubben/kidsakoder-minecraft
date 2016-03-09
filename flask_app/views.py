@@ -8,6 +8,7 @@ from flask_app import app
 from models import Meeting
 from database import db
 from flask_security import login_required
+from wtforms import Form, TextField, validators
 
 
 @app.route('/index')
@@ -48,17 +49,30 @@ def database():
     )
 
 
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
+@app.route('/newmeeting', methods=['GET', 'POST'])
+@app.route('/new_meeting', methods=['GET', 'POST'])
+@app.route('/nyttmote', methods=['GET', 'POST'])
+@app.route('/nytt_mote', methods=['GET', 'POST'])
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
+    form = MeetingForm(request.form)
+    if request.method == 'POST' and form.validate():
+
+        """ Temporary redirect to contact """
+        return redirect(url_for('contact'))
+
     return render_template(
         'new_meeting.html',
-        title='New Meeting'
+        title='New Meeting',
+        form=form
     )
+
+class MeetingForm(Form):
+    name = TextField('Navn', [validators.Length(min=4, max=25)])
+    startTime = TextField('Start Tidspunkt')
+    endTime = TextField('Slutt Tidspunkt')
+    participants = TextField('Medlemmer')
 
 
 @app.route('/addmeeting', methods=['POST'])
