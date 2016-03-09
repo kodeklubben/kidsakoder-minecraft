@@ -1,43 +1,137 @@
 {% extends "layout.html" %}
+{% from "security/_macros.html" import render_field_with_errors %}
 
 {% block content %}
 
-<div class="row">
-    <div class="col-sm-6 col-md-4">
-    <a href="{{ url_for('from_map') }}" style="text-decoration: none">
-        <div class="thumbnail btn btn-default" style="white-space: normal">
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#world-tab">Generer verden</a></li>
+    <li><a href="#meeting-tab">Møteinfo</a></li>
+</ul>
 
-        <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 9em"></span>
+<div class="tab-content body-content">
+    <div class="tab-pane fade in active" id="world-tab">
+        <div class="row" id="gen-choise">
+            <div class="col-md-4">
+                <h2>Kartverket</h2>
+                <p>
+                    Lag en ny verden fra et utsnitt fra et kart over Norge.
+                </p>
+                <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
+            </div>
 
-        <div class="caption">
+            <div class="col-md-4">
+                <h2>Lagret mal</h2>
+                <p>
+                    Lag en ny verden basert på en av dine lagrede maler.
+                </p>
+                <p><a class="btn btn-default" id="template-btn">Velg</a></p>
+            </div>
 
-            <h2>Kartverket</h2>
-            <p>
-                Lag en ny verden fra et utsnitt av et kart over Norge.
-            </p>
-
+            <div class="col-md-4">
+                <h2>Last opp</h2>
+                <p>
+                    Last opp en verden fra din datamaskin.
+                </p>
+                <p><a class="btn btn-default" id="uplode-btn">Velg</a></p>
+            </div>
         </div>
 
+        <div class="row">
+            <p><span class="btn btn-default glyphicon glyphicon-arrow-left" id="back-btn" style="display: none"></span></p>
+
+            <div id="kartverket" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: green; width: 100%; height: 400px;"></div>
+
+            </div>
+
+            <div id="template" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: red; width: 100%; height: 400px;"></div>
+
+            </div>
+
+            <div id="upload" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: yellow; width: 100%; height: 400px;"></div>
+
+            </div>
         </div>
-    </a>
     </div>
 
-    <div class="col-md-4">
+    <div class="tab-pane fade" id="meeting-tab">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.name) }}
+                </div>
 
-        <h2>Lagret mal</h2>
-        <p>
-            Lag en ny verden basert på en av dine lagrede maler.
-        </p>
-        <p><a class="btn btn-default">Velg</a></p>
-    </div>
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.startTime) }}
+                </div>
+            </div>
 
-    <div class="col-md-4">
-        <h2>Last opp</h2>
-        <p>
-            Last opp en verden fra din datamaskin.
-        </p>
-        <p><a class="btn btn-default">Velg</a></p>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.participants) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.endTime) }}
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type=text/javascript>
+    $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+            $(this).tab('show');
+        });
+    });
+
+
+    $(document).ready(function(){
+        $("#kartverket-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#kartverket").show();
+            $("#back-btn").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#template-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#template").show();
+            $("#back-btn").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#uplode-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#upload").show();
+            $("#back-btn").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#back-btn").click(function(){
+            $("#kartverket").hide();
+            $("#template").hide();
+            $("#upload").hide();
+            $("#back-btn").hide();
+            $("#gen-choise").show();
+        });
+    });
+</script>
 
 {% endblock %}
