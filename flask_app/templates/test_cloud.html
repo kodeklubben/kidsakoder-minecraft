@@ -2,13 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Test cloud</title>
+    <style>
+        table, tr, td {
+            border: 1px solid;
+            padding: 2px;
+        }
+    </style>
 </head>
 <body>
 <form method="post" action="{{ url_for('test_cloud') }}">
 
     <input type="submit">
-</form>
+</form> <br>
+
+<table>
+    {% for server in server_list %}
+        <tr>
+            <td> {{ server['name'] }} </td>
+            <td> {{ server['location'] }} </td>
+        </tr>
+    {% endfor %}
+</table>
 
 </body>
 </html>

@@ -127,11 +127,18 @@ def mc_world_url():
 def test_cloud():
     if request.method == 'POST':
         # TODO test code here
-        return 'Test ran!'
+        server_list = [{'name': 'Test server', 'location': 1234},
+                       {'name': 'Dead server', 'location': 5678}]
+        return render_template(
+            'test_cloud.html',
+            title='Test cloud',
+            server_list=server_list
+        )
 
     return render_template(
         'test_cloud.html',
-        title='Test cloud'
+        title='Test cloud',
+        server_list=[]
     )
 
 
