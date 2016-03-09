@@ -123,6 +123,18 @@ def mc_world_url():
     return '<p>Noe gikk galt!</p>'
 
 
+@app.route('/test_cloud', methods=['GET', 'POST'])
+def test_cloud():
+    if request.method == 'POST':
+        # TODO test code here
+        return 'Test ran!'
+
+    return render_template(
+        'test_cloud.html',
+        title='Test cloud'
+    )
+
+
 @app.errorhandler(401)
 def custom_401(error):
     return render_template(
