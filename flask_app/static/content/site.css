@@ -1,6 +1,8 @@
 ﻿body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    /*padding-top: 20px;*/
+    /*padding-bottom: 20px;*/
     max-width: 800px;
     margin-right: auto;
     margin-left: auto;

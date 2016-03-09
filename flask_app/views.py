@@ -8,7 +8,9 @@ from flask_app import app
 from models import Meeting
 from database import db
 from flask_security import login_required
-from wtforms import Form, TextField, validators
+import urllib2
+from flask_wtf import Form
+from wtforms import TextField, validators
 
 
 @app.route('/index')
@@ -68,6 +70,7 @@ def new_meeting():
         form=form
     )
 
+
 class MeetingForm(Form):
     name = TextField('Navn', [validators.Length(min=4, max=25)])
     startTime = TextField('Start Tidspunkt')
@@ -88,6 +91,55 @@ def add_meeting():
     db.session.commit()
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
+
+
+@app.route('/fra_kart')
+@login_required
+def from_map():
+    """ Renders the map area selection page """
+    return render_template(
+        'map/minecraft_kartverket.html',
+        title='Kart'
+    )
+
+
+@app.route('/mc_world_url', methods=['POST'])
+@login_required
+def mc_world_url():
+    """ Pass MC world url to server """
+    # Link example:
+    # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
+    url = str(request.form['url'])
+    print url
+    split_url = url.strip().split('/')
+    sane_url = '/'.join(split_url[0:5]) == 'https://mc-sweco.fmecloud.com:443/fmedatadownload/results'
+    if not sane_url:
+        return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
+    response = urllib2.urlopen(url)
+    with open('mc_world.zip', 'wb') as world_file:
+        # TODO save in a relevant place
+        world_file.write(response.read())
+        return '<p>Verden overført</p>'
+    return '<p>Noe gikk galt!</p>'
+
+
+@app.route('/test_cloud', methods=['GET', 'POST'])
+def test_cloud():
+    if request.method == 'POST':
+        # TODO test code here
+        server_list = [{'name': 'Test server', 'location': 1234},
+                       {'name': 'Dead server', 'location': 5678}]
+        return render_template(
+            'test_cloud.html',
+            title='Test cloud',
+            server_list=server_list
+        )
+
+    return render_template(
+        'test_cloud.html',
+        title='Test cloud',
+        server_list=[]
+    )
 
 
 @app.errorhandler(401)
