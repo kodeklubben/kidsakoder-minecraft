@@ -66,21 +66,21 @@
         <form method="post">
             <div class="row">
                 <div class="col-md-6">
-                    {{ render_field_with_errors(form.name) }}
+                    {{ render_field_with_errors(form.title) }}
                 </div>
 
                 <div class="col-md-6">
-                    {{ render_field_with_errors(form.startTime) }}
+                    {{ render_field_with_errors(form.start_time) }}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
-                    {{ render_field_with_errors(form.participants) }}
+                    {{ render_field_with_errors(form.participant_count) }}
                 </div>
 
                 <div class="col-md-6">
-                    {{ render_field_with_errors(form.endTime) }}
+                    {{ render_field_with_errors(form.end_time) }}
                 </div>
             </div>
         </form>

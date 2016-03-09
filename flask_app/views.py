@@ -6,11 +6,9 @@ Routes and views for the flask application.
 from flask import render_template, request, redirect, url_for, flash
 from flask_app import app
 from models import Meeting
-from database import db
-from flask_security import login_required
+from flask_security import login_required, current_user
 import urllib2
-from flask_wtf import Form
-from wtforms import TextField, validators
+import forms
 
 
 @app.route('/index')
@@ -22,7 +20,7 @@ def home():
     """ Renders the home page. """
     return render_template(
         'index.html',
-        title='Hjem',
+        title='Hjem'
     )
 
 
@@ -33,7 +31,7 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt oss',
+        title='Kontakt oss'
     )
 
 
@@ -41,13 +39,11 @@ def contact():
 @login_required
 def database():
     """ Test page for database """
-    all_meetings = Meeting.query.all()
-    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
-              for meeting in all_meetings]
+    all_meetings = Meeting.get_all_as_dict()
     return render_template(
         'database.html',
-        meetings=output,
-        title='Database test'
+        title='Database test',
+        meetings=all_meetings
     )
 
 
@@ -58,7 +54,7 @@ def database():
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = MeetingForm(request.form)
+    form = forms.MeetingForm(request.form)
     if request.method == 'POST' and form.validate():
 
         """ Temporary redirect to contact """
@@ -71,24 +67,20 @@ def new_meeting():
     )
 
 
-class MeetingForm(Form):
-    name = TextField('Navn', [validators.Length(min=4, max=25)])
-    startTime = TextField('Start Tidspunkt')
-    endTime = TextField('Slutt Tidspunkt')
-    participants = TextField('Medlemmer')
-
-
 @app.route('/addmeeting', methods=['POST'])
 @app.route('/add_meeting', methods=['POST'])
 @app.route('/leggtilmote', methods=['POST'])
 @app.route('/legg_til_mote', methods=['POST'])
 @login_required
-def add_meeting():
+def store_meeting():
     """ Add meeting POST form handler """
-    meeting = Meeting(user_id='1', title=request.form['title'], time=request.form['time'],
-                      participants=request.form['participants'], world_id=request.form['map_id'])
-    db.session.add(meeting)
-    db.session.commit()
+    meeting = Meeting(user_id=current_user.id,
+                      title=request.form['title'],
+                      start_time=request.form['start_time'],
+                      end_time=request.form['end_time'],
+                      participant_count=request.form['participant_count']
+                      )
+    meeting.store()
     flash('Nytt mote lagt til!')
     return redirect(url_for('database'))
 

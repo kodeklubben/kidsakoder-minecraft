@@ -12,16 +12,8 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    #first_name = db.Column(db.String(100), server_default='')
-    #last_name = db.Column(db.String(100), server_default='')
-"""
-    def __repr__(self):
-        return "<User(username='%s', fullname='%s', email='%s', pw_hash='%s', reset='%s')>" % (self.username,
-                                                                                               self.fullname,
-                                                                                               self.email,
-                                                                                               self.pw_hash,
-                                                                                               self.reset)
-"""
+    first_name = db.Column(db.String(100), server_default='')
+    last_name = db.Column(db.String(100), server_default='')
 
 
 class Role(db.Model, RoleMixin):
@@ -31,32 +23,41 @@ class Role(db.Model, RoleMixin):
 
 
 class Meeting(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    title = db.Column('title', db.String(50), nullable=False)
-    time = db.Column('time', db.String(23))  # YYYY-MM-DD HH:MM:SS.SSS
-    participants = db.Column('participants', db.Integer)
+    title = db.Column(db.String(50), nullable=False)
+    start_time = db.Column(db.DateTime)  # YYYY-MM-DD HH:MM:SS.SSS
+    end_time = db.Column(db.DateTime)
+    participant_count = db.Column(db.Integer)
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'))
 
+    @classmethod
+    def get_all_as_dict(cls):
+        """
+        :return:  All meetings as list of dictionary with variables
+        """
+        meeting_list = cls.query.all()
+        return [vars(meeting) for meeting in meeting_list]
+
+    def store(self):
+        """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
+
+# Is this needed?
+"""
     def __repr__(self):
         return "<Meeting(user_id='%s', title='%s'," \
                " time='%s', participants='%s', world_id='%s')>" % (self.user_id,
                                                                    self.title,
                                                                    self.time,
                                                                    self.participants,
-                                                                   self.world_id)
-
-    def __init__(self, user_id, title, time, participants, world_id):
-        self.user_id = user_id
-        self.title = title
-        self.time = time
-        self.participants = participants
-        self.world_id = world_id
+                                                                   self.world_id)"""
 
 
 class World(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
-    reference = db.Column('reference', db.String(60))
+    id = db.Column(db.Integer, primary_key=True)
+    reference = db.Column(db.String(60))
 
     def __init__(self, reference):
         self.reference = reference
