@@ -1,4 +1,6 @@
-
+"""
+Database models
+"""
 from flask_security import UserMixin, RoleMixin
 from database import db, roles_users
 
@@ -34,7 +36,7 @@ class Meeting(db.Model):
     @classmethod
     def get_all_as_dict(cls):
         """
-        :return:  All meetings as list of dictionary with variables
+        :return:  All meetings as list of dictionaries with all fields
         """
         meeting_list = cls.query.all()
         return [vars(meeting) for meeting in meeting_list]
