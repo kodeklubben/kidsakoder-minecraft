@@ -3,7 +3,7 @@
 Routes and views for the flask application.
 """
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, send_from_directory
 from flask_app import app
 from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
@@ -114,9 +114,7 @@ def mc_world_url():
 @app.route('/get_world/<file_name>')
 @login_required
 def get_world(file_name):
-    # TODO serve file with send_from_directory
-    path = 'world_storage'
-    pass
+    return send_from_directory('world_storage', file_name, as_attachment=True)
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
