@@ -6,7 +6,7 @@ Routes and views for the flask application.
 from flask import render_template, request, redirect, url_for, flash
 from flask_app import app
 from models import Meeting
-from flask_security import login_required, current_user
+from flask_security import login_required, current_user, roles_required
 import forms
 import files
 
@@ -18,9 +18,12 @@ import files
 @login_required
 def home():
     """ Renders the home page. """
+    meetings
+    meetingssss = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
-        title='Hjem'
+        title='Hjem',
+        meetings=meetings
     )
 
 
@@ -37,6 +40,7 @@ def contact():
 
 @app.route('/database')
 @login_required
+@roles_required('admin')
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
@@ -47,19 +51,14 @@ def database():
     )
 
 
-@app.route('/newmeeting', methods=['GET', 'POST'])
-@app.route('/new_meeting', methods=['GET', 'POST'])
-@app.route('/nyttmote', methods=['GET', 'POST'])
-@app.route('/nytt_mote', methods=['GET', 'POST'])
+@app.route('/newmeeting')
+@app.route('/new_meeting')
+@app.route('/nyttmote')
+@app.route('/nytt_mote')
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = forms.MeetingForm(request.form)
-    if request.method == 'POST' and form.validate():
-
-        """ Temporary redirect to contact """
-        return redirect(url_for('contact'))
-
+    form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
         title='New Meeting',
@@ -67,22 +66,30 @@ def new_meeting():
     )
 
 
-@app.route('/addmeeting', methods=['POST'])
-@app.route('/add_meeting', methods=['POST'])
-@app.route('/leggtilmote', methods=['POST'])
-@app.route('/legg_til_mote', methods=['POST'])
+@app.route('/storemeeting', methods=['POST'])
+@app.route('/store_meeting', methods=['POST'])
+@app.route('/lagremote', methods=['POST'])
+@app.route('/lagre_mote', methods=['POST'])
 @login_required
 def store_meeting():
-    """ Add meeting POST form handler """
-    meeting = Meeting(user_id=current_user.id,
-                      title=request.form['title'],
-                      start_time=request.form['start_time'],
-                      end_time=request.form['end_time'],
-                      participant_count=request.form['participant_count']
-                      )
-    meeting.store()
-    flash('Nytt mote lagt til!')
-    return redirect(url_for('database'))
+    """ Store meeting POST form handler """
+    form = forms.MeetingForm(request.form)
+    if form.validate():
+        meeting = Meeting(user_id=current_user.id,
+                          title=request.form['title'],
+                          start_time=request.form['start_time'],
+                          end_time=request.form['end_time'],
+                          participant_count=request.form['participant_count']
+                          )
+        meeting.store()
+        flash('Nytt møte lagt til!')
+        return redirect(url_for('home'))
+    flash('Feil i skjema!')
+    return render_template(
+        'new_meeting.html',
+        title='New Meeting',
+        form=form
+    )
 
 
 @app.route('/fra_kart')

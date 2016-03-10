@@ -41,6 +41,13 @@ class Meeting(db.Model):
         meeting_list = cls.query.all()
         return [vars(meeting) for meeting in meeting_list]
 
+    @classmethod
+    def get_user_meetings_as_dict(cls, user_id=None):
+        if user_id is None:
+            return None
+        meeting_list = cls.query.filter_by(user_id=user_id)
+        return [vars(meeting) for meeting in meeting_list]
+
     def store(self):
         """ Store itself to database """
         db.session.add(self)

@@ -56,3 +56,20 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+.meetings {
+    list-style-type: none;
+}
+.meetings .row li {
+    margin-right: 15px;
+    margin-left: 0px;
+}
+.meetings .row .btn {
+    width: 100%;
+    text-align: left;
+}
+.meetings .row h1 {
+    font-size: larger;
+}
+.meetings .row h2 {
+    font-size: large;
+}
