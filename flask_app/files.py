@@ -4,7 +4,8 @@ File storage controller
 """
 import urllib2
 from flask_security import current_user
-from flask import url_for
+from flask import url_for, safe_join
+from flask_app import app
 
 
 def save_world_from_fme(url=None, world=None):
@@ -20,9 +21,11 @@ def save_world_from_fme(url=None, world=None):
     response = urllib2.urlopen(url)
 
     file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
-    world.file_ref = file_name
-    with open('world_storage/' + file_name, 'wb') as world_file:
+    file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    file_path = safe_join(file_path, file_name)
+    with open(file_path, 'wb') as world_file:
         world_file.write(response.read())
+        world.file_ref = file_name
         world.store()
         return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
     return '<p>Noe gikk galt!</p>'

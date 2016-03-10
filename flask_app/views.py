@@ -3,7 +3,7 @@
 Routes and views for the flask application.
 """
 
-from flask import render_template, request, redirect, url_for, flash, send_from_directory
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join
 from flask_app import app
 from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
@@ -83,7 +83,7 @@ def store_meeting():
         meeting.store()
         flash(u'Nytt møte lagt til!')
         return redirect(url_for('home'))
-    flash('Feil i skjema!')
+    flash(u'Feil i skjema!')
     return render_template(
         'new_meeting.html',
         title='New Meeting',
@@ -114,7 +114,13 @@ def mc_world_url():
 @app.route('/get_world/<file_name>')
 @login_required
 def get_world(file_name):
-    return send_from_directory('world_storage', file_name, as_attachment=True)
+    """
+    Download Minecraft world
+    :param file_name:
+    :return:
+    """
+    directory = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
