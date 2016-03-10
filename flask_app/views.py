@@ -4,6 +4,8 @@ Routes and views for the flask application.
 """
 
 from flask import render_template, request, redirect, url_for, flash
+from flask.ext.login import current_user
+
 from flask_app import app
 from models import Meeting
 from database import db
@@ -20,9 +22,14 @@ from wtforms import TextField, validators
 @login_required
 def home():
     """ Renders the home page. """
+
+    meetings = Meeting.query.filter_by(user_id=current_user.id)
+    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
+              for meeting in meetings]
     return render_template(
         'index.html',
         title='Hjem',
+        meetings=output,
     )
 
 
@@ -41,9 +48,9 @@ def contact():
 @login_required
 def database():
     """ Test page for database """
-    all_meetings = Meeting.query.all()
+    meetings = Meeting.query.filter_by(user_id=current_user.id)
     output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
-              for meeting in all_meetings]
+              for meeting in meetings]
     return render_template(
         'database.html',
         meetings=output,
@@ -60,7 +67,6 @@ def new_meeting():
     """ Renders the meeting creation page """
     form = MeetingForm(request.form)
     if request.method == 'POST' and form.validate():
-
         """ Temporary redirect to contact """
         return redirect(url_for('contact'))
 
@@ -85,7 +91,9 @@ class MeetingForm(Form):
 @login_required
 def add_meeting():
     """ Add meeting POST form handler """
-    meeting = Meeting(user_id='1', title=request.form['title'], time=request.form['time'],
+    user_id = current_user.id
+
+    meeting = Meeting(user_id=user_id, title=request.form['title'], time=request.form['time'],
                       participants=request.form['participants'], world_id=request.form['map_id'])
     db.session.add(meeting)
     db.session.commit()
