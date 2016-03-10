@@ -65,5 +65,17 @@ class Meeting(db.Model):
 
 
 class World(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    file_ref = db.Column(db.String(100), unique=True)
+    _id = db.Column('id', db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    file_ref = db.Column(db.String(255), unique=True)
+    seed = db.Column(db.String(100))
+
+    @property
+    def id(self):
+        db.session.add(self)
+        db.session.flush()
+        return self._id
+
+    def store(self):
+        db.session.add(self)
+        db.session.commit()

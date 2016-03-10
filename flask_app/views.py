@@ -5,7 +5,7 @@ Routes and views for the flask application.
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_app import app
-from models import Meeting
+from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
 import forms
 import files
@@ -106,8 +106,17 @@ def from_map():
 def mc_world_url():
     """ Pass MC world url to server """
     url = str(request.form['url'])
+    world = World(user_id=current_user.id)
     print url
-    return files.save_world_from_fme(url)
+    return files.save_world_from_fme(url=url, world=world)
+
+
+@app.route('/get_world/<path:filename>')
+@login_required
+def get_world(filename):
+    # TODO serve file with send_from_directory
+    path = 'world_storage'
+    pass
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
