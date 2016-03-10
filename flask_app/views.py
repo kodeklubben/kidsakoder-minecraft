@@ -22,9 +22,14 @@ from wtforms import TextField, validators
 @login_required
 def home():
     """ Renders the home page. """
+
+    meetings = Meeting.query.filter_by(user_id=current_user.id)
+    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
+              for meeting in meetings]
     return render_template(
         'index.html',
         title='Hjem',
+        meetings=output,
     )
 
 

@@ -52,4 +52,14 @@
     </div>
 </div>
 
+<h2>Dine møter:</h2>
+    
+    <ul class=meetings>
+    {% for meeting in meetings %}
+        <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.time }} Deltakere: {{ meeting.participants }}</h2></li>
+    {%  endfor %}
+    </ul>
+
+
+
 {% endblock %}
