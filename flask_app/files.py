@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 File storage controller
 """
@@ -5,6 +6,7 @@ import urllib2
 
 
 def save_world_from_fme(url=None):
+    """ Save generated Minecraft world from FME cloud """
     # Link example:
     # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
     if url is None:
@@ -19,5 +21,5 @@ def save_world_from_fme(url=None):
         # TODO save in a relevant place
         # TODO store world ref in db
         world_file.write(response.read())
-        return u'<p>Verden overført</p>'
+        return '<p>Verden overført</p>'
     return '<p>Noe gikk galt!</p>'

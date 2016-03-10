@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% from "security/_macros.html" import render_field_with_errors %}
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
 
 {% block content %}
 
@@ -64,6 +64,7 @@
 
     <div class="tab-pane fade" id="meeting-tab">
         <form method="POST" action="{{ url_for('store_meeting') }}">
+            {{ form.hidden_tag() }}
             <div class="row">
                 <div class="col-md-6">
                     {{ render_field_with_errors(form.title) }}
@@ -83,6 +84,8 @@
                     {{ render_field_with_errors(form.end_time) }}
                 </div>
             </div>
+            {{ render_field_with_errors(form.world_ref) }}
+            <input type="submit">
         </form>
     </div>
 </div>

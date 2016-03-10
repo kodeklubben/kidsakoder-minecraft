@@ -66,7 +66,4 @@ class Meeting(db.Model):
 
 class World(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    reference = db.Column(db.String(60))
-
-    def __init__(self, reference):
-        self.reference = reference
+    file_ref = db.Column(db.String(100), unique=True)

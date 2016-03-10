@@ -18,12 +18,11 @@ import files
 @login_required
 def home():
     """ Renders the home page. """
-    meetings
-    meetingssss = Meeting.get_user_meetings_as_dict(current_user.id)
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
-        meetings=meetings
+        meetings=meeting_list
     )
 
 
@@ -76,13 +75,13 @@ def store_meeting():
     form = forms.MeetingForm(request.form)
     if form.validate():
         meeting = Meeting(user_id=current_user.id,
-                          title=request.form['title'],
-                          start_time=request.form['start_time'],
-                          end_time=request.form['end_time'],
-                          participant_count=request.form['participant_count']
+                          title=form.title.data,
+                          start_time=form.start_time.data,
+                          end_time=form.end_time.data,
+                          participant_count=form.participant_count.data
                           )
         meeting.store()
-        flash('Nytt møte lagt til!')
+        flash(u'Nytt møte lagt til!')
         return redirect(url_for('home'))
     flash('Feil i skjema!')
     return render_template(
