@@ -111,9 +111,9 @@ def mc_world_url():
     return files.save_world_from_fme(url=url, world=world)
 
 
-@app.route('/get_world/<path:filename>')
+@app.route('/get_world/<file_name>')
 @login_required
-def get_world(filename):
+def get_world(file_name):
     # TODO serve file with send_from_directory
     path = 'world_storage'
     pass
