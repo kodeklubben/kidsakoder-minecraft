@@ -4,15 +4,11 @@ Routes and views for the flask application.
 """
 
 from flask import render_template, request, redirect, url_for, flash
-from flask.ext.login import current_user
-
 from flask_app import app
 from models import Meeting
-from database import db
-from flask_security import login_required
-import urllib2
-from flask_wtf import Form
-from wtforms import TextField, validators
+from flask_security import login_required, current_user, roles_required
+import forms
+import files
 
 
 @app.route('/index')
@@ -22,14 +18,11 @@ from wtforms import TextField, validators
 @login_required
 def home():
     """ Renders the home page. """
-
-    meetings = Meeting.query.filter_by(user_id=current_user.id)
-    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
-              for meeting in meetings]
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
-        meetings=output,
+        meetings=meeting_list
     )
 
 
@@ -40,36 +33,31 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt oss',
+        title='Kontakt oss'
     )
 
 
 @app.route('/database')
 @login_required
+@roles_required('admin')
 def database():
     """ Test page for database """
-    meetings = Meeting.query.filter_by(user_id=current_user.id)
-    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
-              for meeting in meetings]
+    all_meetings = Meeting.get_all_as_dict()
     return render_template(
         'database.html',
-        meetings=output,
-        title='Database test'
+        title='Database test',
+        meetings=all_meetings
     )
 
 
-@app.route('/newmeeting', methods=['GET', 'POST'])
-@app.route('/new_meeting', methods=['GET', 'POST'])
-@app.route('/nyttmote', methods=['GET', 'POST'])
-@app.route('/nytt_mote', methods=['GET', 'POST'])
+@app.route('/newmeeting')
+@app.route('/new_meeting')
+@app.route('/nyttmote')
+@app.route('/nytt_mote')
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = MeetingForm(request.form)
-    if request.method == 'POST' and form.validate():
-        """ Temporary redirect to contact """
-        return redirect(url_for('contact'))
-
+    form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
         title='New Meeting',
@@ -77,28 +65,30 @@ def new_meeting():
     )
 
 
-class MeetingForm(Form):
-    name = TextField('Navn', [validators.Length(min=4, max=25)])
-    startTime = TextField('Start Tidspunkt')
-    endTime = TextField('Slutt Tidspunkt')
-    participants = TextField('Medlemmer')
-
-
-@app.route('/addmeeting', methods=['POST'])
-@app.route('/add_meeting', methods=['POST'])
-@app.route('/leggtilmote', methods=['POST'])
-@app.route('/legg_til_mote', methods=['POST'])
+@app.route('/storemeeting', methods=['POST'])
+@app.route('/store_meeting', methods=['POST'])
+@app.route('/lagremote', methods=['POST'])
+@app.route('/lagre_mote', methods=['POST'])
 @login_required
-def add_meeting():
-    """ Add meeting POST form handler """
-    user_id = current_user.id
-
-    meeting = Meeting(user_id=user_id, title=request.form['title'], time=request.form['time'],
-                      participants=request.form['participants'], world_id=request.form['map_id'])
-    db.session.add(meeting)
-    db.session.commit()
-    flash('Nytt mote lagt til!')
-    return redirect(url_for('database'))
+def store_meeting():
+    """ Store meeting POST form handler """
+    form = forms.MeetingForm(request.form)
+    if form.validate():
+        meeting = Meeting(user_id=current_user.id,
+                          title=form.title.data,
+                          start_time=form.start_time.data,
+                          end_time=form.end_time.data,
+                          participant_count=form.participant_count.data
+                          )
+        meeting.store()
+        flash(u'Nytt møte lagt til!')
+        return redirect(url_for('home'))
+    flash('Feil i skjema!')
+    return render_template(
+        'new_meeting.html',
+        title='New Meeting',
+        form=form
+    )
 
 
 @app.route('/fra_kart')
@@ -115,20 +105,9 @@ def from_map():
 @login_required
 def mc_world_url():
     """ Pass MC world url to server """
-    # Link example:
-    # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
     url = str(request.form['url'])
     print url
-    split_url = url.strip().split('/')
-    sane_url = '/'.join(split_url[0:5]) == 'https://mc-sweco.fmecloud.com:443/fmedatadownload/results'
-    if not sane_url:
-        return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
-    response = urllib2.urlopen(url)
-    with open('mc_world.zip', 'wb') as world_file:
-        # TODO save in a relevant place
-        world_file.write(response.read())
-        return '<p>Verden overført</p>'
-    return '<p>Noe gikk galt!</p>'
+    return files.save_world_from_fme(url)
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
