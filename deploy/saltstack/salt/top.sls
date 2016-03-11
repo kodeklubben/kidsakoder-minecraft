@@ -5,3 +5,5 @@ base:
     - master
     - cloud
     - web
+  'minecraft*':
+    - minecraft
