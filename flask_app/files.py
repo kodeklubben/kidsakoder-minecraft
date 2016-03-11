@@ -3,9 +3,12 @@
 File storage controller
 """
 import urllib2
+from flask_security import current_user
+from flask import url_for, safe_join
+from flask_app import app
 
 
-def save_world_from_fme(url=None):
+def save_world_from_fme(url=None, world=None):
     """ Save generated Minecraft world from FME cloud """
     # Link example:
     # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
@@ -16,10 +19,13 @@ def save_world_from_fme(url=None):
     if not sane_url:
         return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
     response = urllib2.urlopen(url)
-    # TODO use a proper file name
-    with open('mc_world.zip', 'wb') as world_file:
-        # TODO save in a relevant place
-        # TODO store world ref in db
+
+    file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
+    file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    file_path = safe_join(file_path, file_name)
+    with open(file_path, 'wb') as world_file:
         world_file.write(response.read())
-        return '<p>Verden overført</p>'
+        world.file_ref = file_name
+        world.store()
+        return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
     return '<p>Noe gikk galt!</p>'
