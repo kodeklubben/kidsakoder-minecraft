@@ -1,22 +1,13 @@
-### Hosted Service
-resource "azure_hosted_service" "web_hosted_service" {
-    name = "kidsakoder-hs-test"
-    location = "North Europe"
-    ephemeral_contents = false
-    description = ""
-    label = "kidsakoder-hs-test"
-}
-
 ### Instance
 resource "azure_instance" "webserver" {
-    name = "kidsakoder-instance-webserver"
+    name = "kidsakoder-webserver-${var.env}"
     image = "Ubuntu Server 14.04 LTS"
-    size = "Basic_A1"
-    location = "North Europe"
+    size = "Basic_A0"
+    location = "${var.location}"
 
-    hosted_service_name = "${azure_hosted_service.web_hosted_service.name}"
+    hosted_service_name = "${azure_hosted_service.hosted_service.name}"
     storage_service_name = "${azure_storage_service.storage.name}"
-    virtual_network = "${azure_virtual_network.azure_test_network.id}"
+    virtual_network = "${azure_virtual_network.network.id}"
 
     subnet = "public"
     username = "${var.ssh_username}"
@@ -34,6 +25,18 @@ resource "azure_instance" "webserver" {
         protocol = "tcp"
         public_port = 80
         private_port = 80
+    }
+    endpoint {
+        name = "SALT1"
+        protocol = "tcp"
+        public_port = 4505
+        private_port = 4505
+    }
+    endpoint {
+        name = "SALT2"
+        protocol = "tcp"
+        public_port = 4506
+        private_port = 4506
     }
 
     connection {
@@ -60,15 +63,4 @@ resource "azure_instance" "webserver" {
           "cat /tmp/provision.sh | sudo -E sh -s",
         ]
     }
-}
-
-### DNS
-resource "dnsimple_record" "webserver_a_record" {
-    domain = "${var.dnsimple_domain}"
-    name = "${var.webserver_a_record}"
-    value = "${azure_instance.webserver.vip_address}"
-    type = "A"
-    ttl = 360
-
-    depends_on = ["azure_instance.webserver"]
 }
