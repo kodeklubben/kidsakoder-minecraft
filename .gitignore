@@ -76,6 +76,7 @@ target/
 *.user
 *.sln.docstates
 *.db
+*.db-journal
 # Auto-generated web.config
 /web.config
 
@@ -103,3 +104,6 @@ uninstall.txt
 
 # JetBrains
 .idea/
+
+#various
+*.zip

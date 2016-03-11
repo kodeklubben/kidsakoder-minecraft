@@ -2,8 +2,72 @@
 
 {% block content %}
 
-<div>
-    <a class="btn btn-default" href="{{ url_for('new_meeting') }}">Nytt Møte</a>
+<div class="row">
+    <div class="col-md-4">
+        <a href="{{ url_for('from_map') }}" style="text-decoration: none">
+            <div style="white-space: normal" class="thumbnail btn btn-default">
+
+                <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 8em"></span>
+
+                <div class="caption">
+                    <h2>Kartverket</h2>
+                    <p>
+                        Lag en ny verden fra et utsnitt av et kart over Norge.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('home') }}" style="text-decoration: none">
+            <div class="thumbnail btn btn-default" style="white-space: normal">
+
+                <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: 8em"></span>
+
+                <div class="caption">
+                    <h2>Last opp</h2>
+                    <p>
+                        Last opp en verden fra din datamaskin.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('home') }}" style="text-decoration: none">
+            <div class="thumbnail btn btn-default" style="white-space: normal">
+
+                <span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 8em"></span>
+
+                <div class="caption">
+                    <h2>Lagret mal</h2>
+                    <p>
+                        Lag en ny verden basert på en av dine lagrede maler.
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
+
+<h2>Dine møter:</h2>
+
+    <ul class="meetings">
+    {% for meeting in meetings %}
+        <div class="row">
+            <li>
+                <div class="meeting-btn btn btn-default">
+                    <h1 class="col-md-4"> {{ meeting.title }} </h1>
+                    <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
+                    <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
+                </div>
+            </li>
+        </div>
+    {%  endfor %}
+    </ul>
+
+
 
 {% endblock %}

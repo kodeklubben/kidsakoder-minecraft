@@ -3,25 +3,9 @@
 {% block content %}
 
 <h2>Database test</h2>
-
-    <form action="{{ url_for('add_meeting') }}" method=post class=add-meeting>
-        <d1>
-            <dt>Tittel:</dt>
-            <dd><input type=text size=30 name=title></dd>
-            <dt>Tidspunkt:</dt>
-            <dd><input name=time size="30"></dd>
-            <dt>Deltakere:</dt>
-            <dd><input name="participants" size="10"></dd>
-            <dt>ID Brett</dt>
-            <dd><input type="text" size="10" name="map_id"></dd>
-            <dd><input type=submit></dd>
-        </d1>
-
-    </form>
-
     <ul class=meetings>
     {% for meeting in meetings %}
-        <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.time }} Deltakere: {{ meeting.participants }}</h2></li>
+        <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.start_time }} Deltakere: {{ meeting.participant_count }}</h2></li>
     {%  endfor %}
     </ul>
 {% endblock %}

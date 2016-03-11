@@ -3,11 +3,12 @@
 Routes and views for the flask application.
 """
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join
 from flask_app import app
-from models import Meeting
-from database import db
-from flask_security import login_required
+from models import Meeting, World
+from flask_security import login_required, current_user, roles_required
+import forms
+import files
 
 
 @app.route('/index')
@@ -17,9 +18,11 @@ from flask_security import login_required
 @login_required
 def home():
     """ Renders the home page. """
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
+        meetings=meeting_list
     )
 
 
@@ -30,21 +33,20 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt oss',
+        title='Kontakt oss'
     )
 
 
 @app.route('/database')
 @login_required
+@roles_required('admin')
 def database():
     """ Test page for database """
-    all_meetings = Meeting.query.all()
-    output = [dict(title=meeting.title, time=meeting.time, participants=meeting.participants)
-              for meeting in all_meetings]
+    all_meetings = Meeting.get_all_as_dict()
     return render_template(
         'database.html',
-        meetings=output,
-        title='Database test'
+        title='Database test',
+        meetings=all_meetings
     )
 
 
@@ -55,25 +57,89 @@ def database():
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
+    form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
-        title='New Meeting'
+        title='New Meeting',
+        form=form
     )
 
 
-@app.route('/addmeeting', methods=['POST'])
-@app.route('/add_meeting', methods=['POST'])
-@app.route('/leggtilmote', methods=['POST'])
-@app.route('/legg_til_mote', methods=['POST'])
+@app.route('/storemeeting', methods=['POST'])
+@app.route('/store_meeting', methods=['POST'])
+@app.route('/lagremote', methods=['POST'])
+@app.route('/lagre_mote', methods=['POST'])
 @login_required
-def add_meeting():
-    """ Add meeting POST form handler """
-    meeting = Meeting(user_id='1', title=request.form['title'], time=request.form['time'],
-                      participants=request.form['participants'], world_id=request.form['map_id'])
-    db.session.add(meeting)
-    db.session.commit()
-    flash('Nytt mote lagt til!')
-    return redirect(url_for('database'))
+def store_meeting():
+    """ Store meeting POST form handler """
+    form = forms.MeetingForm(request.form)
+    if form.validate():
+        meeting = Meeting(user_id=current_user.id,
+                          title=form.title.data,
+                          start_time=form.start_time.data,
+                          end_time=form.end_time.data,
+                          participant_count=form.participant_count.data
+                          )
+        meeting.store()
+        flash(u'Nytt møte lagt til!')
+        return redirect(url_for('home'))
+    flash(u'Feil i skjema!')
+    return render_template(
+        'new_meeting.html',
+        title='New Meeting',
+        form=form
+    )
+
+
+@app.route('/fra_kart')
+@login_required
+def from_map():
+    """ Renders the map area selection page """
+    return render_template(
+        'map/minecraft_kartverket.html',
+        title='Kart'
+    )
+
+
+@app.route('/mc_world_url', methods=['POST'])
+@login_required
+def mc_world_url():
+    """ Pass MC world url to server """
+    url = str(request.form['url'])
+    world = World(user_id=current_user.id)
+    print url
+    return files.save_world_from_fme(url=url, world=world)
+
+
+@app.route('/get_world/<file_name>')
+@login_required
+def get_world(file_name):
+    """
+    Download Minecraft world
+    :param file_name:
+    :return:
+    """
+    directory = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
+
+
+@app.route('/test_cloud', methods=['GET', 'POST'])
+def test_cloud():
+    if request.method == 'POST':
+        # TODO test code here
+        server_list = [{'name': 'Test server', 'location': 1234},
+                       {'name': 'Dead server', 'location': 5678}]
+        return render_template(
+            'test_cloud.html',
+            title='Test cloud',
+            server_list=server_list
+        )
+
+    return render_template(
+        'test_cloud.html',
+        title='Test cloud',
+        server_list=[]
+    )
 
 
 @app.errorhandler(401)
