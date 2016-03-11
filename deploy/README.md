@@ -17,6 +17,8 @@ Terraform is a multi-platform tool which supports writing infrastructure as code
 See the [Terraform documentation](https://www.terraform.io/docs/index.html) for more infomation on how it works.
 ##### Installation
 Follow the guide on how to [install Terraform](https://www.terraform.io/intro/getting-started/install.html) and verify it by executing `terraform` in a terminal. 
+###### Windows
+For Windows, the terminal [Cmder](http://cmder.net) is highly recommended as it supports color output, ssh, git and other things.
 
 ---
 
@@ -26,7 +28,7 @@ In order to authenticate with Azure, Terraform needs a **publish settings** file
 Rename the file to `secret.publishsettings` and place it under `provision/`.
 ##### SSH Settings
 As of right now, only authentication with username and password via SSH works.
-Use the [terraform.tfvars.example](provision/terraform.tfvars.example) as a template and fill in the SSH settings in `provision/terraform.tfvars`.  
+Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the SSH settings in `terraform/terraform.tfvars`.  
 
 ---
 
@@ -35,7 +37,7 @@ Use the [terraform.tfvars.example](provision/terraform.tfvars.example) as a temp
 ##### Authentication 
 In order to create and edit DNS records, Terraform needs the **email** and an **API token** of a DNSimple account.
 The **API token** can be found on the [user page](https://dnsimple.com/user) on DNSimple.
-Use the [terraform.tfvars.example](provision/terraform.tfvars.example) as a template and fill in the email and API token in `provision/terraform.tfvars`.  
+Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the email and API token in `terraform/terraform.tfvars`.  
 
 _Please note that **Single-domain tokens** do not work as of writing._
 
@@ -44,7 +46,7 @@ _Please note that **Single-domain tokens** do not work as of writing._
 ### Deploy to Azure
 ```
 # Make sure you are in the provision directory
-cd provision/
+cd terraform/
 
 # Generate an execution plan of what Terraform plans to deploy
 terraform plan 

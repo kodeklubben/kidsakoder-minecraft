@@ -96,7 +96,8 @@ $RECYCLE.BIN/
 
 # Secret configs and files
 flask_app/secret_key.py
-#
+# Secret certificates
+*.pem
 # Azure publish settings
 *.publishsettings
 
