@@ -1,6 +1,6 @@
 ### Instance
 resource "azure_instance" "webserver" {
-    name = "kidsakoder-webserver-${var.env}"
+    name = "webserver-${var.env}"
     image = "Ubuntu Server 14.04 LTS"
     size = "Basic_A0"
     location = "${var.location}"
