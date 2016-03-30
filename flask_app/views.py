@@ -145,6 +145,17 @@ def test_cloud():
 @app.route('/export_calendar', methods=['GET'])
 def export_calendar():
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    c = Calendar()
+    for meeting in meeting_list:
+        e = Event()
+        e.name = meeting['title']
+        e.begin = meeting['start_time']
+        e.end = meeting['end_time']
+        e.description = "Kodeklubbenmøte. Antall deltakere: %s. " % (meeting['participants'])
+        c.events.append(e)
+
+    with open('export.ics', 'w') as f:
+        f.writelines(c)
 
 
 @app.errorhandler(401)
