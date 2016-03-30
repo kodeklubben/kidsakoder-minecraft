@@ -149,28 +149,7 @@ def test_cloud():
 
 @app.route('/export_calendar', methods=['GET'])
 def export_calendar():
-    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
-    tz = timezone('Europe/Oslo')
-    c = Calendar()
-    for meeting in meeting_list:
-        e = Event()
-        e.add('summary', meeting['title'])
-        e.add('dtstart', tz.localize(meeting['start_time']))
-        e.add('dtend', tz.localize(meeting['end_time']))
-        # e.description = u'Kodeklubbenmote. Antall deltakere: %s. ' % (meeting['participant_count'])
-        print "Event: %s" % e
-        c.add_component(e)
-
-    print "Calendar: %s" % c
-
-    export = StringIO.StringIO()
-    export.writelines(c.to_ical())
-    export.seek(0)
-    return send_file(export,
-                     attachment_filename="export.ics",
-                     as_attachment=True)
-
-    return redirect(url_for('home'))
+    return files.export_calendar_for_user()
 
 
 @app.errorhandler(401)
