@@ -8,35 +8,50 @@
     <li><a href="#meeting-tab">Møteinfo</a></li>
 </ul>
 
-<div class="tab-content body-content">
+<div class="tab-content" style="padding-top: 15px">
     <div class="tab-pane fade in active" id="world-tab">
         <div class="row" id="gen-choise">
             <div class="col-md-4">
-                <h2>Kartverket</h2>
-                <p>
-                    Lag en ny verden fra et utsnitt fra et kart over Norge.
-                </p>
-                <p><a class="btn btn-default" id="kartverket-btn">Velg</a></p>
+                <div class="btn btn-default thumbnail" id="kartverket-btn" style="white-space: normal">
+                    <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 8em"></span>
+
+                    <div class="caption">
+                        <h2>Kartverket</h2>
+                        <p>
+                            Lag en ny verden fra et utsnitt av et kart over Norge.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4">
-                <h2>Lagret mal</h2>
-                <p>
-                    Lag en ny verden basert på en av dine lagrede maler.
-                </p>
-                <p><a class="btn btn-default" id="template-btn">Velg</a></p>
+                <div class="btn btn-default thumbnail" id="upload-btn" style="white-space: normal">
+                    <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: 8em"></span>
+
+                    <div class="caption">
+                        <h2>Last opp</h2>
+                        <p>
+                            Last opp en verden fra din datamaskin.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4">
-                <h2>Last opp</h2>
-                <p>
-                    Last opp en verden fra din datamaskin.
-                </p>
-                <p><a class="btn btn-default" id="uplode-btn">Velg</a></p>
+            <div class="btn btn-default thumbnail" id="template-btn" style="white-space: normal">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 8em"></span>
+
+                    <div class="caption">
+                        <h2>Lagret mal</h2>
+                        <p>
+                            Lag en ny verden basert på en av dine lagrede maler.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row body-content">
             <p><span class="btn btn-default glyphicon glyphicon-arrow-left" id="back-btn" style="display: none"></span></p>
 
             <div id="kartverket" style="display: none">
@@ -119,7 +134,7 @@
     });
 
     $(document).ready(function(){
-        $("#uplode-btn").click(function(){
+        $("#upload-btn").click(function(){
             $("#gen-choise").hide();
             $("#upload").show();
             $("#back-btn").show();
