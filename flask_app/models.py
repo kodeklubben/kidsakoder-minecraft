@@ -16,6 +16,12 @@ class User(db.Model, UserMixin):
 
     first_name = db.Column(db.String(100), server_default='')
     last_name = db.Column(db.String(100), server_default='')
+    
+    @classmethod
+    def store(self):
+        """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
 
 
 class Role(db.Model, RoleMixin):

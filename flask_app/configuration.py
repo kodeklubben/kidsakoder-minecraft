@@ -18,6 +18,7 @@ class Production(object):
     SECURITY_PASSWORD_SALT = 'salt'
     
     SECURITY_REGISTERABLE = True
+    SECURITY_REGISTER_USER_TEMPLATE='security/register_user.html'
 
 class Development(Production):
     DEBUG = True

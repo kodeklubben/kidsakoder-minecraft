@@ -1,0 +1,33 @@
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+<!-- {% include "security/_messages.html" %} -->
+{% set title = 'Adminside' %}
+{% extends "layout.html" %}
+{% block content %}        
+        
+<div class="row">
+    <div class="col-md-10">
+        <h1> {{ title }} </h1>
+            <h3> Registrer ny bruker </h3>
+                <form method="POST" action="{{ url_for('admin_page') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ render_field_with_errors(form.email) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ render_field_with_errors(form.password) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ render_field_with_errors(form.roles) }}
+                        </div>
+                    </div>
+                    <input type="submit">
+                </form>
+    </div>
+</div>
+<!-- {% include "security/_menu.html" %} -->
+{% endblock %}

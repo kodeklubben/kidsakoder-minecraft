@@ -7,6 +7,7 @@ from flask import render_template, request, redirect, url_for, flash, send_from_
 from flask_app import app
 from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
+from flask_security.forms import RegisterForm
 import forms
 import files
 
@@ -60,7 +61,7 @@ def new_meeting():
     form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
-        title='New Meeting',
+        title='New meeting',
         form=form
     )
 
@@ -86,10 +87,30 @@ def store_meeting():
     flash(u'Feil i skjema!')
     return render_template(
         'new_meeting.html',
-        title='New Meeting',
+        title='New meeting',
         form=form
     )
 
+@app.route('/register', methods=['GET'])
+@login_required
+@roles_required('admin')
+def register_user():
+    """Her er en kul kommentar"""
+    return render_template(
+        'security/register_user.html'
+    )
+    
+@app.route('/adminpage', methods=['GET'])
+@login_required
+@roles_required('admin')
+def admin_page():
+    """ Enables admins to register new users """
+    form=forms.RegisterForm()
+    return render_template(
+        'admin_page.html',
+        title='Adminside - Registrer nye brukere',
+        form=form
+    )
 
 @app.route('/fra_kart')
 @login_required
