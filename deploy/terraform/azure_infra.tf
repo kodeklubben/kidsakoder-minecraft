@@ -19,7 +19,7 @@ resource "azure_hosted_service" "hosted_service" {
 
 ### Virtual Network
 resource "azure_virtual_network" "network" {
-    name = "kidsakoder-network-${var.env}"
+    name = "network-${var.env}"
     address_space = ["10.128.0.0/16"]
     location = "${var.location}"
 
