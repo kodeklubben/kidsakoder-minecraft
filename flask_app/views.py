@@ -2,9 +2,13 @@
 """
 Routes and views for the flask application.
 """
+import StringIO
 
-from ics import Calendar, Event
-from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join
+from datetime import datetime
+from icalendar import Calendar, Event
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, send_file
+from pytz import timezone
+
 from flask_app import app
 from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
@@ -142,20 +146,31 @@ def test_cloud():
         server_list=[]
     )
 
+
 @app.route('/export_calendar', methods=['GET'])
 def export_calendar():
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    tz = timezone('Europe/Oslo')
     c = Calendar()
     for meeting in meeting_list:
         e = Event()
-        e.name = meeting['title']
-        e.begin = meeting['start_time']
-        e.end = meeting['end_time']
-        e.description = "Kodeklubbenmøte. Antall deltakere: %s. " % (meeting['participants'])
-        c.events.append(e)
+        e.add('summary', meeting['title'])
+        e.add('dtstart', tz.localize(meeting['start_time']))
+        e.add('dtend', tz.localize(meeting['end_time']))
+        # e.description = u'Kodeklubbenmote. Antall deltakere: %s. ' % (meeting['participant_count'])
+        print "Event: %s" % e
+        c.add_component(e)
 
-    with open('export.ics', 'w') as f:
-        f.writelines(c)
+    print "Calendar: %s" % c
+
+    export = StringIO.StringIO()
+    export.writelines(c.to_ical())
+    export.seek(0)
+    return send_file(export,
+                     attachment_filename="export.ics",
+                     as_attachment=True)
+
+    return redirect(url_for('home'))
 
 
 @app.errorhandler(401)
