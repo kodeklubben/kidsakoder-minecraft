@@ -5,7 +5,7 @@ Routes and views for the flask application.
 
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join
 from flask_app import app
-from models import Meeting, World
+from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
 from flask_security.forms import RegisterForm
 import forms
@@ -44,10 +44,12 @@ def contact():
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
+    all_users = User.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
-        meetings=all_meetings
+        meetings=all_meetings,
+        users=all_users
     )
 
 
@@ -100,7 +102,7 @@ def register_user():
         'security/register_user.html'
     )
     
-@app.route('/adminpage', methods=['GET'])
+@app.route('/adminpage', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
 def admin_page():

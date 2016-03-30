@@ -17,11 +17,22 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(100), server_default='')
     last_name = db.Column(db.String(100), server_default='')
     
+    def is_admin(self):
+        return self.admin
+        
     @classmethod
     def store(self):
         """ Store itself to database """
         db.session.add(self)
         db.session.commit()
+        
+    @classmethod
+    def get_all_as_dict(cls):
+        """
+        :return:  All users as list of dictionaries with all fields
+        """
+        user_list = cls.query.all()
+        return [vars(user) for user in user_list]
 
 
 class Role(db.Model, RoleMixin):
