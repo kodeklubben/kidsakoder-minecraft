@@ -37,7 +37,9 @@ def save_world_from_fme(url=None, world=None):
 
 
 def export_calendar_for_user(cal_user_id=None, filename="export"):
+    """Create and export iCalendar file with the meetings of the chosen user"""
     if cal_user_id is None:
+        # Defaults to current user
         cal_user_id = current_user.id
 
     meeting_list = Meeting.get_user_meetings_as_dict(cal_user_id)
@@ -49,10 +51,7 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
         e.add('dtstart', tz.localize(meeting['start_time']))
         e.add('dtend', tz.localize(meeting['end_time']))
         e.add('description', u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting['participant_count']))
-        print "Event: %s" % e
         c.add_component(e)
-
-    print "Calendar: %s" % c
 
     export = StringIO.StringIO()
     export.writelines(c.to_ical())
