@@ -3,6 +3,7 @@
 Routes and views for the flask application.
 """
 
+from ics import Calendar, Event
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join
 from flask_app import app
 from models import Meeting, World
@@ -140,6 +141,10 @@ def test_cloud():
         title='Test cloud',
         server_list=[]
     )
+
+@app.route('/export_calendar', methods=['GET'])
+def export_calendar():
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
 
 
 @app.errorhandler(401)
