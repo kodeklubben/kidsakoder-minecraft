@@ -63,7 +63,6 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-
 # PTVS analysis
 .ptvs/
 
@@ -98,6 +97,7 @@ $RECYCLE.BIN/
 flask_app/secret_key.py
 # Secret certificates
 *.pem
+*.pub
 # Azure publish settings
 *.publishsettings
 
@@ -112,3 +112,6 @@ uninstall.txt
 *.tfstate
 *.backup
 *.tfvars
+
+# Keep development keys and certificates
+!/deploy/saltstack/vagrant/keys/*
