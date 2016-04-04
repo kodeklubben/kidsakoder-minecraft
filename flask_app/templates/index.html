@@ -86,19 +86,19 @@
 
 <h2>Dine møter:</h2>
 
-    <ul class="meetings">
+<ul class="meetings">
     {% for meeting in meetings %}
-        <div class="row">
-            <li>
-                <div class="meeting-btn btn btn-default">
-                    <h1 class="col-md-4"> {{ meeting.title }} </h1>
-                    <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
-                    <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
-                </div>
-            </li>
-        </div>
-    {%  endfor %}
-    </ul>
+    <div class="row">
+        <li>
+            <div class="meeting-btn btn btn-default">
+                <h1 class="col-md-4"> {{ meeting.title }} </h1>
+                <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
+                <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
+            </div>
+        </li>
+    </div>
+    {% endfor %}
+</ul>
 
 {% endblock %}
 
