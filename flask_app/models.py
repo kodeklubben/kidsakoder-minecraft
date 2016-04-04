@@ -48,13 +48,18 @@ class Meeting(db.Model):
         meeting_list = cls.query.filter_by(user_id=user_id)
         return [vars(meeting) for meeting in meeting_list]
 
+    @classmethod
+    def get_meeting_as_dict_by_id(cls, meeting_id):
+        meeting = cls.query.filter_by(id=meeting_id)
+        return vars(meeting)
+
     def store(self):
         """ Store itself to database """
         db.session.add(self)
         db.session.commit()
 
 # Is this needed?
-"""
+""" 
     def __repr__(self):
         return "<Meeting(user_id='%s', title='%s'," \
                " time='%s', participants='%s', world_id='%s')>" % (self.user_id,
