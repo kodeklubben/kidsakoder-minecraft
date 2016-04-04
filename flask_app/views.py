@@ -2,13 +2,8 @@
 """
 Routes and views for the flask application.
 """
-import StringIO
 
-from datetime import datetime
-from icalendar import Calendar, Event
-from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, send_file
-from pytz import timezone
-
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
 from flask_app import app
 from models import Meeting, World
 from flask_security import login_required, current_user, roles_required
@@ -63,6 +58,9 @@ def database():
 def new_meeting():
     """ Renders the meeting creation page """
     form = forms.MeetingForm()
+    if 'last_world_ref' in session:
+        # Get last uploaded or generated world for this session
+        form.world_ref.process_data(session['last_world_ref'])
     return render_template(
         'new_meeting.html',
         title='New Meeting',

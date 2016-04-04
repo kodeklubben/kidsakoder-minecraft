@@ -4,12 +4,15 @@ File storage controller
 """
 import StringIO
 import urllib2
+
 from flask_security import current_user
-from flask import url_for, safe_join, send_file
+
+from flask import send_file
 from icalendar import Calendar, Event
 from pytz import timezone
 
 from flask.ext.app.models import Meeting
+from flask import url_for, safe_join, session
 from flask_app import app
 
 
@@ -32,6 +35,7 @@ def save_world_from_fme(url=None, world=None):
         world_file.write(response.read())
         world.file_ref = file_name
         world.store()
+        session['last_world_ref'] = file_name
         return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
     return '<p>Noe gikk galt!</p>'
 
