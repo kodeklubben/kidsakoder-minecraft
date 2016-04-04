@@ -12,7 +12,7 @@
     <div class="tab-pane fade in active" id="world-tab">
         <div class="row" id="gen-choise">
             <div class="col-md-4">
-                <div class="btn btn-default thumbnail" id="kartverket-btn" style="white-space: normal">
+                <a href="{{ url_for('from_map') }}" class="btn btn-default thumbnail" id="kartverket-btn">
                     <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 8em"></span>
 
                     <div class="caption">
@@ -21,11 +21,11 @@
                             Lag en ny verden fra et utsnitt av et kart over Norge.
                         </p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-md-4">
-                <div class="btn btn-default thumbnail" id="upload-btn" style="white-space: normal">
+                <a class="btn btn-default thumbnail" id="upload-btn">
                     <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: 8em"></span>
 
                     <div class="caption">
@@ -34,11 +34,11 @@
                             Last opp en verden fra din datamaskin.
                         </p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-md-4">
-            <div class="btn btn-default thumbnail" id="template-btn" style="white-space: normal">
+                <a class="btn btn-default thumbnail" id="template-btn">
                     <span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 8em"></span>
 
                     <div class="caption">
@@ -47,7 +47,7 @@
                             Lag en ny verden basert på en av dine lagrede maler.
                         </p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -100,7 +100,7 @@
                 </div>
             </div>
             {{ render_field_with_errors(form.world_ref) }}
-            <input type="submit">
+            <input type="submit" class="btn btn-default">
         </form>
     </div>
 </div>
@@ -116,7 +116,7 @@
         });
     });
 
-
+    /*
     $(document).ready(function(){
         $("#kartverket-btn").click(function(){
             $("#gen-choise").hide();
@@ -124,6 +124,7 @@
             $("#back-btn").show();
         });
     });
+    */
 
     $(document).ready(function(){
         $("#template-btn").click(function(){
