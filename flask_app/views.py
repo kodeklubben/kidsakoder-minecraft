@@ -2,7 +2,7 @@
 """
 Routes and views for the flask application.
 """
-
+from datetime import datetime
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
 from flask_app import app
 from models import Meeting, World
@@ -24,7 +24,8 @@ def home():
         'index.html',
         title='Hjem',
         meetings=meeting_list,
-        form=form
+        form=form,
+        action=url_for('store_meeting')
     )
 
 
@@ -94,7 +95,8 @@ def store_meeting():
     return render_template(
         'new_meeting.html',
         title='New Meeting',
-        form=form
+        form=form,
+        action=url_for('store_meeting')
     )
 
 
@@ -128,6 +130,29 @@ def get_world(file_name):
     """
     directory = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
     return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
+
+
+@app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
+@login_required
+def edit_meeting(meeting_id):
+    # TODO check user id
+    if request.method == 'GET':
+        meeting = Meeting.get_meeting_by_id(meeting_id)
+        form = forms.MeetingForm(obj=meeting)
+
+        return render_template(
+            'edit_meeting.html',
+            form=form,
+            action=url_for('edit_meeting', meeting_id=meeting_id)
+        )
+    else:
+        return render_template(
+            'index.html',
+            title='Hjem',
+            meetings=meeting_list,
+            form=form,
+            action=url_for('store_meeting')
+        )
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
