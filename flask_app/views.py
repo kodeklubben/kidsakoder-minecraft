@@ -20,6 +20,9 @@ def home():
     """ Renders the home page. """
     form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    if 'last_world_ref' in session:
+        # Get last uploaded or generated world for this session
+        form.world_ref.process_data(session['last_world_ref'])
     return render_template(
         'index.html',
         title='Hjem',
@@ -49,24 +52,6 @@ def database():
         'database.html',
         title='Database test',
         meetings=all_meetings
-    )
-
-
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
-@login_required
-def new_meeting():
-    """ Renders the meeting creation page """
-    form = forms.MeetingForm()
-    if 'last_world_ref' in session:
-        # Get last uploaded or generated world for this session
-        form.world_ref.process_data(session['last_world_ref'])
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form
     )
 
 
