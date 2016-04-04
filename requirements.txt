@@ -2,4 +2,3 @@ icalendar
 Flask<1
 Flask-Security
 Flask-SQLAlchemy
-Ics
