@@ -2,8 +2,16 @@
 """
 File storage controller
 """
+import StringIO
 import urllib2
+
 from flask_security import current_user
+
+from flask import send_file
+from icalendar import Calendar, Event
+from pytz import timezone
+
+from flask.ext.app.models import Meeting
 from flask import url_for, safe_join, session
 from flask_app import app
 
@@ -30,3 +38,28 @@ def save_world_from_fme(url=None, world=None):
         session['last_world_ref'] = file_name
         return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
     return '<p>Noe gikk galt!</p>'
+
+
+def export_calendar_for_user(cal_user_id=None, filename="export"):
+    """Create and export iCalendar file with the meetings of the chosen user"""
+    if cal_user_id is None:
+        # Defaults to current user
+        cal_user_id = current_user.id
+
+    meeting_list = Meeting.get_user_meetings_as_dict(cal_user_id)
+    tz = timezone('Europe/Oslo')
+    c = Calendar()
+    for meeting in meeting_list:
+        e = Event()
+        e.add('summary', meeting['title'])
+        e.add('dtstart', tz.localize(meeting['start_time']))
+        e.add('dtend', tz.localize(meeting['end_time']))
+        e.add('description', u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting['participant_count']))
+        c.add_component(e)
+
+    export = StringIO.StringIO()
+    export.writelines(c.to_ical())
+    export.seek(0)
+    return send_file(export,
+                     attachment_filename=filename + '.ics',
+                     as_attachment=True)

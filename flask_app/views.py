@@ -147,6 +147,11 @@ def test_cloud():
     )
 
 
+@app.route('/export_calendar', methods=['GET'])
+def export_calendar():
+    return files.export_calendar_for_user()
+
+
 @app.errorhandler(401)
 def custom_401(error):
     return render_template(
