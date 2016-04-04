@@ -2,72 +2,172 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-4">
-        <a href="{{ url_for('from_map') }}" style="text-decoration: none">
-            <div style="white-space: normal" class="thumbnail btn btn-default">
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#world-tab">Generer verden</a></li>
+    <li><a href="#meeting-tab">Møteinfo</a></li>
+</ul>
 
-                <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 8em"></span>
+<div class="tab-content" style="padding-top: 15px">
+    <div class="tab-pane fade in active" id="world-tab">
+        <div class="row" id="gen-choise">
+            <div class="col-md-4">
+                <a href="{{ url_for('from_map') }}" class="btn btn-default thumbnail" id="kartverket-btn">
+                    <span class="glyphicon glyphicon-globe" aria-hidden="true" style="font-size: 8em"></span>
 
-                <div class="caption">
-                    <h2>Kartverket</h2>
-                    <p>
-                        Lag en ny verden fra et utsnitt av et kart over Norge.
-                    </p>
-                </div>
+                    <div class="caption">
+                        <h2>Kartverket</h2>
+                        <p>
+                            Lag en ny verden fra et utsnitt av et kart over Norge.
+                        </p>
+                    </div>
+                </a>
             </div>
-        </a>
+
+            <div class="col-md-4">
+                <a class="btn btn-default thumbnail" id="upload-btn">
+                    <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: 8em"></span>
+
+                    <div class="caption">
+                        <h2>Last opp</h2>
+                        <p>
+                            Last opp en verden fra din datamaskin.
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a class="btn btn-default thumbnail" id="template-btn">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 8em"></span>
+
+                    <div class="caption">
+                        <h2>Lagret mal</h2>
+                        <p>
+                            Lag en ny verden basert på en av dine lagrede maler.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row body-content">
+            <p><span class="btn btn-default glyphicon glyphicon-arrow-left" id="back-btn" style="display: none"></span></p>
+
+            <div id="kartverket" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: green; width: 100%; height: 400px;"></div>
+
+            </div>
+
+            <div id="template" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: red; width: 100%; height: 400px;"></div>
+
+            </div>
+
+            <div id="upload" style="display: none">
+
+                <!-- Placeholder -->
+                <div style="background-color: yellow; width: 100%; height: 400px;"></div>
+
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-4">
-        <a href="{{ url_for('home') }}" style="text-decoration: none">
-            <div class="thumbnail btn btn-default" style="white-space: normal">
+    <div class="tab-pane fade" id="meeting-tab">
+        <form method="POST" action="{{ url_for('store_meeting') }}">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.title) }}
+                </div>
 
-                <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: 8em"></span>
-
-                <div class="caption">
-                    <h2>Last opp</h2>
-                    <p>
-                        Last opp en verden fra din datamaskin.
-                    </p>
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.start_time) }}
                 </div>
             </div>
-        </a>
-    </div>
 
-    <div class="col-md-4">
-        <a href="{{ url_for('home') }}" style="text-decoration: none">
-            <div class="thumbnail btn btn-default" style="white-space: normal">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.participant_count) }}
+                </div>
 
-                <span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 8em"></span>
-
-                <div class="caption">
-                    <h2>Lagret mal</h2>
-                    <p>
-                        Lag en ny verden basert på en av dine lagrede maler.
-                    </p>
+                <div class="col-md-6">
+                    {{ render_field_with_errors(form.end_time) }}
                 </div>
             </div>
-        </a>
+            {{ render_field_with_errors(form.world_ref) }}
+            <input type="submit" class="btn btn-default">
+        </form>
     </div>
 </div>
 
+
 <h2>Dine møter:</h2>
 
-    <ul class="meetings">
+<ul class="meetings">
     {% for meeting in meetings %}
-        <div class="row">
-            <li>
-                <div class="meeting-btn btn btn-default">
-                    <h1 class="col-md-4"> {{ meeting.title }} </h1>
-                    <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
-                    <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
-                </div>
-            </li>
-        </div>
+    <div class="row">
+        <li>
+            <div class="meeting-btn btn btn-default">
+                <h1 class="col-md-4"> {{ meeting.title }} </h1>
+                <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
+                <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
+            </div>
+        </li>
+    </div>
     {%  endfor %}
-    </ul>
+</ul>
+
+{% endblock %}
 
 
+{% block scripts %}
+
+<script type=text/javascript>
+    $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+            $(this).tab('show');
+        });
+    });
+
+    /*
+    $(document).ready(function(){
+        $("#kartverket-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#kartverket").show();
+            $("#back-btn").show();
+        });
+    });
+    */
+
+    $(document).ready(function(){
+        $("#template-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#template").show();
+            $("#back-btn").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#upload-btn").click(function(){
+            $("#gen-choise").hide();
+            $("#upload").show();
+            $("#back-btn").show();
+        });
+    });
+
+    $(document).ready(function(){
+        $("#back-btn").click(function(){
+            $("#kartverket").hide();
+            $("#template").hide();
+            $("#upload").hide();
+            $("#back-btn").hide();
+            $("#gen-choise").show();
+        });
+    });
+</script>
 
 {% endblock %}

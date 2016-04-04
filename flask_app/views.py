@@ -18,11 +18,13 @@ import files
 @login_required
 def home():
     """ Renders the home page. """
+    form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
-        meetings=meeting_list
+        meetings=meeting_list,
+        form=form
     )
 
 
@@ -57,11 +59,9 @@ def database():
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
         title='New Meeting',
-        form=form
     )
 
 
