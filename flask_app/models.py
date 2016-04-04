@@ -49,17 +49,18 @@ class Meeting(db.Model):
         return [vars(meeting) for meeting in meeting_list]
 
     @classmethod
-    def get_meeting_as_dict_by_id(cls, meeting_id):
-        meeting = cls.query.filter_by(id=meeting_id)
-        return vars(meeting)
+    def get_meeting_by_id(cls, meeting_id):
+        meeting = cls.query.get(meeting_id)
+        return meeting
 
     def store(self):
         """ Store itself to database """
         db.session.add(self)
         db.session.commit()
 
+
 # Is this needed?
-""" 
+"""
     def __repr__(self):
         return "<Meeting(user_id='%s', title='%s'," \
                " time='%s', participants='%s', world_id='%s')>" % (self.user_id,
@@ -82,7 +83,6 @@ class World(db.Model):
         """
         world_list = cls.query.all()
         return [vars(world) for world in world_list]
-
 
     @property
     def id(self):
