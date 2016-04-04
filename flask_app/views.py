@@ -59,9 +59,11 @@ def database():
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
+    form = forms.MeetingForm()
     return render_template(
         'new_meeting.html',
         title='New Meeting',
+        form=form
     )
 
 
