@@ -29,7 +29,12 @@ textarea {
     margin-left: 15px;
 }
 
-.navbar-toggle {
+a.thumbnail {
+    white-space: normal;
+    text-decoration: none;
+}
+a.thumbnail:hover {
+    border-color: #adadad;
 }
 
 /* styles for validation helpers */
