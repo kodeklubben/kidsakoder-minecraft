@@ -43,10 +43,12 @@ def contact():
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
+    all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
-        meetings=all_meetings
+        meetings=all_meetings,
+        worlds=all_worlds
     )
 
 

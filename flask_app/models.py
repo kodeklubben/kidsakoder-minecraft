@@ -70,6 +70,15 @@ class World(db.Model):
     file_ref = db.Column(db.String(255), unique=True)
     seed = db.Column(db.String(100))
 
+    @classmethod
+    def get_all_as_dict(cls):
+        """
+        :return:  All worlds as list of dictionaries with all fields
+        """
+        world_list = cls.query.all()
+        return [vars(world) for world in world_list]
+
+
     @property
     def id(self):
         db.session.add(self)
