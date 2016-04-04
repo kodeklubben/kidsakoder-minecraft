@@ -58,6 +58,9 @@ class Meeting(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.add(self)
+        db.session.commit()
 
 # Is this needed?
 """

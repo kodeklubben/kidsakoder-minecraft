@@ -146,13 +146,13 @@ def edit_meeting(meeting_id):
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
     else:
-        return render_template(
-            'index.html',
-            title='Hjem',
-            meetings=meeting_list,
-            form=form,
-            action=url_for('store_meeting')
-        )
+        form = forms.MeetingForm(request.form)
+        if form.validate():
+            meeting = Meeting.get_meeting_by_id(meeting_id)
+            form.populate_obj(meeting)
+            meeting.update()
+            flash(u'Møte endret!')
+        return redirect(url_for('home'))
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
