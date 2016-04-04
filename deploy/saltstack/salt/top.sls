@@ -1,9 +1,10 @@
 base:
   '*':
     - common
-  'web*':
+  'master*':
     - master
     - cloud
-    - web
+  'web*':
+    - common
   'minecraft*':
     - minecraft
