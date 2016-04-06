@@ -75,8 +75,8 @@ def store_meeting():
         return redirect(url_for('home'))
     flash(u'Feil i skjema!')
     return render_template(
-        'new_meeting.html',
-        title='New Meeting',
+        'index.html',
+        title='Hjem',
         form=form
     )
 
