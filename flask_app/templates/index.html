@@ -3,12 +3,12 @@
 {% block content %}
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="#world-tab">Generer verden</a></li>
-    <li><a href="#meeting-tab">Møteinfo</a></li>
+    <li class="active"><a href="#world-tab" data-toggle="tab">Generer verden</a></li>
+    <li><a href="#meeting-tab" data-toggle="tab">Møteinfo</a></li>
 </ul>
 
 <div class="tab-content" style="padding-top: 15px">
-    <div class="tab-pane fade in active" id="world-tab">
+    <div class="tab-pane fade in active" id="world-tab" style="opacity: 0;">
         <div class="row" id="gen-choise">
             <div class="col-md-4">
                 <a href="{{ url_for('from_map') }}" class="btn btn-default thumbnail" id="kartverket-btn">
@@ -107,9 +107,21 @@
 {% block scripts %}
 
 <script type=text/javascript>
+    var obj_load={% if set_tab==1 %} 1 {% else %} 0 {% endif %};
+    tab_load=(obj_load ? "#meeting-tab" : "#");
+
+    $(document).ready(function() {
+        if (location.hash || obj_load) {
+            $('a[href=' + (location.hash || tab_load) + ']').tab('show');
+        } else {
+            document.getElementById("world-tab").style.opacity = "1";
+        }
+    });
+    
     $(document).ready(function(){
         $(".nav-tabs a").click(function(){
             $(this).tab('show');
+            document.getElementById("world-tab").style.opacity = "1";
         });
     });
 

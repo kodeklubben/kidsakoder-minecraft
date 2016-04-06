@@ -76,6 +76,7 @@ def store_meeting():
     flash(u'Feil i skjema!')
     return render_template(
         'index.html',
+        set_tab=1,
         title='Hjem',
         form=form
     )
