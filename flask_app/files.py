@@ -36,7 +36,10 @@ def save_world_from_fme(url=None, world=None):
         world.file_ref = file_name
         world.store()
         session['last_world_ref'] = file_name
-        return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
+        return ('<p>Verden overført<br><a href="' +
+                url_for('get_world', file_name=file_name) +
+                '">Link</a></p>')
+
     return '<p>Noe gikk galt!</p>'
 
 

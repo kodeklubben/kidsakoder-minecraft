@@ -110,8 +110,12 @@ $(".bootstrap-switch-wrapper").css({width: "100%"});
 $("#submit").attr("disabled", !0);
 $("#world_name").on("keyup", function () {
     $("#world_name").val().trim().length > 3 ? $("#submit").removeAttr("disabled") : $("#submit").attr("disabled", !0)
-    });
+});
 $("#world_name").keyup();
+
+$("#continue").click(function () {
+    
+});
 
 var map = new OpenLayers.Map({
     div: "map",
