@@ -48,8 +48,17 @@ class Meeting(db.Model):
         meeting_list = cls.query.filter_by(user_id=user_id)
         return [vars(meeting) for meeting in meeting_list]
 
+    @classmethod
+    def get_meeting_by_id(cls, meeting_id):
+        meeting = cls.query.get(meeting_id)
+        return meeting
+
     def store(self):
         """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
         db.session.add(self)
         db.session.commit()
 
@@ -69,6 +78,14 @@ class World(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     file_ref = db.Column(db.String(255), unique=True)
     seed = db.Column(db.String(100))
+
+    @classmethod
+    def get_all_as_dict(cls):
+        """
+        :return:  All worlds as list of dictionaries with all fields
+        """
+        world_list = cls.query.all()
+        return [vars(world) for world in world_list]
 
     @property
     def id(self):
