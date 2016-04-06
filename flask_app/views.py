@@ -36,6 +36,7 @@ def home():
 def store_meeting():
     """ Store meeting POST form handler """
     form = forms.MeetingForm(request.form)
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     if form.validate():
         meeting = Meeting(user_id=current_user.id,
                           title=form.title.data,
@@ -51,6 +52,7 @@ def store_meeting():
         'index.html',
         set_tab=1,
         title='Hjem',
+        meetings=meeting_list,
         form=form
     )
 
