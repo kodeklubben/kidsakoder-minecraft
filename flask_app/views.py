@@ -30,6 +30,30 @@ def home():
         form=form
     )
 
+@app.route('/home', methods=['POST'])
+@app.route('/', methods=['POST'])
+@login_required
+def store_meeting():
+    """ Store meeting POST form handler """
+    form = forms.MeetingForm(request.form)
+    if form.validate():
+        meeting = Meeting(user_id=current_user.id,
+                          title=form.title.data,
+                          start_time=form.start_time.data,
+                          end_time=form.end_time.data,
+                          participant_count=form.participant_count.data
+                          )
+        meeting.store()
+        flash(u'Nytt møte lagt til!')
+        return redirect(url_for('home'))
+    flash(u'Feil i skjema!')
+    return render_template(
+        'index.html',
+        set_tab=1,
+        title='Hjem',
+        form=form
+    )
+
 
 @app.route('/contact')
 @app.route('/kontakt')
@@ -52,33 +76,6 @@ def database():
         'database.html',
         title='Database test',
         meetings=all_meetings
-    )
-
-
-@app.route('/storemeeting', methods=['POST'])
-@app.route('/store_meeting', methods=['POST'])
-@app.route('/lagremote', methods=['POST'])
-@app.route('/lagre_mote', methods=['POST'])
-@login_required
-def store_meeting():
-    """ Store meeting POST form handler """
-    form = forms.MeetingForm(request.form)
-    if form.validate():
-        meeting = Meeting(user_id=current_user.id,
-                          title=form.title.data,
-                          start_time=form.start_time.data,
-                          end_time=form.end_time.data,
-                          participant_count=form.participant_count.data
-                          )
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
-    flash(u'Feil i skjema!')
-    return render_template(
-        'index.html',
-        set_tab=1,
-        title='Hjem',
-        form=form
     )
 
 
