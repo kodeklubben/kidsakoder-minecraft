@@ -68,7 +68,8 @@ def new_meeting():
     return render_template(
         'new_meeting.html',
         title='New Meeting',
-        form=form
+        form=form,
+        action=url_for('store_meeting')
     )
 
 
