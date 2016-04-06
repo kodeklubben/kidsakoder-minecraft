@@ -2,7 +2,6 @@
 """
 Routes and views for the flask application.
 """
-from datetime import datetime
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
 from flask_app import app
 from models import Meeting, World
@@ -81,16 +80,13 @@ def new_meeting():
 def store_meeting():
     """ Store meeting POST form handler """
     form = forms.MeetingForm(request.form)
-    if form.validate():
-        meeting = Meeting(user_id=current_user.id,
-                          title=form.title.data,
-                          start_time=form.start_time.data,
-                          end_time=form.end_time.data,
-                          participant_count=form.participant_count.data
-                          )
+    if form.validate_on_submit():
+        meeting = Meeting(user_id=current_user.id)
+        form.populate_obj(meeting)
         meeting.store()
         flash(u'Nytt møte lagt til!')
         return redirect(url_for('home'))
+
     flash(u'Feil i skjema!')
     return render_template(
         'new_meeting.html',
@@ -98,6 +94,29 @@ def store_meeting():
         form=form,
         action=url_for('store_meeting')
     )
+
+
+@app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
+@login_required
+def edit_meeting(meeting_id):
+    # TODO check user id
+    if request.method == 'GET':
+        meeting = Meeting.get_meeting_by_id(meeting_id)
+        form = forms.MeetingForm(obj=meeting)
+
+        return render_template(
+            'edit_meeting.html',
+            form=form,
+            action=url_for('edit_meeting', meeting_id=meeting_id)
+        )
+    else:
+        form = forms.MeetingForm(request.form)
+        if form.validate_on_submit():
+            meeting = Meeting.get_meeting_by_id(meeting_id)
+            form.populate_obj(meeting)
+            meeting.update()
+            flash(u'Møte endret!')
+        return redirect(url_for('home'))
 
 
 @app.route('/fra_kart')
@@ -130,29 +149,6 @@ def get_world(file_name):
     """
     directory = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
     return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
-
-
-@app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
-@login_required
-def edit_meeting(meeting_id):
-    # TODO check user id
-    if request.method == 'GET':
-        meeting = Meeting.get_meeting_by_id(meeting_id)
-        form = forms.MeetingForm(obj=meeting)
-
-        return render_template(
-            'edit_meeting.html',
-            form=form,
-            action=url_for('edit_meeting', meeting_id=meeting_id)
-        )
-    else:
-        form = forms.MeetingForm(request.form)
-        if form.validate():
-            meeting = Meeting.get_meeting_by_id(meeting_id)
-            form.populate_obj(meeting)
-            meeting.update()
-            flash(u'Møte endret!')
-        return redirect(url_for('home'))
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
