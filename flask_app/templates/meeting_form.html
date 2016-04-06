@@ -1,26 +1,26 @@
 {% from "security/_macros.html" import render_field_with_errors, render_field %}
 
-<form method="POST" action="{{ url_for('store_meeting') }}">
+<form role="form" method="POST" action="{{ url_for('store_meeting') }}">
     {{ form.hidden_tag() }}
     <div class="row">
         <div class="col-md-6">
-            {{ render_field_with_errors(form.title) }}
+            {{ render_field_with_errors(form.title, class="form-control") }}
         </div>
 
         <div class="col-md-6">
-            {{ render_field_with_errors(form.start_time) }}
+            {{ render_field_with_errors(form.start_time, class="form-control") }}
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            {{ render_field_with_errors(form.participant_count) }}
+            {{ render_field_with_errors(form.participant_count, class="form-control") }}
         </div>
 
         <div class="col-md-6">
-            {{ render_field_with_errors(form.end_time) }}
+            {{ render_field_with_errors(form.end_time, class="form-control") }}
         </div>
     </div>
-    {{ render_field_with_errors(form.world_ref) }}
+    {{ render_field_with_errors(form.world_ref, class="form-control") }}
     <input type="submit" class="btn btn-default">
 </form>
