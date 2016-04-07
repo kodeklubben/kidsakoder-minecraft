@@ -75,6 +75,7 @@ target/
 *.user
 *.sln.docstates
 *.db
+*.db-journal
 # Auto-generated web.config
 /web.config
 
@@ -113,5 +114,8 @@ uninstall.txt
 *.backup
 *.tfvars
 
-# Keep development keys and certificates
-!/deploy/saltstack/vagrant/keys/*
+# Keep Salt development keys and certificates for Vagrant
+!saltstack/vagrant/keys/*
+
+#various
+*.zip
