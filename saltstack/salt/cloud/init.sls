@@ -18,16 +18,18 @@ salt-cloud:
       - pip: apache-libcloud
 
 
-# Create cloud provider and profile configs
+# Create cloud configs
+/etc/salt/cloud.conf.d/azure.conf:
+  file.managed:
+    - source: salt://cloud/cloud.conf.d/azure.conf
+    - template: jinja
+
 /etc/salt/cloud.providers.d/azure.conf:
   file.managed:
     - source: salt://cloud/cloud.providers.d/azure.conf
     - template: jinja
 
-/etc/salt/cloud.providers.d/azure.pem:
-  file.managed:
-    - source: salt://cloud/cloud.providers.d/azure.pem
-
 /etc/salt/cloud.profiles.d/azure.conf:
   file.managed:
     - source: salt://cloud/cloud.profiles.d/azure.conf
+    - template: jinja
