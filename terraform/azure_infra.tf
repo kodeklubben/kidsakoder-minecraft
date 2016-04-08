@@ -19,12 +19,12 @@ resource "azure_virtual_network" "network" {
     location = "${var.location}"
     subnet {
         name = "${var.public_subnet}"
-        address_prefix = "10.0.1.0/22"
+        address_prefix = "10.0.4.0/22"
         security_group = "${azure_security_group.public.name}"
     }
     subnet {
         name = "${var.private_subnet}"
-        address_prefix = "10.0.0.0/24"
+        address_prefix = "10.0.0.0/22"
         security_group = "${azure_security_group.private.name}"
     }
 }
@@ -51,7 +51,7 @@ resource "azure_security_group_rule" "public_ssh_access" {
     priority = 200
     source_address_prefix = "*"
     source_port_range = "*"
-    destination_address_prefix = "10.0.1.0/22"
+    destination_address_prefix = "10.0.4.0/22"
     destination_port_range = "22"
     protocol = "TCP"
 }
@@ -62,9 +62,9 @@ resource "azure_security_group_rule" "private_ssh_access" {
     type = "Inbound"
     action = "Allow"
     priority = 200
-    source_address_prefix = "10.0.1.0/22"
+    source_address_prefix = "10.0.4.0/22"
     source_port_range = "*"
-    destination_address_prefix = "10.0.0.0/24"
+    destination_address_prefix = "10.0.0.0/22"
     destination_port_range = "22"
     protocol = "TCP"
 }
