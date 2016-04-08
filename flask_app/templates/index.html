@@ -90,11 +90,11 @@
     {% for meeting in meetings %}
     <div class="row">
         <li>
-            <div class="meeting-btn btn btn-default">
+            <a class="meeting-btn btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">
                 <h1 class="col-md-4"> {{ meeting.title }} </h1>
                 <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
                 <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
-            </div>
+            </a>
         </li>
     </div>
     {% endfor %}

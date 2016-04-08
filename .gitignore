@@ -63,7 +63,6 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-
 # PTVS analysis
 .ptvs/
 
@@ -95,8 +94,13 @@ $RECYCLE.BIN/
 # Config file, may contain passwords etc.
 *.config
 
-# Secret configs
+# Secret configs and files
 flask_app/secret_key.py
+# Secret certificates
+*.pem
+*.pub
+# Azure publish settings
+*.publishsettings
 
 # Vagrant directory
 .vagrant/
@@ -104,6 +108,14 @@ uninstall.txt
 
 # JetBrains
 .idea/
+
+# Terraform
+*.tfstate
+*.backup
+*.tfvars
+
+# Keep Salt development keys and certificates for Vagrant
+!saltstack/vagrant/keys/*
 
 #various
 *.zip

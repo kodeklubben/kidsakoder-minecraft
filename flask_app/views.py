@@ -2,7 +2,6 @@
 """
 Routes and views for the flask application.
 """
-
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
 from flask_app import app
 from models import Meeting, World
@@ -53,7 +52,8 @@ def store_meeting():
         set_tab=1,
         title='Hjem',
         meetings=meeting_list,
-        form=form
+        form=form,
+        action=url_for('store_meeting')
     )
 
 
@@ -74,11 +74,36 @@ def contact():
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
+    all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
-        meetings=all_meetings
+        meetings=all_meetings,
+        worlds=all_worlds
     )
+
+
+@app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
+@login_required
+def edit_meeting(meeting_id):
+    # TODO check user id
+    if request.method == 'GET':
+        meeting = Meeting.get_meeting_by_id(meeting_id)
+        form = forms.MeetingForm(obj=meeting)
+
+        return render_template(
+            'edit_meeting.html',
+            form=form,
+            action=url_for('edit_meeting', meeting_id=meeting_id)
+        )
+    else:
+        form = forms.MeetingForm(request.form)
+        if form.validate_on_submit():
+            meeting = Meeting.get_meeting_by_id(meeting_id)
+            form.populate_obj(meeting)
+            meeting.update()
+            flash(u'Møte endret!')
+        return redirect(url_for('home'))
 
 
 @app.route('/fra_kart')

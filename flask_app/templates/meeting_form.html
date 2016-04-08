@@ -1,6 +1,6 @@
 {% from "security/_macros.html" import render_field_with_errors, render_field %}
 
-<form role="form" method="POST" action="{{ url_for('store_meeting') }}">
+<form role="form" method="POST" action=" {{ action }}">
     {{ form.hidden_tag() }}
     <div class="row">
         <div class="col-md-6">
