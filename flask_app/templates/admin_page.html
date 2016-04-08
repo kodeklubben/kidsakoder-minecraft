@@ -8,7 +8,7 @@
     <div class="col-md-10">
         <h1> {{ title }} </h1>
             <h3> Registrer ny bruker </h3>
-                <form method="POST" action="{{ url_for('admin_page') }}">
+                <form method="POST" action="{{ url_for('store_user') }}">
                     {{ form.hidden_tag() }}
                     <div class="row">
                         <div class="col-md-8">

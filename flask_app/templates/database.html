@@ -8,4 +8,9 @@
         <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.start_time }} Deltakere: {{ meeting.participant_count }}</h2></li>
     {%  endfor %}
     </ul>
+    <ul class=users>
+    {% for user in users %}
+        <li><h3>{{ user.email }} </h3> <p> Passord: {{ user.password }} Rolle: {{ user.role }}</p></li>
+    {% endfor %}
+    </ul>
 {% endblock %}
