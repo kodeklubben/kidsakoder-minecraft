@@ -3,6 +3,7 @@ The flask application package.
 """
 
 from flask import Flask
+from flask_admin import Admin
 
 app = Flask(__name__)
 
@@ -16,6 +17,8 @@ from models import User, Role
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
+# Initialize Flask-Admin and add needed views/pages
+admin = Admin(app)
 
 from datetime import datetime
 @app.context_processor
