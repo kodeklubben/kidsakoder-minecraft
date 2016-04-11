@@ -3,7 +3,9 @@ The flask application package.
 """
 
 from flask import Flask
+# Required imports for Admin panel
 from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__)
 
@@ -19,6 +21,8 @@ security = Security(app, user_datastore)
 
 # Initialize Flask-Admin and add needed views/pages
 admin = Admin(app)
+admin.add_view(ModelView(User, db.session))
+
 
 from datetime import datetime
 @app.context_processor
