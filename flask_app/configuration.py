@@ -21,6 +21,7 @@ class Development(Production):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     WORLD_UPLOAD_PATH = 'world_storage'
+    PREVIEW_STORAGE_PATH = 'preview_storage'
 
 #class VM_dev(Development):
     #SERVER_NAME = '0.0.0.0'
