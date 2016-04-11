@@ -89,14 +89,14 @@
     <h2>Dine møter:</h2>
 
     {% for meeting in meetings %}
-    <div class="row">
-        <div class="col-md-12 meeting-btn btn btn-default">
+    <div class="row panel panel-default">
+        <div class="panel-body">
             <h4 class="col-md-4 text-left"> {{ meeting.title }} </h4>
             <div class="col-md-4 text-left">
                 <h5> {{ meeting.start_time }} </h5>
                 <h5> Deltakere: {{ meeting.participant_count }} </h5>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 text-right">
                 <a class="btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">Rediger</a>
             </div>
         </div>
