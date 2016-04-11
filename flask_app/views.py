@@ -151,6 +151,12 @@ def get_world(file_name):
     return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
 
 
+@app.route('/generate_preview/<world_ref>', methods=['POST', 'GET'])
+@login_required
+def generate_preview(world_ref):
+    return files.generate_world_preview(world_ref)
+
+
 @app.route('/test_cloud', methods=['GET', 'POST'])
 def test_cloud():
     if request.method == 'POST':
