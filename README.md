@@ -53,11 +53,11 @@ The virtual machines are configured and installed using Salt based on the Salt S
 
 _Please note that the `web` and `minecraft` servers require that the `master` server is up in order for Salt to get the configuration files from the master._
 
-| Virtual Machine | Role             | Configuration Mgmt. | Port-Forwarding       |
-|-----------------|------------------|---------------------|-----------------------|
-| master          | Salt Master      | Salt Master         | None                  |
-| web             | Web Server       | Salt Minion         | Guest: 80, Host: 8080 |
-| minecraft       | Minecraft Server | Salt Minion         | None                  |
+| Virtual Machine | Role             | Configuration Mgmt. | Port-Forwarding           |
+|-----------------|------------------|---------------------|---------------------------|
+| master          | Salt Master      | Salt Master         | None                      |
+| web             | Web Server       | Salt Minion         | Guest: 80, Host: 8080     |
+| minecraft       | Minecraft Server | Salt Minion         | Guest: 25565, Host: 25565 |
 
 #### Using Vagrant to create the local development environment
 ```

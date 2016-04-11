@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
       salt.seed_master = {
         master: "saltstack/vagrant/keys/master.pub",
         webserver: "saltstack/vagrant/keys/minion.pub",
-        minecraft: "saltstack/vagrant/keys/minion.pub"
+        mc: "saltstack/vagrant/keys/minion.pub"
       }
       salt.minion_key = "saltstack/vagrant/keys/master.pem"
       salt.minion_pub = "saltstack/vagrant/keys/master.pub"
@@ -33,7 +33,7 @@ Vagrant.configure(2) do |config|
 
     # Virtualbox settings
     master.vm.provider "virtualbox" do |v|
-      v.memory = 256
+      v.memory = 512
     end
   end
 
@@ -63,6 +63,8 @@ Vagrant.configure(2) do |config|
     minion.vm.hostname = "mc"
     minion.vm.box = "ubuntu/trusty64"
     minion.vm.network "public_network", ip: "192.168.100.102"
+    # Forward port 25565 for Minecraft
+    minion.vm.network "forwarded_port", guest: 25565, host: 25565
 
     # Saltstack provisioning
     minion.vm.provision "salt" do |salt|
@@ -71,6 +73,11 @@ Vagrant.configure(2) do |config|
       salt.minion_pub = "saltstack/vagrant/keys/minion.pub"
       salt.run_highstate = true
       salt.colorize = true
+    end
+
+    # Virtualbox settings
+    minion.vm.provider "virtualbox" do |v|
+      v.memory = 1024
     end
   end
 
