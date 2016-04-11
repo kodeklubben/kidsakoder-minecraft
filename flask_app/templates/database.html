@@ -6,6 +6,12 @@
     <ul class=meetings>
     {% for meeting in meetings %}
         <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.start_time }} Deltakere: {{ meeting.participant_count }}</h2></li>
+
+    {%  endfor %}
+    </ul>
+    <ul class=worlds>
+    {% for world in worlds %}
+        <li><h2> Created by: {{ world.user_id }} File_ref: {{ world.file_ref }}</h2></li>
     {%  endfor %}
     </ul>
     <ul class=users>

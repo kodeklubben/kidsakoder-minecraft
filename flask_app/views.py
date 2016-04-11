@@ -23,11 +23,14 @@ db = SQLAlchemy(app)
 @login_required
 def home():
     """ Renders the home page. """
+    form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
-        meetings=meeting_list
+        meetings=meeting_list,
+        form=form,
+        action=url_for('store_meeting')
     )
 
 
@@ -49,11 +52,13 @@ def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
     all_users = User.get_all_as_dict()
+    all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
         meetings=all_meetings,
-        users=all_users
+        users=all_users,
+        worlds=all_worlds
     )
 
 
@@ -65,6 +70,9 @@ def database():
 def new_meeting():
     """ Renders the meeting creation page """
     form = forms.MeetingForm()
+    if 'last_world_ref' in session:
+        # Get last uploaded or generated world for this session
+        form.world_ref.process_data(session['last_world_ref'])
     return render_template(
         'new_meeting.html',
         title='New meeting',
@@ -80,21 +88,19 @@ def new_meeting():
 def store_meeting():
     """ Store meeting POST form handler """
     form = forms.MeetingForm(request.form)
-    if form.validate():
-        meeting = Meeting(user_id=current_user.id,
-                          title=form.title.data,
-                          start_time=form.start_time.data,
-                          end_time=form.end_time.data,
-                          participant_count=form.participant_count.data
-                          )
+    if form.validate_on_submit():
+        meeting = Meeting(user_id=current_user.id)
+        form.populate_obj(meeting)
         meeting.store()
         flash(u'Nytt møte lagt til!')
         return redirect(url_for('home'))
+
     flash(u'Feil i skjema!')
     return render_template(
         'new_meeting.html',
-        title='New meeting',
-        form=form
+        title='New Meeting',
+        form=form,
+        action=url_for('store_meeting')
     )
 
 @app.route('/storeuser', methods=['POST'])
@@ -145,6 +151,29 @@ def admin_page():
         form=form
     )
 
+@app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
+@login_required
+def edit_meeting(meeting_id):
+    # TODO check user id
+    if request.method == 'GET':
+        meeting = Meeting.get_meeting_by_id(meeting_id)
+        form = forms.MeetingForm(obj=meeting)
+
+        return render_template(
+            'edit_meeting.html',
+            form=form,
+            action=url_for('edit_meeting', meeting_id=meeting_id)
+        )
+    else:
+        form = forms.MeetingForm(request.form)
+        if form.validate_on_submit():
+            meeting = Meeting.get_meeting_by_id(meeting_id)
+            form.populate_obj(meeting)
+            meeting.update()
+            flash(u'Møte endret!')
+        return redirect(url_for('home'))
+
+
 @app.route('/fra_kart')
 @login_required
 def from_map():
@@ -194,6 +223,11 @@ def test_cloud():
         title='Test cloud',
         server_list=[]
     )
+
+
+@app.route('/export_calendar', methods=['GET'])
+def export_calendar():
+    return files.export_calendar_for_user()
 
 
 @app.errorhandler(401)
