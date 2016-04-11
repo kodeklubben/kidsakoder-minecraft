@@ -100,7 +100,12 @@
     {% endfor %}
 </ul>
 <a href=" {{ url_for('export_calendar') }} " class="btn btn-default">Last ned iCalendar-fil til kalenderen din.</a>
-
+<!-- <form action=" {{ url_for('generate_preview', world_ref="1_1_mc_world") }} " method="post">
+    Genererer verden test
+    <input type="text" name="world_ref" value="1_1_mc_world">
+    <input type="submit" value="Submit">
+</form> -->
+    <a href=" {{ url_for('generate_preview', world_ref="1_1_mc_world") }}" class="btn btn-default"> Generer verden</a>
 {% endblock %}
 
 
