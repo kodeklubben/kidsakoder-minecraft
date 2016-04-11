@@ -1,6 +1,6 @@
-nginx:
+apache2:
   pkg:
     - installed
   service.running:
     - watch:
-      - pkg: nginx
+      - pkg: apache2
