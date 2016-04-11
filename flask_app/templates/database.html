@@ -11,7 +11,7 @@
     </ul>
     <ul class=worlds>
     {% for world in worlds %}
-        <li><h2> Created by: {{ world.user_id }} File_ref: {{ world.file_ref }}</h2></li>
+        <li><h2> Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }}</h2></li>
     {%  endfor %}
     </ul>
 {% endblock %}

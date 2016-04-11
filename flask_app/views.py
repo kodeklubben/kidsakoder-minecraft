@@ -135,9 +135,8 @@ def from_map():
 def mc_world_url():
     """ Pass MC world url to server """
     url = str(request.form['url'])
-    world = World(user_id=current_user.id)
-    print url
-    return files.save_world_from_fme(url=url, world=world)
+    description = request.form['description']
+    return files.save_world_from_fme(url=url, description=description)
 
 
 @app.route('/get_world/<file_name>')

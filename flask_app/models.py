@@ -76,6 +76,7 @@ class Meeting(db.Model):
 class World(db.Model):
     _id = db.Column('id', db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    description = db.Column(db.String(512))
     file_ref = db.Column(db.String(255), unique=True)
     seed = db.Column(db.String(100))
 

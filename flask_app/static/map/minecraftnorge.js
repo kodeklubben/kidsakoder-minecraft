@@ -45,10 +45,12 @@ var dataDist = function () {
             var c = a.serviceResponse.url;
             d.append($("<p>Vellykket! <br> Overfører verden </p>"));
             $.post('/mc_world_url', {
-                url : c
-            }, function (data, status) {
-                $("#results").html(data);
-            })
+                url : c,
+                description : $("#description").val()
+                }, function (data, status) {
+                    $("#results").html(data);
+                    $("#continue").css("visibility", "visible")
+                })
             //d.append($('<a href="' + c + '">Last ned! </a>')));
         } else {
             d.append($("<p>Mislykket. Prøv igjen!</p>"))
