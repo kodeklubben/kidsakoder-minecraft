@@ -20,7 +20,9 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 # Initialize Flask-Admin and add needed views/pages
-admin = Admin(app)
+admin = Admin(app, 
+#base_template='layout.html',
+)
 admin.add_view(ModelView(User, db.session))
 
 

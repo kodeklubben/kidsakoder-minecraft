@@ -102,51 +102,15 @@ def store_meeting():
         form=form,
         action=url_for('store_meeting')
     )
-
-@app.route('/storeuser', methods=['POST'])
-@app.route('/store_user', methods=['POST'])
-@app.route('/lagrebruker', methods=['POST'])
-@app.route('/lagre_bruker', methods=['POST'])
-@login_required
-def store_user():
     
-    """ Store user POST form handler """
-    form = forms.RegisterForm(request.form)
-    if form.validate():
-        
-        #Adds new user to database, based on the info from the form filled in on admin_page
-        user_datastore.create_user(email=form.email.data, password=form.password.data)
-        user_datastore.add_role_to_user(form.email.data, form.roles.data)
-        db.session.commit()
-        
-        #Takes the user back to admin_page, while displaying a message confirming creation of a user
-        flash(u'Ny bruker lagt til!')
-        return redirect(url_for('admin_page'))
-        
-    flash(u'Feil i skjema!')
-    return render_template(
-        'admin_page.html',
-        title='Adminside - Registrer nye brukere',
-        form=form
-    )
-    
-@app.route('/register', methods=['GET'])
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
-def register_user():
-    """Her er en kul kommentar"""
-    return render_template(
-        'security/register_user.html'
-    )
-    
-@app.route('/adminpage', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
-def admin_page():
+def admin():
     """ Enables admins to register new users """
     form=forms.RegisterForm()
     return render_template(
-        'admin_page.html',
+        'admin/admin.html',
         title='Adminside - Registrer nye brukere',
         form=form
     )
