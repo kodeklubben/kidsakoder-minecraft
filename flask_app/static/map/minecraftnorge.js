@@ -49,7 +49,8 @@ var dataDist = function () {
                 description : $("#description").val()
                 }, function (data, status) {
                     $("#results").html(data);
-                    $("#continue").css("visibility", "visible")
+                    $("#continue").css("display", "block");
+                    $("#continue").addClass("alert alert-success fade in");
                 })
             //d.append($('<a href="' + c + '">Last ned! </a>')));
         } else {
