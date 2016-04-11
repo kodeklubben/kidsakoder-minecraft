@@ -79,27 +79,30 @@
     <div class="tab-pane fade" id="meeting-tab">
 
         {% include "meeting_form.html" %}
-        
+
     </div>
 </div>
 
+<hr>
 
-<h2>Dine møter:</h2>
+<div class="body-content">
+    <h2>Dine møter:</h2>
 
-<ul class="meetings">
     {% for meeting in meetings %}
     <div class="row">
-        <li>
-            <a class="meeting-btn btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">
-                <h1 class="col-md-4"> {{ meeting.title }} </h1>
-                <h2 class="col-md-4"> {{ meeting.start_time }} </h2>
-                <h2 class="col-md-4"> Deltakere: {{ meeting.participant_count }} </h2>
-            </a>
-        </li>
+        <a class="col-md-12 meeting-btn btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">
+            <h4 class="col-md-4 text-left"> {{ meeting.title }} </h4>
+            <div class="col-md-4 text-left">
+                <h5> {{ meeting.start_time }} </h5>
+                <h5> Deltakere: {{ meeting.participant_count }} </h5>
+            </div>
+        </a>
     </div>
+    <br>
     {% endfor %}
-</ul>
-<a href=" {{ url_for('export_calendar') }} " class="btn btn-default">Last ned iCalendar-fil til kalenderen din.</a>
+
+    <a href=" {{ url_for('export_calendar') }} " class="row btn btn-default">Last ned iCalendar-fil til kalenderen din.</a>
+</div>
 
 {% endblock %}
 
@@ -117,7 +120,7 @@
             document.getElementById("world-tab").style.opacity = "1";
         }
     });
-    
+
     $(document).ready(function(){
         $(".nav-tabs a").click(function(){
             $(this).tab('show');
