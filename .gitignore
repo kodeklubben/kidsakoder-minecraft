@@ -117,5 +117,9 @@ uninstall.txt
 # Keep Salt development keys and certificates for Vagrant
 !saltstack/vagrant/keys/*
 
+# Keep folder, but not content
+preview_storage/
+!preview_storage/placeholder
+
 #various
 *.zip
