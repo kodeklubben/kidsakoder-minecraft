@@ -10,7 +10,7 @@ from flask_security import current_user
 from flask import send_file
 from icalendar import Calendar, Event
 from pytz import timezone
-
+from jinja2 import escape
 from models import Meeting, World
 from flask import url_for, safe_join, session
 from flask_app import app
@@ -21,11 +21,12 @@ def save_world_from_fme(url=None, description=""):
     # Link example:
     # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
     if url is None:
-        return 'Ingen URL mottatt'
+        return '<p>Ingen URL mottatt</p>'
     split_url = url.strip().split('/')
     sane_url = '/'.join(split_url[0:5]) == 'https://mc-sweco.fmecloud.com:443/fmedatadownload/results'
     if not sane_url:
-        return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
+
+        return '<p>Ugyldig <a href="' + escape(url) + '">URL</a></p>'
     response = urllib2.urlopen(url)
 
     world = World(user_id=current_user.id)
