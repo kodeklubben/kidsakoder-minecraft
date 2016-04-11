@@ -6,8 +6,6 @@ minecraft-user:
   user.present:
     - name: {{ pillar['minecraft']['server']['user'] }}
     - home: {{ pillar['minecraft']['server']['path'] }}
-    - groups: 
-      - {{ pillar['minecraft']['server']['group'] }}
 
 minecraft-forge-installer:
   file.managed:
