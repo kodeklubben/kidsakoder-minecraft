@@ -160,17 +160,12 @@ def generate_preview(world_ref):
 @app.route('/show_preview/<world_ref>', methods=['GET'])
 @login_required
 def show_preview(world_ref):
-    # url = safe_join(app.root_path, 'static')
-    # url = safe_join(url, app.config['PREVIEW_STORAGE_PATH'])
-    # print('App root: %s' % app.root_path)
-    # url = safe_join(url, 'index.html')
-    # print('app.config: %s' % app.config['PREVIEW_STORAGE_PATH'])
-    # print(url)
-    # print('Url: %s' % url)
-    url = safe_join('preview_storage', 'index.html')
-    print('url: %s' % url)  
-    return redirect(url_for('static', filename='%s/%s/index.html' % (app.config['PREVIEW_STORAGE_PATH'], world_ref)))
-
+    # TODO Check if file is present, return spinner if not.
+    return render_template(
+        'preview.html',
+        title='Preview',
+        world_ref=world_ref
+        )
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
 def test_cloud():
