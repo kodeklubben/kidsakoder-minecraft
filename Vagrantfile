@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
       salt.minion_config = "saltstack/etc/master_minion.conf"
       salt.seed_master = {
         master: "saltstack/vagrant/keys/master.pub",
-        webserver: "saltstack/vagrant/keys/minion.pub",
+        web: "saltstack/vagrant/keys/minion.pub",
         mc: "saltstack/vagrant/keys/minion.pub"
       }
       salt.minion_key = "saltstack/vagrant/keys/master.pem"
@@ -48,8 +48,8 @@ Vagrant.configure(2) do |config|
   end
 
   # The webserver
-  config.vm.define "webserver" do |minion|
-    minion.vm.hostname = "webserver"
+  config.vm.define "web" do |minion|
+    minion.vm.hostname = "web"
     minion.vm.box = "ubuntu/trusty64"
 
     # Network configuration
@@ -64,7 +64,7 @@ Vagrant.configure(2) do |config|
     minion.vm.post_up_message = "The web server is up and running at #{ip}.\n" \
                                 "Use http://localhost:8080 for port 80.\n" \
                                 "Use http://localhost:5050 for port 5000.\n" \
-                                "Use the command 'vagrant ssh webserver' to connect via SSH."
+                                "Use the command 'vagrant ssh web' to connect via SSH."
 
     # Saltstack provisioning
     minion.vm.provision "salt" do |salt|

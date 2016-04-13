@@ -3,8 +3,8 @@ base:
     - common
   'master*':
     - cloud
-  'webserver*':
-    - web
+  'web*':
+    - webserver
     - cloud
   '*mc*':
     - minecraft
