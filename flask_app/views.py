@@ -93,6 +93,7 @@ def edit_meeting(meeting_id):
 
         return render_template(
             'edit_meeting.html',
+            set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
