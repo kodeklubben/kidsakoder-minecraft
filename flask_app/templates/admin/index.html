@@ -1,5 +1,6 @@
-{% extends 'admin/master.html' %}
+{% extends 'layout.html' %}
 
-{% block body %}
-  <p>Velkommen til adminsiden! Velg "User" fra menyen over for å legge til nye brukere.</p>
+{% block content %}
+    {% include 'admin/master.html' %}
+    <p>Velkommen til adminsiden! Velg "User" fra menyen over for å legge til nye brukere.</p>
 {% endblock %}

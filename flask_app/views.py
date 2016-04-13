@@ -107,12 +107,12 @@ def store_meeting():
 @login_required
 @roles_required('admin')
 def admin():
+    #TODO: Unsure about what (if anything) is still necessary here.
+    #This is mostly here to try and make sure non-admins can not access the admin panel.
     """ Enables admins to register new users """
-    form=forms.RegisterForm()
     return render_template(
         'admin/admin.html',
         title='Adminside - Registrer nye brukere',
-        form=form
     )
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])

@@ -19,12 +19,19 @@ from models import User, Role
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-# Initialize Flask-Admin and add needed views/pages
-admin = Admin(app, 
-#base_template='layout.html',
-)
-admin.add_view(ModelView(User, db.session))
 
+
+# Initialize Flask-Admin and add needed views/pages
+admin = Admin(app,
+#base_template='admin_page.html',
+)
+
+#TODO: This (below) is not actually a comment. Remove comment tags when hashing/sessions works properly.
+#Also remove commenting tags from admin.add_view(UserView), etc, and add them to the other one.
+#class UserView(ModelView):
+    # column_exclude_list = ['password']
+admin.add_view(ModelView(User, db.session))
+#admin.add_view(UserView(User, db.session))
 
 from datetime import datetime
 @app.context_processor

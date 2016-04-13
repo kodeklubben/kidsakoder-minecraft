@@ -10,11 +10,11 @@ class User(db.Model, UserMixin):
 
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-    confirmed_at = db.Column(db.DateTime())
+    active = db.Column(db.Boolean, nullable=False) #Is this information necessary?
+    confirmed_at = db.Column(db.DateTime()) #Is this information necessary?
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    first_name = db.Column(db.String(100), server_default='')
+    first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
     last_name = db.Column(db.String(100), server_default='')
     
     def is_admin(self):
