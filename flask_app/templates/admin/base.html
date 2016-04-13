@@ -1,7 +1,9 @@
 {% import 'admin/layout.html' as layout with context -%}
 {% import 'admin/static.html' as admin_static with context %}
-<!DOCTYPE html>
-<html>
+
+{% extends 'layout.html' %}
+
+{% block head_script %}
   <head>
     <title>{% block title %}{% if admin_view.category %}{{ admin_view.category }} - {% endif %}{{ admin_view.name }} - {{ admin_view.admin.name }}{% endblock %}</title>
     {% block head_meta %}
@@ -25,6 +27,9 @@
     {% block head_tail %}
     {% endblock %}
   </head>
+{% endblock %}
+
+{% block content %}
   <body>
     {% block page_body %}
     <div class="container">
@@ -80,4 +85,4 @@
     {% block tail %}
     {% endblock %}
   </body>
-</html>
+{% endblock %}
