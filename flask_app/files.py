@@ -46,7 +46,7 @@ def save_world_from_fme(url=None, world=None):
 def generate_world_preview(world_ref):
     # create file path
     zip_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
-    zip_path = safe_join(zip_path, '%s.zip' % world_ref)
+    zip_path = safe_join(zip_path, world_ref)
     # open file:
     unzip_path = safe_join(app.root_path, 'tmp')
     unzip_path = safe_join(unzip_path, world_ref)
@@ -60,11 +60,14 @@ def generate_world_preview(world_ref):
     world_path = safe_join(unzip_path, 'saves')
     world_path = safe_join(world_path, 'Kodeklubben')
     # path to put preview
-    preview_path = safe_join(app.root_path, app.config['PREVIEW_STORAGE_PATH'])
+    preview_path = safe_join(app.root_path, 'static')
+    preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
     preview_path = safe_join(preview_path, world_ref)
 
     # Call overviewer to generate
-    subprocess.call(["overviewer.py", world_path, preview_path])
+
+    subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
+    # UNIX: subprocess.call(["overviewer.py", world_path, preview_path])
     # TODO Clean up tmp files
     return '<p> Verden generert tror jeg </p>'
 
@@ -93,3 +96,10 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
     return send_file(export,
                      attachment_filename=filename + '.ics',
                      as_attachment=True)
+
+
+def show_preview(world_ref):
+    preview_path = safe_join(app.root_path, app.config['PREVIEW_STORAGE_PATH'])
+    preview_path = safe_join(preview_path, world_ref)
+    preview_path = safe_join(preview_path, 'index.html')
+    return preview_path
