@@ -41,9 +41,9 @@ python runserver.py
 
 ### Deploying to local virtual machines?
 #### Requirements
-First, make sure you have [Vagrant](https://www.vagrantup.com/downloads.html) installed. 
-It supports Windows, Mac OS X and Linux.
-*Note that you need to install [VirtualBox](https://virtualbox.org) separately on OS X.*
+In order to create the development environment using local virtual machines, [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://virtualbox.org) need to be installed.
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant](https://www.vagrantup.com/downloads.html)
 
 See [Development environment](#Development-environment) for why we are using Vagrant and the [Vagrant Docs](https://www.vagrantup.com/docs/) for more documentation.
 
