@@ -1,0 +1,23 @@
+# Upstart script for Minecraft Forge server
+
+description "minecraft forge server"
+
+start on run level [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 5
+
+setuid {{ pillar['minecraft']['server']['user'] }}
+setgid {{ pillar['minecraft']['server']['group'] }}
+
+env JAR={{ pillar['minecraft']['server']['forge']['jar_name'] }}
+env CWD={{ pillar['minecraft']['server']['path'] }}
+env PORT={{ pillar['minecraft']['server']['port'] }}
+env MAX_MEM={{ pillar['minecraft']['server']['max_mem'] }}
+env MIN_MEM={{ pillar['minecraft']['server']['min_mem'] }}
+
+script 
+  cd $CWD
+  java -Xmx$MAX_MEM -Xms$MIN_MEM -jar $JAR nogui
+end script

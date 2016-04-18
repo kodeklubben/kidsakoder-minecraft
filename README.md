@@ -41,9 +41,11 @@ python runserver.py
 
 ### Deploying to local virtual machines?
 #### Requirements
-First, make sure you have [Vagrant](https://www.vagrantup.com/downloads.html) installed. 
-It supports Windows, Mac OS X and Linux.
-See [Development environment](#Development-environment) for the reasoning and the [Vagrant Docs](https://www.vagrantup.com/docs/) for more documentation.
+In order to create the development environment using local virtual machines, [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://virtualbox.org) need to be installed.
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant](https://www.vagrantup.com/downloads.html)
+
+See [Development environment](#Development-environment) for why we are using Vagrant and the [Vagrant Docs](https://www.vagrantup.com/docs/) for more documentation.
 
 #### Development environment
 The Vagrant environment is defined in [Vagrantfile](Vagrantfile).
@@ -51,33 +53,41 @@ It defines 3 different virtual machines which are listed below.
 The aim is to replicate the different virtual machines that are deployed in production.
 The virtual machines are configured and installed using Salt based on the Salt States and Pillars in [saltstack/](saltstack/) (see [Configuration management](#Configuration-management) for more details).
 
-_Please note that the `web` and `minecraft` servers require that the `master` server is up in order for Salt to get the configuration files from the master._
+_Please note that the `web` and `mc` servers require that the `master` server is up in order for Salt to get the configuration files from the master._
 
-| Virtual Machine | Role             | Configuration Mgmt. | Port-Forwarding       |
-|-----------------|------------------|---------------------|-----------------------|
-| master          | Salt Master      | Salt Master         | None                  |
-| web             | Web Server       | Salt Minion         | Guest: 80, Host: 8080 |
-| minecraft       | Minecraft Server | Salt Minion         | None                  |
+| VM Name | Role             | Configuration Mgmt.        | IP              | Port-Forwarding                   | VM Memory |
+|---------|------------------|----------------------------|-----------------|-----------------------------------|-----------|
+| master  | Salt Master      | Master                     | 192.168.100.100 | None                              | 512 MB    |
+| web     | Web Server       | Minion (depends on Master) | 192.168.100.101 | Guest: 80, 5000, Host: 8080, 5000 | 256 MB    |
+| mc      | Minecraft Server | Minion (depends on Master) | 192.168.100.102 | Guest: 25565, Host: 25565         | 1024 MB   |
 
-#### Using Vagrant to create the local development environment
+#### How to use Vagrant
 ```
-# Create all the virtual machines
-vagrant up
-
+### General commands
 # List the status of the virtual machines in this environment
 vagrant status
 
-# Destroy the environment
+# Create/start the virtual machines in the environment
+vagrant up
+
+# Connect to virtual machine via SSH
+vagrant ssh <machine name>
+
+# Destroy the virtual machines in the environment
 vagrant destroy
+
+# Shutdown the virtual machines environment to save resources
+vagrant halt
 
 # Restart a virtual machine
 vagrant reload <machine name>
 
-# Create a virtual machine
-vagrant up <machine name>
+### Scenario: Test changes in Minecraft server configuration
+# Create/start Master and Minecraft servers
+vagrant up master mc
 
-# Run provisioning again on a virtual machine
-vagrant provision <machine name>
+# If Minecraft server already create, run provisioning steps again
+vagrant provision mc
 ```
 
 
