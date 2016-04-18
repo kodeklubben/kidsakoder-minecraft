@@ -3,7 +3,7 @@ cloud:
     master: 'master.kode-kidza.no'
 
   azure:
-    subscription_id: '9b4a61df-e91a-4cfd-98a5-9cc2f0273859'
+    subscription_id: '2ac9ba3f-cdb8-4ad9-8575-9c0ea4d15fdf'
     certificate_path: '/etc/salt/kidsakoder.pem'
     vm_image: 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04_4-LTS-amd64-server-20160222-en-us-30GB'
     vm_size: 'Basic_A0'
