@@ -2,6 +2,8 @@
 
 {% macro meeting(form) %}
 
+<link rel="stylesheet" href="/static/content/bootstrap-datetimepicker.min.css" />
+
 <ul class="nav nav-tabs">
     <li class="active"><a href="#world-tab" data-toggle="tab">Generer verden</a></li>
     <li><a href="#meeting-tab" data-toggle="tab">Møteinfo</a></li>
@@ -87,8 +89,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    {{ render_field_with_errors(form.start_time, class="form-control") }}
-                    {{ render_field_with_errors(form.end_time, class="form-control") }}
+                    {{ render_field_with_errors(form.start_time, class="form-control", id="start_time") }}
+                    {{ render_field_with_errors(form.end_time, class="form-control", id="end_time") }}
                 </div>
             </div>
 
@@ -102,9 +104,22 @@
 
 {% macro meeting_scripts(set_tab) %}
 
+<script type="text/javascript" src="/static/scripts/moment.js"></script>
+<script type="text/javascript" src="/static/scripts/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/scripts/nb.js"></script>
+
 <script type=text/javascript>
 var obj_load={% if set_tab==1 %} 1 {% else %} 0 {% endif %};
 tab_load=(obj_load ? "#meeting-tab" : "#");
+
+$(document).ready(function () {
+    $('#start_time').datetimepicker({
+        locale: 'nb'
+    });
+    $('#end_time').datetimepicker({
+        locale: 'nb'
+    });
+});
 
 $(document).ready(function() {
     if (location.hash || obj_load) {
