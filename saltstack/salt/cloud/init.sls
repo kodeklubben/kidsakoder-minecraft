@@ -19,11 +19,6 @@ salt-cloud:
 
 
 # Create cloud configs
-/etc/salt/cloud.conf.d/azure.conf:
-  file.managed:
-    - source: salt://cloud/cloud.conf.d/azure.conf
-    - template: jinja
-
 /etc/salt/cloud.providers.d/azure.conf:
   file.managed:
     - source: salt://cloud/cloud.providers.d/azure.conf
@@ -33,3 +28,8 @@ salt-cloud:
   file.managed:
     - source: salt://cloud/cloud.profiles.d/azure.conf
     - template: jinja
+
+# Azure python module 
+/etc/salt/azure.py:
+  file.managed:
+    - source: salt://cloud/azure.py
