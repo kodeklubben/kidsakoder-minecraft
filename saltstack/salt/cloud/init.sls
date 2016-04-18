@@ -28,8 +28,3 @@ salt-cloud:
   file.managed:
     - source: salt://cloud/cloud.profiles.d/azure.conf
     - template: jinja
-
-# Azure python module 
-/etc/salt/azure.py:
-  file.managed:
-    - source: salt://cloud/azure.py
