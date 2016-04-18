@@ -3,6 +3,10 @@ The flask application package.
 """
 
 from flask import Flask
+from datetime import datetime
+from wtforms.fields import PasswordField
+from flask_security import current_user
+from flask.ext.security import utils
 # Required imports for Admin panel
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -22,18 +26,39 @@ security = Security(app, user_datastore)
 
 
 # Initialize Flask-Admin and add needed views/pages
-admin = Admin(app,
-#base_template='admin_page.html',
-)
+admin = Admin(app)
 
-#TODO: This (below) is not actually a comment. Remove comment tags when hashing/sessions works properly.
-#Also remove commenting tags from admin.add_view(UserView), etc, and add them to the other one.
-#class UserView(ModelView):
-    # column_exclude_list = ['password']
-admin.add_view(ModelView(User, db.session))
-#admin.add_view(UserView(User, db.session))
+#Configurations to a view for displaying, deleting, adding and editing users.
+class UserView(ModelView):
+    column_exclude_list = ['password', 'first_name', 'last_name']
+    column_auto_select_related = True
+    #Makes sure only admins can make changes to anything concerning users through the admin panel
+    def is_accessible(self):
+        return current_user.has_role('admin')
+    #Replaces Flask's standard textfield for passwords with an actual password field
+    def scaffold_form(self):
+        form_class = super(UserView, self).scaffold_form()
+        form_class.password2 = PasswordField('Nytt passord')
+        return form_class
+    #Makes sure the data from the new PW field is sent to the DB
+    def on_model_change(self, form, model, is_created):
+        if len(model.password2):
+            model.password = utils.encrypt_password(model.password2)
+    #Excludes fields we don't want to display. Both fields that are not needed (names, confirmed_at), and fields that we
+    #want to avoid using, such as password and (soon) active
+    form_excluded_columns = [#'active',
+    'confirmed_at',
+    'first_name',
+    'last_name',
+    'password'
+    ]
 
-from datetime import datetime
+#Adds previously configured userview
+admin.add_view(UserView(User, db.session))
+
+
+
+#from datetime import datetime
 @app.context_processor
 def inject_year():
     """ Make year available in templates """

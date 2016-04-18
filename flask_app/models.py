@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
 
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    active = db.Column(db.Boolean, nullable=False) #Is this information necessary?
+    active = db.Column(db.Boolean, nullable=False)
     confirmed_at = db.Column(db.DateTime()) #Is this information necessary?
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
@@ -39,6 +39,14 @@ class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
+
+#Required to display name of role in a way that is actually readable in admin panel
+    def __str__(self):
+        return self.name
+
+# (Apparently) required to avoid TypeError: Unhashable when saving users
+    def __hash__(self):
+        return hash(self.name)
 
 
 class Meeting(db.Model):
