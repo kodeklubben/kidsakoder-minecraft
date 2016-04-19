@@ -78,6 +78,10 @@ class World(db.Model):
         world_list = cls.query.all()
         return [vars(world) for world in world_list]
 
+    @classmethod
+    def get_by_id(cls, world_id):
+        return cls.query.get(world_id)
+
     @property
     def id(self):
         db.session.add(self)

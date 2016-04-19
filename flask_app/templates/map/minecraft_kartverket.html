@@ -97,18 +97,14 @@
             </button>
             <input type="checkbox" name="texted_world"
                    data-label-text="Vis<br>stedsnavn"/>
-            <button type="submit" class="btn btn-default" value="Request Data"
-                    id="submit">
-                <span title="Create download link"
-                      class="glyphicon glyphicon-transfer" aria-hidden="true"
+            <button type="submit" class="btn btn-default" value="Request Data" id="submit"
+                    style="margin: 0;">
+                <span title="Create download link" class="glyphicon glyphicon-transfer" aria-hidden="true"
                       style="word-spacing:-10px;"> Lag verden</span>
             </button>
             <input type="hidden" name="opt_showresult" value="false"/>
             <input type="hidden" name="opt_servicemode" value="sync"/>
             <input type="hidden" id="geom" name="GEOM" value="empty"/>
-
-            <textarea autocomplete="off" id="description" placeholder="Beskrivelse"
-                      style="height: 5em; width: 100%; margin-top: 2px"></textarea>
 
             <div class="panel panel-default"
                  style="margin-bottom:0px;padding-bottom:0px;visibility:hidden;height:0px;width:0px;"
@@ -118,8 +114,12 @@
                 </div>
             </div>
 
+            <textarea autocomplete="off" name="description" id="description" placeholder="Beskrivelse"
+                      style="height: 5em; width: 100%; margin-top: 2px"></textarea>
+
             <button type="button" class="btn btn-default" id="continue"
                     style="display: none; margin: 0;">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 Gå videre
             </button>
 

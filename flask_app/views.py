@@ -15,15 +15,17 @@ import files
 @app.route('/hjem')
 @app.route('/')
 @login_required
-def home():
+def home(form=None, world=None):
     """ Renders the home page. """
-    form = forms.MeetingForm()
+    if form is None:
+        form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     return render_template(
         'index.html',
         title='Hjem',
         meetings=meeting_list,
         form=form,
+        world=world,
         action=url_for('store_meeting')
     )
 
@@ -54,23 +56,30 @@ def database():
     )
 
 
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
+@app.route('/newmeeting', methods=['POST'])
+@app.route('/new_meeting', methods=['POST'])
+@app.route('/nyttmote', methods=['POST'])
+@app.route('/nytt_mote', methods=['POST'])
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
-    form = forms.MeetingForm()
-    if 'last_world_ref' in session:
-        # Get last uploaded or generated world for this session
-        form.world_ref.process_data(session['last_world_ref'])
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form,
-        action=url_for('store_meeting')
-    )
+    form = forms.WorldForm(request.form)
+    meeting_form = forms.MeetingForm()
+    world = None
+    if form.validate_on_submit():
+        try:
+            world_id = int(form.world_id.data)
+            description = form.description.data
+            world = World.get_by_id(world_id)
+            if world.description != description:
+                world.description = description
+                world.store()
+            meeting_form.world_id.process_data(str(world_id))
+
+        except ValueError:
+            flash(u'world_id ValueError')
+
+    return redirect(url_for('home', form=meeting_form, world=world))
 
 
 @app.route('/storemeeting', methods=['POST'])

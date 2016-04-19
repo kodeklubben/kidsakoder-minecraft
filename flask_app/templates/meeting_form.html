@@ -22,5 +22,10 @@
         </div>
     </div>
     {{ render_field_with_errors(form.world_ref) }}
+    {{ render_field(form.world_id) }}
+    {% if world is not none %}
+        <a href="{{ url_for('get_world', file_name=world.file_ref) }}">Last ned verden</a><br>
+    {% endif %}
+
     <input type="submit" class="btn btn-default">
 </form>
