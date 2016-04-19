@@ -6,5 +6,11 @@ base:
   'web*':
     - webserver
     - cloud
-  '*mc*':
+  'mc*':
     - minecraft
+  'mc-small*':
+    - minecraft.small
+  'mc-medium*':
+    - minecraft.medium
+  'mc-large*':
+    - minecraft.large
