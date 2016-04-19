@@ -95,7 +95,7 @@
             </div>
 
             {{ render_field(form.world_id) }}
-            {% if world is not none %}
+            {% if world is defined %}
                 <a href="{{ url_for('get_world', file_name=world.file_ref) }}">Last ned verden</a><br>
             {% endif %}
 

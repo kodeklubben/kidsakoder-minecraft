@@ -15,11 +15,25 @@ import files
 def home():
     """ Renders the home page. """
     form = forms.MeetingForm(request.form)
+    world_form = forms.WorldForm(request.form)
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     world = None
     set_tab = 0
+
     # TODO check if world_id exists
-    if form.validate_on_submit():
+    if world_form.validate_on_submit():
+        try:
+            world_id = int(world_form.world_id.data)
+            description = world_form.description.data
+            world = World.get_by_id(world_id)
+            if world.description != description:
+                world.description = description
+                world.store()
+            form.world_id.process_data(str(world_id))
+
+        except ValueError:
+            flash(u'world_id ValueError')
+    elif form.validate_on_submit():
         # TODO render form on partial form and set tab set_tab=1
         meeting = Meeting(user_id=current_user.id)
         form.populate_obj(meeting)
@@ -72,21 +86,7 @@ def new_meeting():
 
     # TODO integrate in 'home' and remove
 
-    form = forms.WorldForm(request.form)
-    meeting_form = forms.MeetingForm()
-    world = None
-    if form.validate_on_submit():
-        try:
-            world_id = int(form.world_id.data)
-            description = form.description.data
-            world = World.get_by_id(world_id)
-            if world.description != description:
-                world.description = description
-                world.store()
-            meeting_form.world_id.process_data(str(world_id))
 
-        except ValueError:
-            flash(u'world_id ValueError')
 
     return redirect(url_for('home', form=meeting_form, world=world))
 

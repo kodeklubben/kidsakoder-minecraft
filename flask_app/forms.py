@@ -17,5 +17,6 @@ class MeetingForm(Form):
 
 
 class WorldForm(Form):
+    # TODO set required
     world_id = HiddenField('Verden ID')
     description = TextAreaField('Beskrivelse')
