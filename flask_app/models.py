@@ -46,7 +46,7 @@ class Meeting(db.Model):
         if user_id is None:
             return None
         meeting_list = cls.query.filter_by(user_id=user_id)
-        return [vars(meeting) for meeting in meeting_list]
+        return [vars(meeting) for meeting in meeting_list.order_by(Meeting.start_time)]
 
     @classmethod
     def get_meeting_by_id(cls, meeting_id):
