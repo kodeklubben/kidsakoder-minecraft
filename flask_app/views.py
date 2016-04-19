@@ -14,34 +14,62 @@ import files
 @login_required
 def home():
     """ Renders the home page. """
-    form = forms.MeetingForm(request.form)
-    world_form = forms.WorldForm(request.form)
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
     world = None
     set_tab = 0
 
-    # TODO check if world_id exists
-    if world_form.validate_on_submit():
-        try:
-            world_id = int(world_form.world_id.data)
-            description = world_form.description.data
-            world = World.get_by_id(world_id)
-            if world.description != description:
-                world.description = description
-                world.store()
-            form.world_id.process_data(str(world_id))
+    if request.method == 'POST':
+        world_form = forms.WorldForm(request.form)
+        if world_form.validate():
+            set_tab = 1
+            print 'Hoopla'
+            form = forms.MeetingForm()
+            # print request.form['is_world_form']
+            # print request.form['world_id']
+            # print request.form['description']
+            try:
+                world_id = int(world_form.world_id.data)
+                description = world_form.description.data
+                world = World.get_by_id(world_id)
+                if world.description != description:
+                    world.description = description
+                    world.store()
+                form.world_id.process_data(str(world_id))
 
-        except ValueError:
-            flash(u'world_id ValueError')
-    elif form.validate_on_submit():
-        # TODO render form on partial form and set tab set_tab=1
-        meeting = Meeting(user_id=current_user.id)
-        form.populate_obj(meeting)
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
+            except ValueError:
+                flash(u'world_id ValueError')
 
-    # TODO flash(u'Feil i skjema!')
+            return render_template(
+                'index.html',
+                set_tab=set_tab,
+                title='Hjem',
+                meetings=meeting_list,
+                form=form,
+                world=world,
+                action=url_for('home')
+            )
+
+        form = forms.MeetingForm(request.form)
+        if form.validate():
+            meeting = Meeting(user_id=current_user.id)
+            form.populate_obj(meeting)
+            meeting.store()
+            flash(u'Nytt møte lagt til!')
+            return redirect(url_for('home'))
+
+        flash(u'Feil i skjema!')
+        return render_template(
+            'index.html',
+            set_tab=set_tab,
+            title='Hjem',
+            meetings=meeting_list,
+            form=form,
+            world=world,
+            action=url_for('home')
+        )
+
+    # else GET blank frontpage
+    form = forms.MeetingForm()
     return render_template(
         'index.html',
         set_tab=set_tab,
@@ -79,18 +107,6 @@ def database():
     )
 
 
-@app.route('/nytt_mote', methods=['POST'])
-@login_required
-def new_meeting():
-    """ Renders the meeting creation page """
-
-    # TODO integrate in 'home' and remove
-
-
-
-    return redirect(url_for('home', form=meeting_form, world=world))
-
-
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
 def edit_meeting(meeting_id):
@@ -119,9 +135,12 @@ def edit_meeting(meeting_id):
 @login_required
 def from_map():
     """ Renders the map area selection page """
+    form = forms.WorldForm()
     return render_template(
         'map/minecraft_kartverket.html',
-        title='Kart'
+        title='Kart',
+        form=form,
+        action=url_for('home')
     )
 
 

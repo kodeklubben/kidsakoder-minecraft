@@ -58,12 +58,17 @@ var dataDist = function () {
         if (b == "success") {
             var c = a.serviceResponse.url;
             d.append($("<p>Vellykket! <br> Overfører verden </p>"));
+            d.append(new Spinner().spin().el)
             $.post('/mc_world_url', {
                 url : c,
                 description : $("#description").val()
 
                 }, function (data, status) {
-                    $("#results").html(data);
+                    var json_data = $.parseJSON(data);
+                    $("#results").html(json_data.message);
+                    $("#world_id").val(json_data.world_id);
+
+                    $("#submit").removeClass("alert alert-success alert-danger fade in");
                     $("#continue").css("display", "block");
                     $("#continue").addClass("alert alert-success fade in");
                 })
@@ -133,11 +138,13 @@ $("#world_name").on("keyup", function () {
 $("#world_name").keyup();
 
 $("#continue").click(function () {
-    var formData = {
+    /*var formData = {
         world_id : $("#world_id").val(),
         description : $("#description").val()
     };
-    $.post("/nytt_mote", formData);
+    $.post("/nytt_mote", formData);*/
+    
+    $("#continue_form").submit();
 });
 
 var map = new OpenLayers.Map({
