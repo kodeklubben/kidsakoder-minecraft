@@ -19,8 +19,37 @@ def home():
     """ Renders the home page. """
     form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    if 'last_world_ref' in session:
+        # Get last uploaded or generated world for this session
+        form.world_ref.process_data(session['last_world_ref'])
     return render_template(
         'index.html',
+        title='Hjem',
+        meetings=meeting_list,
+        form=form
+    )
+
+@app.route('/home', methods=['POST'])
+@app.route('/', methods=['POST'])
+@login_required
+def store_meeting():
+    """ Store meeting POST form handler """
+    form = forms.MeetingForm(request.form)
+    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    if form.validate():
+        meeting = Meeting(user_id=current_user.id,
+                          title=form.title.data,
+                          start_time=form.start_time.data,
+                          end_time=form.end_time.data,
+                          participant_count=form.participant_count.data
+                          )
+        meeting.store()
+        flash(u'Nytt møte lagt til!')
+        return redirect(url_for('home'))
+    flash(u'Feil i skjema!')
+    return render_template(
+        'index.html',
+        set_tab=1,
         title='Hjem',
         meetings=meeting_list,
         form=form,
@@ -54,48 +83,6 @@ def database():
     )
 
 
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
-@login_required
-def new_meeting():
-    """ Renders the meeting creation page """
-    form = forms.MeetingForm()
-    if 'last_world_ref' in session:
-        # Get last uploaded or generated world for this session
-        form.world_ref.process_data(session['last_world_ref'])
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form
-    )
-
-
-@app.route('/storemeeting', methods=['POST'])
-@app.route('/store_meeting', methods=['POST'])
-@app.route('/lagremote', methods=['POST'])
-@app.route('/lagre_mote', methods=['POST'])
-@login_required
-def store_meeting():
-    """ Store meeting POST form handler """
-    form = forms.MeetingForm(request.form)
-    if form.validate_on_submit():
-        meeting = Meeting(user_id=current_user.id)
-        form.populate_obj(meeting)
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
-
-    flash(u'Feil i skjema!')
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form,
-        action=url_for('store_meeting')
-    )
-
-
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
 def edit_meeting(meeting_id):
@@ -106,6 +93,7 @@ def edit_meeting(meeting_id):
 
         return render_template(
             'edit_meeting.html',
+            set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )

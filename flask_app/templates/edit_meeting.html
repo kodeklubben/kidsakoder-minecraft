@@ -1,12 +1,17 @@
 {% extends "layout.html" %}
+{% from "meeting_form.html" import meeting, meeting_scripts %}
 
 {% block content %}
 
-{% include "meeting_form.html" %}
-    <br>
-    <a class="btn btn-default" href= {{ url_for('home') }}>
-        Avbryt
+{{meeting(form)}}
+<br>
+<a class="btn btn-default" href= {{ url_for('home') }}>Avbryt</a>
 
-    </a>
+{% endblock %}
+
+
+{% block scripts %}
+
+{{meeting_scripts(set_tab)}}
 
 {% endblock %}
