@@ -10,23 +10,32 @@ import forms
 import files
 
 
-@app.route('/index')
-@app.route('/home')
-@app.route('/hjem')
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
-def home(form=None, world=None):
+def home():
     """ Renders the home page. """
-    if form is None:
-        form = forms.MeetingForm()
+    form = forms.MeetingForm(request.form)
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    world = None
+    set_tab = 0
+    # TODO check if world_id exists
+    if form.validate_on_submit():
+        # TODO render form on partial form and set tab set_tab=1
+        meeting = Meeting(user_id=current_user.id)
+        form.populate_obj(meeting)
+        meeting.store()
+        flash(u'Nytt møte lagt til!')
+        return redirect(url_for('home'))
+
+    # TODO flash(u'Feil i skjema!')
     return render_template(
         'index.html',
+        set_tab=set_tab,
         title='Hjem',
         meetings=meeting_list,
         form=form,
         world=world,
-        action=url_for('store_meeting')
+        action=url_for('home')
     )
 
 
@@ -56,13 +65,13 @@ def database():
     )
 
 
-@app.route('/newmeeting', methods=['POST'])
-@app.route('/new_meeting', methods=['POST'])
-@app.route('/nyttmote', methods=['POST'])
 @app.route('/nytt_mote', methods=['POST'])
 @login_required
 def new_meeting():
     """ Renders the meeting creation page """
+
+    # TODO integrate in 'home' and remove
+
     form = forms.WorldForm(request.form)
     meeting_form = forms.MeetingForm()
     world = None
@@ -82,30 +91,6 @@ def new_meeting():
     return redirect(url_for('home', form=meeting_form, world=world))
 
 
-@app.route('/storemeeting', methods=['POST'])
-@app.route('/store_meeting', methods=['POST'])
-@app.route('/lagremote', methods=['POST'])
-@app.route('/lagre_mote', methods=['POST'])
-@login_required
-def store_meeting():
-    """ Store meeting POST form handler """
-    form = forms.MeetingForm(request.form)
-    if form.validate_on_submit():
-        meeting = Meeting(user_id=current_user.id)
-        form.populate_obj(meeting)
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
-
-    flash(u'Feil i skjema!')
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form,
-        action=url_for('store_meeting')
-    )
-
-
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
 def edit_meeting(meeting_id):
@@ -116,6 +101,7 @@ def edit_meeting(meeting_id):
 
         return render_template(
             'edit_meeting.html',
+            set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )

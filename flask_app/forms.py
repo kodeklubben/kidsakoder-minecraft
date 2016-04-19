@@ -8,12 +8,12 @@ from wtforms.validators import DataRequired, Length
 
 
 class MeetingForm(Form):
+    # TODO partial form to validate separately
     title = StringField('Navn', [Length(min=4, max=25)])
-    start_time = DateTimeField('Starttidspunkt')
-    end_time = DateTimeField('Sluttidspunkt')
+    start_time = DateTimeField('Starttidspunkt', format='%d.%m.%Y %H:%M')
+    end_time = DateTimeField('Sluttidspunkt', format='%d.%m.%Y %H:%M')
     participant_count = IntegerField('Antall deltakere')
     world_id = HiddenField('Verden ID')
-    world_ref = StringField('Minecraft verden')
 
 
 class WorldForm(Form):
