@@ -109,6 +109,10 @@ def edit_meeting(meeting_id):
     # TODO check user id
     if request.method == 'GET':
         meeting = Meeting.get_meeting_by_id(meeting_id)
+        if meeting.user_id != current_user.id:
+            flash(u'Du har ikke tilgang til å endre dette møtet!')
+            redirect(url_for('home'))
+
         form = forms.MeetingForm(obj=meeting)
 
         return render_template(
@@ -117,14 +121,14 @@ def edit_meeting(meeting_id):
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
-    else:
-        form = forms.MeetingForm(request.form)
-        if form.validate_on_submit():
-            meeting = Meeting.get_meeting_by_id(meeting_id)
-            form.populate_obj(meeting)
-            meeting.update()
-            flash(u'Møte endret!')
-        return redirect(url_for('home'))
+
+    form = forms.MeetingForm(request.form)
+    if form.validate_on_submit():
+        meeting = Meeting.get_meeting_by_id(meeting_id)
+        form.populate_obj(meeting)
+        meeting.update()
+        flash(u'Møte endret!')
+    return redirect(url_for('home'))
 
 
 @app.route('/fra_kart')
