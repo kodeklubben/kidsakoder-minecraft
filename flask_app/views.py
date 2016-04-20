@@ -54,6 +54,7 @@ def home():
             return redirect(url_for('home'))
 
         flash(u'Feil i skjema!')
+        set_tab = 1
         return render_template(
             'index.html',
             set_tab=set_tab,
@@ -106,25 +107,26 @@ def database():
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
 def edit_meeting(meeting_id):
-    # TODO check user id
-    if request.method == 'GET':
-        meeting = Meeting.get_meeting_by_id(meeting_id)
-        form = forms.MeetingForm(obj=meeting)
+    meeting = Meeting.get_meeting_by_id(meeting_id)
+    if meeting.user_id != current_user.id:
+        flash(u'Du har ikke tilgang til å endre dette møtet!')
+        return redirect(url_for('home'))
 
+    if request.method == 'GET':
+        form = forms.MeetingForm(obj=meeting)
         return render_template(
             'edit_meeting.html',
             set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
-    else:
-        form = forms.MeetingForm(request.form)
-        if form.validate_on_submit():
-            meeting = Meeting.get_meeting_by_id(meeting_id)
-            form.populate_obj(meeting)
-            meeting.update()
-            flash(u'Møte endret!')
-        return redirect(url_for('home'))
+
+    form = forms.MeetingForm(request.form)
+    if form.validate_on_submit():
+        form.populate_obj(meeting)
+        meeting.store()
+        flash(u'Møte endret!')
+    return redirect(url_for('home'))
 
 
 @app.route('/fra_kart')
