@@ -2,9 +2,10 @@
 """
 Routes and views for the flask application.
 """
+
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
 from flask_app import app
-from models import Meeting, World
+from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
 import forms
 import files
@@ -95,12 +96,27 @@ def contact():
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
+    all_users = User.get_all_as_dict()
     all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
         meetings=all_meetings,
+        users=all_users,
         worlds=all_worlds
+    )
+
+
+@app.route('/admin', methods=['GET', 'POST'])  # Need post?
+@login_required
+@roles_required('admin')
+def admin():
+    # TODO: Unsure about what (if anything) is still necessary here.
+    # This is mostly here to try and make sure non-admins can not access the admin panel.
+    """ Enables admins to register new users """
+    return render_template(
+        'admin/admin.html',
+        title='Adminside - Registrer nye brukere',
     )
 
 

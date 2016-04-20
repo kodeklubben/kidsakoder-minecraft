@@ -39,11 +39,17 @@
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                         Logg ut</a>
                     </li>
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin') }}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        {{ current_user.email }}</a>
+                    </li>
+                    {% else %}
                     <li><a href="{{ url_for_security('logout') }}">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         {{ current_user.email }}</a>
                     </li>
-
+                    {% endif %}
                 </ul>
                 {% endif %}
             </div>

@@ -17,6 +17,7 @@ class Production(object):
     SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     SECURITY_PASSWORD_SALT = 'salt'
 
+
 class Development(Production):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'

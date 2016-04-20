@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Database models
 """
@@ -14,14 +15,39 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    first_name = db.Column(db.String(100), server_default='')
-    last_name = db.Column(db.String(100), server_default='')
+    first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
+    last_name = db.Column(db.String(100), server_default='') #Removed from user registration for now
+    
+    def is_admin(self):
+        return self.admin
+        
+    @classmethod
+    def store(self):
+        """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
+        
+    @classmethod
+    def get_all_as_dict(cls):
+        """
+        :return:  All users as list of dictionaries with all fields
+        """
+        user_list = cls.query.all()
+        return [vars(user) for user in user_list]
 
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
+
+    # Required to display name of role in a way that is actually readable in admin panel
+    def __str__(self):
+        return self.name
+
+    # (Apparently) required to avoid TypeError: Unhashable when saving users
+    def __hash__(self):
+        return hash(self.name)
 
 
 class Meeting(db.Model):

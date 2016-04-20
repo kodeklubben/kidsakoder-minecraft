@@ -1,4 +1,5 @@
 icalendar
 Flask<1
 Flask-Security
+Flask-Admin
 Flask-SQLAlchemy

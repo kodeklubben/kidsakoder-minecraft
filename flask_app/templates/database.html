@@ -15,4 +15,9 @@
         <li>Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }}</li>
     {%  endfor %}
     </ul>
+    <ul class=users>
+    {% for user in users %} <!-- TODO: To be removed (entire user for loop) when everything works properly -->
+        <li><h3>{{ user.email }} </h3> <p> Passord: {{ user.password }} Rolle: {{ user.roles }} ID: {{ user.id }}</p></li>
+    {% endfor %}
+    </ul>
 {% endblock %}

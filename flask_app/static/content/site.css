@@ -28,6 +28,11 @@ textarea {
     margin-right: 15px;
     margin-left: 15px;
 }
+/* Shady fix of admin nav bar */
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover {
+    background-color: #b1daae;
+}
 
 a.thumbnail {
     white-space: normal;
