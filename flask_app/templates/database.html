@@ -5,13 +5,14 @@
 <h2>Database test</h2>
     <ul class=meetings>
     {% for meeting in meetings %}
-        <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.start_time }} Deltakere: {{ meeting.participant_count }}</h2></li>
+        <li><h3>{{ meeting.title }}</h3>
+            {{ meeting.start_time }} Deltakere: {{ meeting.participant_count }} Verden: {{ meeting.world_id }}</li>
 
     {%  endfor %}
-    </ul>
+    </ul><hr>
     <ul class=worlds>
     {% for world in worlds %}
-        <li><h2> Created by: {{ world.user_id }} File_ref: {{ world.file_ref }}</h2></li>
+        <li>Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }}</li>
     {%  endfor %}
     </ul>
 {% endblock %}

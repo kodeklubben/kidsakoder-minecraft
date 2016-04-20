@@ -62,20 +62,11 @@ class Meeting(db.Model):
         db.session.add(self)
         db.session.commit()
 
-# Is this needed?
-"""
-    def __repr__(self):
-        return "<Meeting(user_id='%s', title='%s'," \
-               " time='%s', participants='%s', world_id='%s')>" % (self.user_id,
-                                                                   self.title,
-                                                                   self.time,
-                                                                   self.participants,
-                                                                   self.world_id)"""
-
 
 class World(db.Model):
     _id = db.Column('id', db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    description = db.Column(db.String(512), server_default='')
     file_ref = db.Column(db.String(255), unique=True)
     seed = db.Column(db.String(100))
 
@@ -86,6 +77,10 @@ class World(db.Model):
         """
         world_list = cls.query.all()
         return [vars(world) for world in world_list]
+
+    @classmethod
+    def get_by_id(cls, world_id):
+        return cls.query.get(world_id)
 
     @property
     def id(self):
