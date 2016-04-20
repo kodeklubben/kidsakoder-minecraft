@@ -6,6 +6,7 @@ from flask_wtf import Form
 from wtforms import StringField, DateTimeField, IntegerField, TextAreaField, HiddenField
 from wtforms.validators import InputRequired, Length
 
+
 class MeetingForm(Form):
     title = StringField('Navn', [Length(min=4, max=50)])
     start_time = DateTimeField('Starttidspunkt', [InputRequired()], format='%d.%m.%Y %H:%M')
