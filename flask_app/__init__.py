@@ -21,13 +21,22 @@ app.config.from_object('flask_app.configuration.Development')
 # Initialize Flask-Security
 from database import db, roles_users
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
-from models import User, Role
+from models import User, Role, Meeting, World
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 # Initialize Flask-Admin and add needed views/pages
 admin = Admin(app)
+
+#Configurations for admin panel about meetings
+class MeetingView(ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+class WorldView(ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
 
 #Configurations to a view for displaying, deleting, adding and editing users.
 class UserView(ModelView):
@@ -67,8 +76,10 @@ class UserView(ModelView):
     'password'
     ]
 
-#Adds previously configured userview
+#Adds previously configured views
 admin.add_view(UserView(User, db.session))
+admin.add_view(MeetingView(Meeting, db.session))
+admin.add_view(WorldView(World, db.session))
 
 
 
