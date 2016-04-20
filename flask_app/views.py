@@ -22,11 +22,7 @@ def home():
         world_form = forms.WorldForm(request.form)
         if world_form.validate():
             set_tab = 1
-            print 'Hoopla'
             form = forms.MeetingForm()
-            # print request.form['is_world_form']
-            # print request.form['world_id']
-            # print request.form['description']
             try:
                 world_id = int(world_form.world_id.data)
                 description = world_form.description.data
