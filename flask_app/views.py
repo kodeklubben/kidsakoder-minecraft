@@ -54,6 +54,7 @@ def home():
             return redirect(url_for('home'))
 
         flash(u'Feil i skjema!')
+        set_tab = 1
         return render_template(
             'index.html',
             set_tab=set_tab,
