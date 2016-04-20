@@ -10,33 +10,41 @@ from flask_security import current_user
 from flask import send_file
 from icalendar import Calendar, Event
 from pytz import timezone
-
-from models import Meeting
+from jinja2 import escape
+from models import Meeting, World
 from flask import url_for, safe_join, session
 from flask_app import app
+import json
 
 
-def save_world_from_fme(url=None, world=None):
+def save_world_from_fme(url=None, description=""):
     """ Save generated Minecraft world from FME cloud """
     # Link example:
     # https://mc-sweco.fmecloud.com:443/fmedatadownload/results/FME_2E257068_1457457321707_15896.zip
     if url is None:
-        return 'Ingen URL mottatt'
+        return '<p>Ingen URL mottatt</p>'
     split_url = url.strip().split('/')
     sane_url = '/'.join(split_url[0:5]) == 'https://mc-sweco.fmecloud.com:443/fmedatadownload/results'
     if not sane_url:
-        return '<p>Ugyldig <a href="' + url + '">URL</a></p>'
+
+        return '<p>Ugyldig <a href="' + escape(url) + '">URL</a></p>'
     response = urllib2.urlopen(url)
 
+    world = World(user_id=current_user.id)
     file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
     file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
     file_path = safe_join(file_path, file_name)
     with open(file_path, 'wb') as world_file:
         world_file.write(response.read())
         world.file_ref = file_name
+        world.description = description
         world.store()
-        session['last_world_ref'] = file_name
-        return '<p>Verden overført<br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a></p>'
+        return_message = {
+            'message': '<p>Verden overført</p>',
+            'world_id': str(world.id)
+        }
+        return json.dumps(return_message)
+
     return '<p>Noe gikk galt!</p>'
 
 

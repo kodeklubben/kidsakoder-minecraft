@@ -16,21 +16,70 @@ import files
 
 db = SQLAlchemy(app)
 
-@app.route('/index')
-@app.route('/home')
-@app.route('/hjem')
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     """ Renders the home page. """
-    form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    world = None
+    set_tab = 0
+
+    if request.method == 'POST':
+        world_form = forms.WorldForm(request.form)
+        if world_form.validate():
+            set_tab = 1
+            form = forms.MeetingForm()
+            try:
+                world_id = int(world_form.world_id.data)
+                description = world_form.description.data
+                world = World.get_by_id(world_id)
+                if world.description != description:
+                    world.description = description
+                    world.store()
+                form.world_id.process_data(str(world_id))
+
+            except ValueError:
+                flash(u'world_id ValueError')
+
+            return render_template(
+                'index.html',
+                set_tab=set_tab,
+                title='Hjem',
+                meetings=meeting_list,
+                form=form,
+                world=world,
+                action=url_for('home')
+            )
+
+        form = forms.MeetingForm(request.form)
+        if form.validate():
+            meeting = Meeting(user_id=current_user.id)
+            form.populate_obj(meeting)
+            meeting.store()
+            flash(u'Nytt møte lagt til!')
+            return redirect(url_for('home'))
+
+        flash(u'Feil i skjema!')
+        return render_template(
+            'index.html',
+            set_tab=set_tab,
+            title='Hjem',
+            meetings=meeting_list,
+            form=form,
+            world=world,
+            action=url_for('home')
+        )
+
+    # else GET blank frontpage
+    form = forms.MeetingForm()
     return render_template(
         'index.html',
+        set_tab=set_tab,
         title='Hjem',
         meetings=meeting_list,
         form=form,
-        action=url_for('store_meeting')
+        world=world,
+        action=url_for('home')
     )
 
 
@@ -61,48 +110,6 @@ def database():
         worlds=all_worlds
     )
 
-
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
-@login_required
-def new_meeting():
-    """ Renders the meeting creation page """
-    form = forms.MeetingForm()
-    if 'last_world_ref' in session:
-        # Get last uploaded or generated world for this session
-        form.world_ref.process_data(session['last_world_ref'])
-    return render_template(
-        'new_meeting.html',
-        title='New meeting',
-        form=form
-    )
-
-
-@app.route('/storemeeting', methods=['POST'])
-@app.route('/store_meeting', methods=['POST'])
-@app.route('/lagremote', methods=['POST'])
-@app.route('/lagre_mote', methods=['POST'])
-@login_required
-def store_meeting():
-    """ Store meeting POST form handler """
-    form = forms.MeetingForm(request.form)
-    if form.validate_on_submit():
-        meeting = Meeting(user_id=current_user.id)
-        form.populate_obj(meeting)
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
-
-    flash(u'Feil i skjema!')
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form,
-        action=url_for('store_meeting')
-    )
-    
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
@@ -125,6 +132,7 @@ def edit_meeting(meeting_id):
 
         return render_template(
             'edit_meeting.html',
+            set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
@@ -142,9 +150,12 @@ def edit_meeting(meeting_id):
 @login_required
 def from_map():
     """ Renders the map area selection page """
+    form = forms.WorldForm()
     return render_template(
         'map/minecraft_kartverket.html',
-        title='Kart'
+        title='Kart',
+        form=form,
+        action=url_for('home')
     )
 
 
@@ -153,9 +164,8 @@ def from_map():
 def mc_world_url():
     """ Pass MC world url to server """
     url = str(request.form['url'])
-    world = World(user_id=current_user.id)
-    print url
-    return files.save_world_from_fme(url=url, world=world)
+    description = request.form['description']
+    return files.save_world_from_fme(url=url, description=description)
 
 
 @app.route('/get_world/<file_name>')

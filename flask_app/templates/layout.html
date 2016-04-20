@@ -25,9 +25,6 @@
             <div class="navbar-collapse collapse">
                 {% if current_user.is_authenticated %}
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('new_meeting') }}">
-                        Nytt møte</a>
-                    </li>
                     <li><a href="{{ url_for('database') }}">
                         /database</a>
                     </li>
