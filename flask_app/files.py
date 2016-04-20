@@ -41,9 +41,7 @@ def save_world_from_fme(url=None, description=""):
         world.store()
         return_message = {
             'message': '<p>Verden overført</p>',
-            # <br><a href="' + url_for('get_world', file_name=file_name) + '">Link</a>
             'world_id': str(world.id)
-            # '<input type="hidden" name="world_id" id="world_id" value="' + str(world.id) + '" >'
         }
         return json.dumps(return_message)
 
