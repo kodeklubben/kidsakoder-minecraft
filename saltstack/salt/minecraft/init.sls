@@ -30,6 +30,16 @@ install-minecraft-forge:
     - watch:
       - file: minecraft-forge-installer
 
+# Install ComputerCraft mod 
+install-computercraft-mod:
+  file.managed:
+    - name: {{ pillar['minecraft']['server']['mods_path'] }}/{{ pillar['minecraft']['mods']['computercraft']['jar_name'] }}
+    - source: {{ pillar['minecraft']['mods']['computercraft']['link'] }}
+    - source_hash: {{ pillar['minecraft']['mods']['computercraft']['checksum'] }}
+    - user: {{ pillar['minecraft']['server']['user'] }}
+    - group: {{ pillar['minecraft']['server']['group'] }}
+    - mode: 755
+
 # Add EULA file required for Minecraft server to run.
 minecraft-eula:
   file.managed:
