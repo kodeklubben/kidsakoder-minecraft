@@ -138,12 +138,6 @@ $("#world_name").on("keyup", function () {
 $("#world_name").keyup();
 
 $("#continue").click(function () {
-    /*var formData = {
-        world_id : $("#world_id").val(),
-        description : $("#description").val()
-    };
-    $.post("/nytt_mote", formData);*/
-    
     $("#continue_form").submit();
 });
 
