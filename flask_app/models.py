@@ -41,11 +41,11 @@ class Role(db.Model, RoleMixin):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
-#Required to display name of role in a way that is actually readable in admin panel
+    # Required to display name of role in a way that is actually readable in admin panel
     def __str__(self):
         return self.name
 
-# (Apparently) required to avoid TypeError: Unhashable when saving users
+    # (Apparently) required to avoid TypeError: Unhashable when saving users
     def __hash__(self):
         return hash(self.name)
 
