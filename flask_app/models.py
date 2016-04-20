@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Database models
 """
@@ -11,11 +12,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    confirmed_at = db.Column(db.DateTime()) #Is this information necessary?
+    confirmed_at = db.Column(db.DateTime()) #Is this information necessary? Removed from user registration for now
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
-    last_name = db.Column(db.String(100), server_default='')
+    last_name = db.Column(db.String(100), server_default='') #Removed from user registration for now
     
     def is_admin(self):
         return self.admin
