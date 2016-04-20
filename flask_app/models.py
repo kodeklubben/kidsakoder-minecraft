@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    confirmed_at = db.Column(db.DateTime()) #Is this information necessary? Removed from user registration for now
+    confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
