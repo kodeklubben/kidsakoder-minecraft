@@ -4,17 +4,12 @@ Routes and views for the flask application.
 """
 
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
-from flask_app import app, user_datastore
+from flask_app import app
 from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
-from flask_security.forms import RegisterForm
-
-from flask_sqlalchemy import SQLAlchemy
-
 import forms
 import files
 
-db = SQLAlchemy(app)
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -111,17 +106,19 @@ def database():
         worlds=all_worlds
     )
 
-@app.route('/admin', methods=['GET', 'POST'])
+
+@app.route('/admin', methods=['GET', 'POST'])  # Need post?
 @login_required
 @roles_required('admin')
 def admin():
-    #TODO: Unsure about what (if anything) is still necessary here.
-    #This is mostly here to try and make sure non-admins can not access the admin panel.
+    # TODO: Unsure about what (if anything) is still necessary here.
+    # This is mostly here to try and make sure non-admins can not access the admin panel.
     """ Enables admins to register new users """
     return render_template(
         'admin/admin.html',
         title='Adminside - Registrer nye brukere',
     )
+
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
