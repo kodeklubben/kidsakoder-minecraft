@@ -22,10 +22,14 @@ app.config.from_object('flask_app.configuration.Development')
 # Set locale for datetime format
 import locale
 try:
+    # For UNIX(-like) if the locale is installed
     locale.setlocale(locale.LC_TIME, 'nb_NO')
+    print 'Locale set to nb_NO'
 except locale.Error:
     try:
+        # Should work for windows
         locale.setlocale(locale.LC_TIME, 'norwegian-bokmal')
+        print 'Locale set to norwegian-bokmal'
     except locale.Error:
         print 'Norwegian locale not found'
 
