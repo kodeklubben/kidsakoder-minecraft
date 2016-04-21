@@ -10,8 +10,8 @@ resource "azure_instance" "mc" {
     storage_service_name = "${azure_storage_service.storage.name}"
     virtual_network = "${azure_virtual_network.network.name}"
     subnet = "${var.public_subnet}"
-    username = "${var.ssh_username}"
-    password = "${var.ssh_user_password}"
+    username = "${var.ssh.username}"
+    password = "${var.ssh.password}"
 
     depends_on = ["azure_instance.master"]
 
@@ -29,8 +29,8 @@ resource "azure_instance" "mc" {
     }
 
     connection {
-        user = "${var.ssh_username}"
-        password = "${var.ssh_user_password}"
+        user = "${var.ssh.username}"
+        password = "${var.ssh.password}"
     }
 
     # Copy saltstack dir with config, states and pillar
@@ -58,7 +58,7 @@ resource "azure_instance" "mc" {
 resource "dnsimple_record" "mc" {
     count = "${var.count}"
     domain = "${var.dnsimple_domain}"
-    name = "mc-${lookup(var.sizes, count.index)}"
+    name = "${concat("mc0", count.index + 1)}"
     value = "${element(azure_instance.mc.*.vip_address, count.index)}"
     type = "A"
     ttl = 360
