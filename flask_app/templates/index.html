@@ -15,7 +15,7 @@
         <div class="panel-body">
             <h4 class="col-md-4 text-left"> {{ meeting.title }} </h4>
             <div class="col-md-4 text-left">
-                <h5> {{ meeting.start_time }} </h5>
+                <h5> {{ meeting.start_time.strftime('%d.%m.%Y %H:%M') }} </h5>
                 <h5> Deltakere: {{ meeting.participant_count }} </h5>
             </div>
             <div class="col-md-4 text-right">
