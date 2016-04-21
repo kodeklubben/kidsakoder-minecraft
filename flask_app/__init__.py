@@ -34,7 +34,6 @@ except locale.Error:
         print 'Norwegian locale not found'
 
 
-
 # Initialize Flask-Security
 from database import db, roles_users
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin

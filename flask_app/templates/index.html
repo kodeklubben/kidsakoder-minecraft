@@ -9,10 +9,10 @@
 
 <div class="body-content">
     <h2>Dine møter:</h2>
-    <div class="panel-group row">
+    <div class="row panel-group">
 
     {% for meeting in meetings %}
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="meeting_id_{{ meeting.id }}">
         <div class="panel-heading">
             <h3 class="panel-title">
                 {{ meeting.title }}
@@ -28,9 +28,9 @@
             </span>
         </div>
     </div>
-    <br>
     {% endfor %}
     </div>
+    <br>
     <a href=" {{ url_for('export_calendar') }} " class="row btn btn-default">Last ned iCalendar-fil til kalenderen din.</a>
 </div>
 
