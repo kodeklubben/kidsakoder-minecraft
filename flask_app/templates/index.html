@@ -9,23 +9,28 @@
 
 <div class="body-content">
     <h2>Dine møter:</h2>
+    <div class="row panel-group">
 
     {% for meeting in meetings %}
-    <div class="row panel panel-default">
+    <div class="panel panel-default" id="meeting_id_{{ meeting.id }}">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {{ meeting.title }}
+                <span class="pull-right">{{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M') }}</span>
+            </h3>
+        </div>
         <div class="panel-body">
-            <h4 class="col-md-4 text-left"> {{ meeting.title }} </h4>
-            <div class="col-md-4 text-left">
-                <h5> {{ meeting.start_time.strftime('%d.%m.%Y %H:%M') }} </h5>
-                <h5> Deltakere: {{ meeting.participant_count }} </h5>
-            </div>
-            <div class="col-md-4 text-right">
+            <span class="pull-left">
+                Deltakere: {{ meeting.participant_count }}
+            </span>
+            <span class="pull-right">
                 <a class="btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">Rediger</a>
-            </div>
+            </span>
         </div>
     </div>
-    <br>
     {% endfor %}
-
+    </div>
+    <br>
     <a href=" {{ url_for('export_calendar') }} " class="row btn btn-default">Last ned iCalendar-fil til kalenderen din.</a>
 </div>
 

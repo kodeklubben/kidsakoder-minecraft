@@ -123,8 +123,9 @@
              style="overflow-y:hidden;width:100%">
 
             {{ form.hidden_tag() }}
-            {{ render_field(form.is_world_form) }}
-            {{ render_field(form.world_id) }}
+            {# HiddenField(s) are rendered with hidden_tag() #}
+{#            {{ render_field(form.is_world_form) }}#}
+{#            {{ render_field(form.world_id) }}#}
             {{ render_field(form.description, autocomplete="off", placeholder="Beskrivelse", style="height: 5em; width: 100%; margin: 0") }}
 
             <button type="button" class="btn btn-default" id="continue"

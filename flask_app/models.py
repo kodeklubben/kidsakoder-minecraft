@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    confirmed_at = db.Column(db.DateTime())
+    confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
@@ -37,7 +37,7 @@ class User(db.Model, UserMixin):
 
 
 class Role(db.Model, RoleMixin):
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
@@ -84,6 +84,19 @@ class Meeting(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """ Delete itself from the database """
+        if self.world_id:
+            # Check if world is favoured and delete if not
+            # TODO only if meeting user is also owner of world
+            # TODO maybe check if world is used in other meetings?
+            # meetings = Meeting.query.filter_by(self.world_id)
+            world = World.get_by_id(self.world_id)
+            if not world.favourite:
+                world.delete()
+        db.session.delete(self)
+        db.session.commit()
+
 
 class World(db.Model):
     _id = db.Column('id', db.Integer, primary_key=True)
@@ -91,6 +104,7 @@ class World(db.Model):
     description = db.Column(db.String(512), server_default='')
     file_ref = db.Column(db.String(255), unique=True)
     seed = db.Column(db.String(100))
+    favourite = db.Column(db.Boolean)
 
     @classmethod
     def get_all_as_dict(cls):
@@ -106,10 +120,19 @@ class World(db.Model):
 
     @property
     def id(self):
-        db.session.add(self)
-        db.session.flush()
+        if not self._id:
+            # If new world, _id must be auto-incremented in db
+            db.session.add(self)
+            db.session.flush()
         return self._id
 
     def store(self):
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        if self.file_ref:
+            # TODO delete file in file_ref
+            pass
+        db.session.delete(self)
         db.session.commit()

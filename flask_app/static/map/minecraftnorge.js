@@ -64,9 +64,8 @@ var dataDist = function () {
                 description : $("#description").val()
 
                 }, function (data, status) {
-                    var json_data = $.parseJSON(data);
-                    $("#results").html(json_data.message);
-                    $("#world_id").val(json_data.world_id);
+                    $("#results").html(data.message);
+                    $("#world_id").val(data.world_id);
 
                     $("#submit").removeClass("alert alert-success alert-danger fade in");
                     $("#continue").css("display", "block");
