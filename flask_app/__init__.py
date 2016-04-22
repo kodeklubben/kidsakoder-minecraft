@@ -27,11 +27,16 @@ try:
     print 'Locale set to nb_NO'
 except locale.Error:
     try:
-        # Should work for windows
-        locale.setlocale(locale.LC_TIME, 'norwegian-bokmal')
-        print 'Locale set to norwegian-bokmal'
+        # This might be generally more default installed
+        locale.setlocale(locale.LC_TIME, 'no_NO')
+        print 'Locale set to no_NO'
     except locale.Error:
-        print 'Norwegian locale not found'
+        try:
+            # Should work for windows
+            locale.setlocale(locale.LC_TIME, 'norwegian-bokmal')
+            print 'Locale set to norwegian-bokmal'
+        except locale.Error:
+            print 'Norwegian locale not found'
 
 
 # Initialize Flask-Security
