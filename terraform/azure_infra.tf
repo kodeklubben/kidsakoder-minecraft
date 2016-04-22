@@ -73,5 +73,5 @@ resource "azure_security_group_rule" "public_minecraft_access" {
     source_port_range = "*"
     destination_address_prefix = "10.0.4.0/22"
     destination_port_range = "25565"
-    protocol = "ANY"
+    protocol = "TCP"
 }
