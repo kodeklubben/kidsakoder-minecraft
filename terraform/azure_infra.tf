@@ -1,9 +1,3 @@
-### Cloud Provider
-provider "azure" {
-    publish_settings = "${file("secret.publishsettings")}"
-}
-
-
 ### Storage Service
 resource "azure_storage_service" "storage" {
     name = "${var.storage_name}"
@@ -66,5 +60,18 @@ resource "azure_security_group_rule" "private_ssh_access" {
     source_port_range = "*"
     destination_address_prefix = "10.0.0.0/22"
     destination_port_range = "22"
+    protocol = "TCP"
+}
+
+resource "azure_security_group_rule" "public_minecraft_access" {
+    name = "public-minecraft-access-rule"
+    security_group_names = ["${azure_security_group.public.name}"]
+    type = "Inbound"
+    action = "Allow"
+    priority = 201
+    source_address_prefix = "*"
+    source_port_range = "*"
+    destination_address_prefix = "10.0.4.0/22"
+    destination_port_range = "25565"
     protocol = "TCP"
 }

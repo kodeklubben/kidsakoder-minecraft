@@ -17,8 +17,8 @@ resource "azure_instance" "master" {
     storage_service_name = "${azure_storage_service.storage.name}"
     virtual_network = "${azure_virtual_network.network.name}"
     subnet = "${var.public_subnet}"
-    username = "${var.ssh_username}"
-    password = "${var.ssh_user_password}"
+    username = "${var.ssh.username}"
+    password = "${var.ssh.password}"
 
     endpoint {
         name = "SSH"
@@ -40,8 +40,8 @@ resource "azure_instance" "master" {
     }
 
     connection {
-        user = "${var.ssh_username}"
-        password = "${var.ssh_user_password}"
+        user = "${var.ssh.username}"
+        password = "${var.ssh.password}"
     }
 
     # Copy saltstack dir with config, states and pillar
@@ -85,8 +85,8 @@ resource "azure_instance" "webserver" {
     storage_service_name = "${azure_storage_service.storage.name}"
     virtual_network = "${azure_virtual_network.network.name}"
     subnet = "${var.public_subnet}"
-    username = "${var.ssh_username}"
-    password = "${var.ssh_user_password}"
+    username = "${var.ssh.username}"
+    password = "${var.ssh.password}"
 
     depends_on = ["azure_instance.master"]
 
@@ -104,8 +104,8 @@ resource "azure_instance" "webserver" {
     }
 
     connection {
-        user = "${var.ssh_username}"
-        password = "${var.ssh_user_password}"
+        user = "${var.ssh.username}"
+        password = "${var.ssh.password}"
     }
 
     # Copy saltstack dir with config, states and pillar

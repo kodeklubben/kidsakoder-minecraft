@@ -1,12 +1,20 @@
 ### SECRETS PULLED FROM THE FILE secret.tfvars ###
 ###################### START ####################
-## SSH username and password used by Terraform to provision 
-variable "ssh_username" {}
-variable "ssh_user_password" {}
+variable "ssh" {
+  description = "The SSH username and password user for provisioning"
+  default = {
+    username = ""
+    password = ""
+  }
+}
 
-# DNSimple authentication 
-variable "dnsimple_email" {}
-variable "dnsimple_token" {}
+variable "dnsimple" {
+  description = "The email and token for accessing DNSimple"
+  default = {
+    email = ""
+    token = ""
+  }
+}
 ###################### STOP #####################
 
 ### AZURE VARIABLES ###
@@ -31,6 +39,7 @@ variable "vm_sizes" {
     "0" = "Basic_A0"
     "1" = "Basic_A1"
     "2" = "Standard_DS1_v2"
+    "3" = "Standard_DS2_v2"
   }
 }
 
@@ -66,7 +75,7 @@ variable "private_security_group" {
 
 variable "count" { 
   description = "The amount of Minecraft servers to spin up"
-  default = 3 
+  default = 4 
 }
 
 variable "sizes" {
@@ -75,6 +84,7 @@ variable "sizes" {
     "0" = "small"
     "1" = "medium"
     "2" = "large"
+    "3" = "mega"
   }
 }
 

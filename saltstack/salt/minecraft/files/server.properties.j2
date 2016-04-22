@@ -1,0 +1,45 @@
+{% set prop = pillar['minecraft']['properties']  %}
+{% set server = pillar['minecraft']['server']  %}
+
+#Minecraft server properties
+server-ip={{ server.ip }}
+server-port={{ server.port }}
+
+level-name={{ prop.level_name }}
+level-type={{ prop.level_type }}
+level-seed={{ prop.level_seed }}
+allow-nether={{ prop.allow_nether }}
+max-world-size={{ prop.max_world_size }}
+max-build-height={{ prop.max_build_height }}
+generate-structures={{ prop.generate_structures }}
+generator-settings={{ prop.generator_settings }}
+
+gamemode={{ prop.gamemode }}
+force-gamemode={{ prop.force_gamemode }}
+allow-flight={{ prop.allow_flight  }}
+difficulty={{ prop.difficulty }}
+hardcore={{ prop.hardcore }}
+pvp={{ prop.pvp }}
+
+max-players={{ prop.max_players }}
+max-tick-time={{ prop.max_tick_time }}
+
+spawn-npcs={{ prop.spawn_npcs }}
+spawn-animals={{ prop.spawn_animals }}
+spawn-monsters={{ prop.spawn_monsters }}
+
+online-mode={{ prop.online_mode }}
+motd={{ prop.motd }}
+announce-player-achievements={{ prop.announce_player_achievements }}
+op-permission-level={{ prop.op_permission_level }}
+white-list={{ prop.white_list }}
+player-idle-timeout={{ prop.player_idle_timeout }}
+network-compression-threshold={{ prop.network_compression_threshold }}
+view-distance={{ prop.view_distance }}
+
+enable-query={{ prop.enable_query }}
+enable-rcon={{ prop.enable_rcon }}
+enable-command-block={{ prop.enable_command_block }}
+snooper-enabled={{ prop.snooper_enabled }}
+resource-pack={{ prop.resource_pack }}
+resource-pack-sha1={{ prop.resource_pack_sha1 }}
