@@ -39,7 +39,7 @@
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                         Logg ut</a>
                     </li>
-                    {% if current_user.is_admin %}
+                    {% if current_user.has_role('admin') %}
                     <li><a href="{{ url_for('admin') }}">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         {{ current_user.email }}</a>
