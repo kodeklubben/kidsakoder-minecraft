@@ -98,6 +98,13 @@ Vagrant.configure(2) do |config|
                                 "Connect to localhost:25565 or #{ip}:25565 to play.\n" \
                                 "Use the command 'vagrant ssh mc' to connect via SSH."
 
+    # Saltstack grains 
+    minion.vm.provision "shell", run: "always", inline: <<-SHELL
+      mkdir /etc/salt/
+      echo 'mod: raspberryjam' > /etc/salt/grains
+      echo 'size: small' >> /etc/salt/grains
+    SHELL
+
     # Saltstack provisioning
     minion.vm.provision "salt" do |salt|
       salt.minion_config = "saltstack/vagrant/minion.conf"

@@ -37,7 +37,9 @@ install-minecraft-forge:
     - watch:
       - file: minecraft-forge-installer
 
+
 # Install ComputerCraft mod 
+{% if grains['mod'] == 'computercraft' %}
 install-computercraft-mod:
   file.managed:
     - name: {{ server.mods_path }}/{{ mods.computercraft.jar_name }}
@@ -49,6 +51,35 @@ install-computercraft-mod:
     - mode: 755
     - watch:
       - cmd: install-minecraft-forge
+{% endif %}
+
+
+# Install Raspberryjam mod 
+{% if grains['mod'] == 'raspberryjam' %}
+download-raspberryjam-mod:
+  archive.extracted:
+    - name: {{ server.mods_path }}
+    - source: {{ mods.raspberryjam.link }}
+    - source_hash: {{ mods.raspberryjam.checksum }}
+    - if_missing: {{ server.mods_path }}
+    - archive_format: zip
+    - user: {{ server.user }}
+    - group: {{ server.group }}
+    - watch:
+      - cmd: install-minecraft-forge
+
+download-raspberryjam-mcpipy:
+  archive.extracted:
+    - name: {{ server.path }}
+    - source: {{ mods.raspberryjam.mcpipy_link }}
+    - source_hash: {{ mods.raspberryjam.mcpipy_checksum }}
+    - if_missing: {{ server.path }}/mcpipy/
+    - archive_format: zip
+    - user: {{ server.user }}
+    - group: {{ server.group }}
+    - require:
+      - archive: download-raspberryjam-mod
+{% endif %}
 
 
 # Add EULA file required for Minecraft server to run.
