@@ -16,7 +16,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 {{ meeting.title }}
-                <span class="pull-right">{{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode('utf-8') }}</span>
+                <span class="pull-right">{{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }}</span>
             </h3>
         </div>
         <div class="panel-body">
