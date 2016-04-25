@@ -2,29 +2,80 @@
 """
 Routes and views for the flask application.
 """
-from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
+
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
 from flask_app import app
-from models import Meeting, World
+from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
 import forms
 import files
 
 
-@app.route('/index')
-@app.route('/home')
-@app.route('/hjem')
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     """ Renders the home page. """
-    form = forms.MeetingForm()
     meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    world = None
+    set_tab = 0
+
+    if request.method == 'POST':
+        world_form = forms.WorldForm(request.form)
+        if world_form.validate():
+            set_tab = 1
+            form = forms.MeetingForm()
+            try:
+                world_id = int(world_form.world_id.data)
+                description = world_form.description.data
+                world = World.get_by_id(world_id)
+                if world.description != description:
+                    world.description = description
+                    world.store()
+                form.world_id.process_data(str(world_id))
+
+            except ValueError:
+                flash(u'world_id ValueError')
+
+            return render_template(
+                'index.html',
+                set_tab=set_tab,
+                title='Hjem',
+                meetings=meeting_list,
+                form=form,
+                world=world,
+                action=url_for('home')
+            )
+
+        form = forms.MeetingForm(request.form)
+        if form.validate():
+            meeting = Meeting(user_id=current_user.id)
+            form.populate_obj(meeting)
+            meeting.store()
+            flash(u'Nytt møte lagt til!')
+            return redirect(url_for('home'))
+
+        flash(u'Feil i skjema!')
+        set_tab = 1
+        return render_template(
+            'index.html',
+            set_tab=set_tab,
+            title='Hjem',
+            meetings=meeting_list,
+            form=form,
+            world=world,
+            action=url_for('home')
+        )
+
+    # else GET blank frontpage
+    form = forms.MeetingForm()
     return render_template(
         'index.html',
+        set_tab=set_tab,
         title='Hjem',
         meetings=meeting_list,
         form=form,
-        action=url_for('store_meeting')
+        world=world,
+        action=url_for('home')
     )
 
 
@@ -45,87 +96,97 @@ def contact():
 def database():
     """ Test page for database """
     all_meetings = Meeting.get_all_as_dict()
+    all_users = User.get_all_as_dict()
     all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
         title='Database test',
         meetings=all_meetings,
+        users=all_users,
         worlds=all_worlds
     )
 
 
-@app.route('/newmeeting')
-@app.route('/new_meeting')
-@app.route('/nyttmote')
-@app.route('/nytt_mote')
+@app.route('/admin', methods=['GET', 'POST'])  # Need post?
 @login_required
-def new_meeting():
-    """ Renders the meeting creation page """
-    form = forms.MeetingForm()
-    if 'last_world_ref' in session:
-        # Get last uploaded or generated world for this session
-        form.world_ref.process_data(session['last_world_ref'])
+@roles_required('admin')
+def admin():
+    # TODO: Unsure about what (if anything) is still necessary here.
+    # This is mostly here to try and make sure non-admins can not access the admin panel.
+    """ Enables admins to register new users """
     return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form
-    )
-
-
-@app.route('/storemeeting', methods=['POST'])
-@app.route('/store_meeting', methods=['POST'])
-@app.route('/lagremote', methods=['POST'])
-@app.route('/lagre_mote', methods=['POST'])
-@login_required
-def store_meeting():
-    """ Store meeting POST form handler """
-    form = forms.MeetingForm(request.form)
-    if form.validate_on_submit():
-        meeting = Meeting(user_id=current_user.id)
-        form.populate_obj(meeting)
-        meeting.store()
-        flash(u'Nytt møte lagt til!')
-        return redirect(url_for('home'))
-
-    flash(u'Feil i skjema!')
-    return render_template(
-        'new_meeting.html',
-        title='New Meeting',
-        form=form,
-        action=url_for('store_meeting')
+        'admin/admin.html',
+        title='Adminside - Registrer nye brukere',
     )
 
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
 def edit_meeting(meeting_id):
-    # TODO check user id
-    if request.method == 'GET':
-        meeting = Meeting.get_meeting_by_id(meeting_id)
-        form = forms.MeetingForm(obj=meeting)
+    meeting = Meeting.get_meeting_by_id(meeting_id)
+    if meeting.user_id != current_user.id:
+        flash(u'Du har ikke tilgang til å endre dette møtet!')
+        return redirect(url_for('home'))
 
+    if request.method == 'GET':
+        form = forms.MeetingForm(obj=meeting)
         return render_template(
             'edit_meeting.html',
+            set_tab=1,
             form=form,
             action=url_for('edit_meeting', meeting_id=meeting_id)
         )
-    else:
-        form = forms.MeetingForm(request.form)
-        if form.validate_on_submit():
-            meeting = Meeting.get_meeting_by_id(meeting_id)
-            form.populate_obj(meeting)
-            meeting.update()
-            flash(u'Møte endret!')
-        return redirect(url_for('home'))
+
+    form = forms.MeetingForm(request.form)
+    if form.validate_on_submit():
+        form.populate_obj(meeting)
+        meeting.store()
+        flash(u'Møtet ble endret!')
+    return redirect(url_for('home'))
+
+
+@app.route('/delete_meeting/<int:meeting_id>')
+@login_required
+def delete_meeting(meeting_id):
+    meeting = Meeting.get_meeting_by_id(meeting_id)
+    if meeting.user_id == current_user.id:
+        meeting.delete()
+        return jsonify(
+            success=True,
+            message=u'Møtet ble slettet'
+        )
+    return jsonify(
+        success=False,
+        message=u'Du har ikke tilgang til å slette dette møtet!'
+    )
+
+
+@app.route('/delete_world/<int:world_id>')
+@login_required
+def delete_world(world_id):
+    world = World.get_by_id(world_id)
+    if world.user_id == current_user.id:
+        world.delete()
+        return jsonify(
+            success=True,
+            message=u'Verdenen ble slettet'
+        )
+    return jsonify(
+        success=False,
+        message=u'Du har ikke tilgang til å slette denne verdenen!'
+    )
 
 
 @app.route('/fra_kart')
 @login_required
 def from_map():
     """ Renders the map area selection page """
+    form = forms.WorldForm()
     return render_template(
         'map/minecraft_kartverket.html',
-        title='Kart'
+        title='Kart',
+        form=form,
+        action=url_for('home')
     )
 
 
@@ -134,9 +195,8 @@ def from_map():
 def mc_world_url():
     """ Pass MC world url to server """
     url = str(request.form['url'])
-    world = World(user_id=current_user.id)
-    print url
-    return files.save_world_from_fme(url=url, world=world)
+    description = request.form['description']
+    return files.save_world_from_fme(url=url, description=description)
 
 
 @app.route('/get_world/<file_name>')
@@ -168,6 +228,7 @@ def show_preview(world_ref):
         )
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
+@login_required
 def test_cloud():
     if request.method == 'POST':
         # TODO test code here
@@ -187,6 +248,7 @@ def test_cloud():
 
 
 @app.route('/export_calendar', methods=['GET'])
+@login_required
 def export_calendar():
     return files.export_calendar_for_user()
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ The database controller """
 
 from flask_app import app

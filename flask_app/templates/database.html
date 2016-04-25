@@ -5,13 +5,19 @@
 <h2>Database test</h2>
     <ul class=meetings>
     {% for meeting in meetings %}
-        <li><h1>{{ meeting.title }}</h1> <h2>{{ meeting.start_time }} Deltakere: {{ meeting.participant_count }}</h2></li>
+        <li><h3>{{ meeting.title }}</h3>
+            {{ meeting.start_time }} Deltakere: {{ meeting.participant_count }} Verden: {{ meeting.world_id }}</li>
 
     {%  endfor %}
-    </ul>
+    </ul><hr>
     <ul class=worlds>
     {% for world in worlds %}
-        <li><h2> Created by: {{ world.user_id }} File_ref: {{ world.file_ref }}</h2> <a href="{{ url_for('generate_preview', world_ref=world.file_ref) }}"> Gen preview </a> <a href=" {{ url_for('show_preview', world_ref=world.file_ref) }} "> Show preview </a></li>
+        <li>Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }} <a href="{{ url_for('generate_preview', world_ref=world.file_ref) }}"> Gen preview </a> <a href=" {{ url_for('show_preview', world_ref=world.file_ref) }} "> Show preview </a> </li>
     {%  endfor %}
+    </ul>
+    <ul class=users>
+    {% for user in users %} <!-- TODO: To be removed (entire user for loop) when everything works properly -->
+        <li><h3>{{ user.email }} </h3> <p> Passord: {{ user.password }} Rolle: {{ user.roles }} ID: {{ user.id }}</p></li>
+    {% endfor %}
     </ul>
 {% endblock %}

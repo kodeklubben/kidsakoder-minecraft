@@ -1,7 +1,7 @@
 ### DNSimple Provider
 provider "dnsimple" {
-    token = "${var.dnsimple_token}"
-    email = "${var.dnsimple_email}"
+    token = "${var.dnsimple.token}"
+    email = "${var.dnsimple.email}"
 }
 
 ### DNS Records

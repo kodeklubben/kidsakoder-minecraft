@@ -1,0 +1,25 @@
+# Upstart script for Minecraft Forge server
+{% set server = pillar['minecraft']['server'] %}
+{% set forge = pillar['minecraft']['forge'] %}
+
+description "minecraft forge server"
+
+start on run level [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 5
+
+setuid {{ server.user }}
+setgid {{ server.group }}
+
+env CWD={{ server.path }}
+env JAR={{ forge.jar_name }}
+env PORT={{ server.port }}
+env MAX_MEM={{ server.max_mem }}
+env MIN_MEM={{ server.min_mem }}
+
+script 
+  cd $CWD
+  java -Xmx$MAX_MEM -Xms$MIN_MEM -jar $JAR nogui
+end script

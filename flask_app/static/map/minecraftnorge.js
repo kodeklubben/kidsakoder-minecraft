@@ -8,16 +8,28 @@ function drawPolygon() {
         if (validSize()) {
             var a = (new OpenLayers.Format.WKT).write(polygonLayer.features[polygonLayer.features.length - 1]);
             $("#geom").val(a), drawControl.deactivate()
-        } else $("#geom").val("toolarge"), drawControl.deactivate()
+            $("#submit").removeClass("alert alert-success alert-danger fade in").addClass("alert alert-success fade in");
+        } else {
+            $("#geom").val("toolarge"), drawControl.deactivate();
+            $("#submit").removeClass("alert alert-success alert-danger fade in").addClass("alert alert-danger fade in");
+            $("#results").html("<p>Området du har tegnet er for stort</p>")
+            $("#resultpanel").css("visibility", "visible");
+            $("#resultpanel").css("height", "auto");
+            $("#resultpanel").css("width", "auto");
+        }
     })
 }
+
 function drawReset() {
-    $("#results").html(""), $("#resultpanel").css("visibility", "hidden"), $("#resultpanel").css("height", "0px"), $("#resultpanel").css("width", "0px"), $("#geom").val("empty"), drawControl && (map.removeLayer(polygonLayer), polygonLayer = null, mouseControl.deactivate(), mouseControl = null, drawControl.deactivate(), drawControl = null, clippingGeometry = [])
+    $("#results").html(""), $("#resultpanel").css("visibility", "hidden"), $("#resultpanel").css("height", "0px"), $("#resultpanel").css("width", "0px"), $("#geom").val("empty"), drawControl && (map.removeLayer(polygonLayer), polygonLayer = null, mouseControl.deactivate(), mouseControl = null, drawControl.deactivate(), drawControl = null, clippingGeometry = []);
+    $("#submit").removeClass("alert alert-success alert-danger fade in");
 }
+
 function validSize() {
     var a = getArea(polygonLayer.features[polygonLayer.features.length - 1].geometry);
     return console.log("Area: " + a + "km2"), 64 > a
 }
+
 function getArea(a) {
     proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
     for (var b = a.components[0].components, c = [], d = 0; d < b.length; d++) {
@@ -27,6 +39,7 @@ function getArea(a) {
     var h = new OpenLayers.Geometry.LinearRing(c), i = Math.abs(h.getArea());
     return Math.round(i / 1e6)
 }
+
 $(document).ready(function () {
     dataDist.init({
         host: "https://mc-sweco.fmecloud.com",
@@ -34,6 +47,7 @@ $(document).ready(function () {
         detail: "low&token=8fce04aca10b65ffe1b53cd73c1fc90679ede88b"
     })
 });
+
 var dataDist = function () {
     function a(a) {
         $("#spindiv").css("visibility", "hidden");
@@ -44,11 +58,19 @@ var dataDist = function () {
         if (b == "success") {
             var c = a.serviceResponse.url;
             d.append($("<p>Vellykket! <br> Overfører verden </p>"));
+            d.append(new Spinner().spin().el)
             $.post('/mc_world_url', {
-                url : c
-            }, function (data, status) {
-                $("#results").html(data);
-            })
+                url : c,
+                description : $("#description").val()
+
+                }, function (data, status) {
+                    $("#results").html(data.message);
+                    $("#world_id").val(data.world_id);
+
+                    $("#submit").removeClass("alert alert-success alert-danger fade in");
+                    $("#continue").css("display", "block");
+                    $("#continue").addClass("alert alert-success fade in");
+                })
             //d.append($('<a href="' + c + '">Last ned! </a>')));
         } else {
             d.append($("<p>Mislykket. Prøv igjen!</p>"))
@@ -83,6 +105,7 @@ var dataDist = function () {
         }
     }
 }();
+
 $("#draw").attr("onclick", "drawPolygon();"), $("#reset").attr("onclick", "drawReset();");
 var drawControl, mouseControl, polygonLayer, map, fromProjection, toProjection, clippingGeometry = [];
 $("#helpmodal").modal("hide");
@@ -110,8 +133,12 @@ $(".bootstrap-switch-wrapper").css({width: "100%"});
 $("#submit").attr("disabled", !0);
 $("#world_name").on("keyup", function () {
     $("#world_name").val().trim().length > 3 ? $("#submit").removeAttr("disabled") : $("#submit").attr("disabled", !0)
-    });
+});
 $("#world_name").keyup();
+
+$("#continue").click(function () {
+    $("#continue_form").submit();
+});
 
 var map = new OpenLayers.Map({
     div: "map",
@@ -144,6 +171,7 @@ var map = new OpenLayers.Map({
     hwaccel: !1,
     position: "absolute"
 }, target = document.getElementById("spindiv"), spinner = new Spinner(opts).spin(target);
+
 $("#helpbtn").click(function () {
     $("#helpmodal").modal("show")
 });

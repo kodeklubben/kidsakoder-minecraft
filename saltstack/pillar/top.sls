@@ -1,6 +1,18 @@
 base:
+  '*':
+    - common
   'master*':
     - cloud
-  'webserver*':
-    - web
+  'web*':
+    - webserver
     - cloud
+  'mc*':
+    - minecraft
+  'mc-small*':
+    - minecraft.small
+  'mc-medium*':
+    - minecraft.medium
+  'mc-large*':
+    - minecraft.large
+  'mc-mega*':
+    - minecraft.mega

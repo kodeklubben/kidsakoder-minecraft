@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {#    <meta name="viewport" content="width=795, user-scalable=yes">#}
     <title id='pageTitle'>{{ title }} - {{ config.APP_NAME }}</title>
+    <link href="/static/images/favicon.ico" rel="icon" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     {% block head_scripts %}{% endblock %}
@@ -25,9 +26,6 @@
             <div class="navbar-collapse collapse">
                 {% if current_user.is_authenticated %}
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('new_meeting') }}">
-                        Nytt møte</a>
-                    </li>
                     <li><a href="{{ url_for('database') }}">
                         /database</a>
                     </li>
@@ -41,11 +39,17 @@
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                         Logg ut</a>
                     </li>
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin') }}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        {{ current_user.email }}</a>
+                    </li>
+                    {% else %}
                     <li><a href="{{ url_for_security('logout') }}">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         {{ current_user.email }}</a>
                     </li>
-
+                    {% endif %}
                 </ul>
                 {% endif %}
             </div>
