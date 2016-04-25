@@ -34,13 +34,12 @@ resource "azure_instance" "mc" {
     }
 
     # Set which Minecraft mod and size should be used
-    provision "remote-exec" {
+    provisioner "remote-exec" {
         inline = [
           "mkdir /etc/salt/",
           "echo 'mod: raspberryjam' > /etc/salt/grains",
           "echo 'size: ${lookup(var.sizes, count.index)}' >> /etc/salt/grains"
         ]
-
     }
 
     # Copy saltstack dir with config, states and pillar
