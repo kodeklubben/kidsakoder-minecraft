@@ -7,7 +7,7 @@ import urllib2
 
 from flask_security import current_user
 
-from flask import send_file
+from flask import send_file, jsonify
 from icalendar import Calendar, Event
 from pytz import timezone
 from jinja2 import escape
@@ -39,11 +39,10 @@ def save_world_from_fme(url=None, description=""):
         world.file_ref = file_name
         world.description = description
         world.store()
-        return_message = {
-            'message': '<p>Verden overført</p>',
-            'world_id': str(world.id)
-        }
-        return json.dumps(return_message)
+        return jsonify(
+            message=u'Verden overført',
+            world_id=str(world.id)
+        )
 
     return '<p>Noe gikk galt!</p>'
 

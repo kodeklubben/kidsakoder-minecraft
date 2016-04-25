@@ -14,3 +14,5 @@ base:
     - minecraft.medium
   'mc-large*':
     - minecraft.large
+  'mc-mega*':
+    - minecraft.mega

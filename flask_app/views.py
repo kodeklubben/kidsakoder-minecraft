@@ -3,18 +3,13 @@
 Routes and views for the flask application.
 """
 
-from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, session
-from flask_app import app, user_datastore
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
+from flask_app import app
 from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
-from flask_security.forms import RegisterForm
-
-from flask_sqlalchemy import SQLAlchemy
-
 import forms
 import files
 
-db = SQLAlchemy(app)
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -111,17 +106,19 @@ def database():
         worlds=all_worlds
     )
 
-@app.route('/admin', methods=['GET', 'POST'])
+
+@app.route('/admin', methods=['GET', 'POST'])  # Need post?
 @login_required
 @roles_required('admin')
 def admin():
-    #TODO: Unsure about what (if anything) is still necessary here.
-    #This is mostly here to try and make sure non-admins can not access the admin panel.
+    # TODO: Unsure about what (if anything) is still necessary here.
+    # This is mostly here to try and make sure non-admins can not access the admin panel.
     """ Enables admins to register new users """
     return render_template(
         'admin/admin.html',
         title='Adminside - Registrer nye brukere',
     )
+
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
@@ -144,8 +141,40 @@ def edit_meeting(meeting_id):
     if form.validate_on_submit():
         form.populate_obj(meeting)
         meeting.store()
-        flash(u'Møte endret!')
+        flash(u'Møtet ble endret!')
     return redirect(url_for('home'))
+
+
+@app.route('/delete_meeting/<int:meeting_id>')
+@login_required
+def delete_meeting(meeting_id):
+    meeting = Meeting.get_meeting_by_id(meeting_id)
+    if meeting.user_id == current_user.id:
+        meeting.delete()
+        return jsonify(
+            success=True,
+            message=u'Møtet ble slettet'
+        )
+    return jsonify(
+        success=False,
+        message=u'Du har ikke tilgang til å slette dette møtet!'
+    )
+
+
+@app.route('/delete_world/<int:world_id>')
+@login_required
+def delete_world(world_id):
+    world = World.get_by_id(world_id)
+    if world.user_id == current_user.id:
+        world.delete()
+        return jsonify(
+            success=True,
+            message=u'Verdenen ble slettet'
+        )
+    return jsonify(
+        success=False,
+        message=u'Du har ikke tilgang til å slette denne verdenen!'
+    )
 
 
 @app.route('/fra_kart')
@@ -183,6 +212,7 @@ def get_world(file_name):
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
+@login_required
 def test_cloud():
     if request.method == 'POST':
         # TODO test code here
@@ -202,6 +232,7 @@ def test_cloud():
 
 
 @app.route('/export_calendar', methods=['GET'])
+@login_required
 def export_calendar():
     return files.export_calendar_for_user()
 
