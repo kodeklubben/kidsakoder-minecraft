@@ -75,7 +75,7 @@ variable "private_security_group" {
 
 variable "count" { 
   description = "The amount of Minecraft servers to spin up"
-  default = 4 
+  default = 1 
 }
 
 variable "sizes" {

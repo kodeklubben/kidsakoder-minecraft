@@ -101,7 +101,9 @@ Vagrant.configure(2) do |config|
     # Saltstack grains 
     minion.vm.provision "shell", run: "always", inline: <<-SHELL
       mkdir /etc/salt/
-      echo 'mod: raspberryjam' > /etc/salt/grains
+      echo 'forge_version: 1.8.8' > /etc/salt/grains
+      echo 'mod: raspberryjam' >> /etc/salt/grains
+      echo 'raspberryjam_version: 0.52' >> /etc/salt/grains
       echo 'size: small' >> /etc/salt/grains
     SHELL
 
