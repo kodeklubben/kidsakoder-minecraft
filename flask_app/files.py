@@ -65,9 +65,10 @@ def generate_world_preview(world_ref):
     preview_path = safe_join(preview_path, world_ref)
 
     # Call overviewer to generate
-
-    subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
-    # UNIX: subprocess.call(["overviewer.py", world_path, preview_path])
+    # WIN:
+    # subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
+    # LINUX: 
+    subprocess.call(["overviewer.py", world_path, preview_path])
     # TODO Clean up tmp files
     return '<p> Verden generert tror jeg </p>'
 
