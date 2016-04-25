@@ -64,7 +64,7 @@ install-computercraft-mod:
 # Install Raspberryjam mod 
 {% if grains['mod'] == 'raspberryjam' %}
 
-{% if grains['raspberryjam_version'] == '0.52' %}
+{% if salt['grains.get']('raspberryjam_version', '') == '0.52' %}
 download-raspberryjam-mod-old:
   file.managed:
     - name: {{ server.mods_path }}/{{ mods.raspberryjam.052.jar_name }}
