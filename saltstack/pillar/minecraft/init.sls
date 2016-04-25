@@ -12,6 +12,7 @@ minecraft:
     port: 25565
     max_mem: 512M
     min_mem: 512M
+    java_log: /opt/minecraft/log/hs_err_pid%p.log
 
   forge:
     jar_name: forge-1.8.9-11.15.1.1722-universal.jar

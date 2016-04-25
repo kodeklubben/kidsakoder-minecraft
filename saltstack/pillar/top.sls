@@ -1,6 +1,7 @@
 base:
   '*':
     - common
+    - users
 
   # Salt master configuration
   'master*':
@@ -16,8 +17,9 @@ base:
     - minecraft
 
   # Minecraft sizes
-  {% if grains['size'] %}
-  'size:{{ grains['size'] }}':
+  {% set size = salt['grains.get']('size', '') %}
+  {% if size %}
+  'size:{{ size }}':
     - match: grain
-    - minecraft.sizes.{{ grains['size'] }}
+    - minecraft.sizes.{{ size }}
   {% endif %}

@@ -1,2 +1,2 @@
-common:
+common: 
   test: Hello World

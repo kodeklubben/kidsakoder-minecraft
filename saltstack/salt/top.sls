@@ -1,6 +1,7 @@
 base:
   '*':
     - common
+    - users
 
   # Salt master states
   'master*':
