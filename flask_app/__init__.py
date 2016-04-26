@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.config.from_object('flask_app.configuration.Development')
 
 
-
 # Set locale for datetime format
 import locale
 try:
