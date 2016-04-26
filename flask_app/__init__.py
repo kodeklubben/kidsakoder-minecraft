@@ -9,8 +9,12 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# See configuration.py for possible configuration objects
-app.config.from_object('flask_app.configuration.Development')
+# Load configurations
+app.config.from_pyfile('config/configuration.py')
+app.config.from_pyfile('config/secret_key.py')
+app.config.from_pyfile('config/secret_config.py')
+# Development configuration. Comment out for production
+app.config.from_pyfile('config/development.py')
 
 
 # Set locale for datetime format
