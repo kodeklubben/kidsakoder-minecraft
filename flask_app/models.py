@@ -15,8 +15,8 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
-    last_name = db.Column(db.String(100), server_default='') #Removed from user registration for now
+    first_name = db.Column(db.String(100), server_default='')  # Do we need - or even want - to register our users with names?
+    last_name = db.Column(db.String(100), server_default='')  # Removed from user registration for now
     
     def is_admin(self):
         return self.admin
@@ -57,7 +57,7 @@ class Meeting(db.Model):
     start_time = db.Column(db.DateTime)  # YYYY-MM-DD HH:MM:SS.SSS
     end_time = db.Column(db.DateTime)
     participant_count = db.Column(db.Integer)
-    world_id = db.Column(db.Integer, db.ForeignKey('world.id'))
+    _world_id = db.Column('world_id', db.Integer, db.ForeignKey('world.id'))
 
     @classmethod
     def get_all_as_dict(cls):
@@ -78,6 +78,18 @@ class Meeting(db.Model):
     def get_meeting_by_id(cls, meeting_id):
         meeting = cls.query.get(meeting_id)
         return meeting
+
+    @property
+    def world_id(self):
+        return self._world_id
+
+    @world_id.setter
+    def world_id(self, value):
+        try:
+            int_val = int(value)
+        except ValueError:
+            int_val = None
+        self._world_id = int_val
 
     def store(self):
         """ Store itself to database """

@@ -94,7 +94,6 @@
                 </div>
             </div>
 
-            {{ render_field(form.world_id) }}
             {% if world %}
                 <a href="{{ url_for('get_world', file_name=world.file_ref) }}">Last ned verden</a><br><br>
             {% endif %}

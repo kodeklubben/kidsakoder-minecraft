@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config/configuration.py')
 app.config.from_pyfile('config/secret_key.py')
 app.config.from_pyfile('config/secret_config.py')
-# Development configuration. Comment out for production
+# Development configuration overrides. Comment out for production
 app.config.from_pyfile('config/development.py')
 
 
