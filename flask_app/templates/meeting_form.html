@@ -110,10 +110,20 @@ tab_load=(obj_load ? "#meeting-tab" : "#");
 
 $(document).ready(function () {
     $('#start_time').datetimepicker({
-        locale: 'nb'
+        locale: 'nb',
+        showClose: true,
+        toolbarPlacement: 'top',
+        minDate: moment()
     });
     $('#end_time').datetimepicker({
-        locale: 'nb'
+        locale: 'nb',
+        showClose: true,
+        toolbarPlacement: 'top',
+        minDate: moment(),
+        useCurrent: true,
+    });
+    $("#start_time").on("dp.change", function (e) {
+        $('#end_time').data("DateTimePicker").minDate(e.date);
     });
 });
 
