@@ -116,12 +116,11 @@ $(document).ready(function () {
         minDate: moment()
     });
     $('#end_time').datetimepicker({
-        locale: 'nb',
-        showClose: true,
-        toolbarPlacement: 'top',
-        minDate: moment(),
-        useCurrent: true,
+        useCurrent: false
     });
+    $('#end_time').data("DateTimePicker").options(
+        $('#start_time').data("DateTimePicker").options()
+    );
     $("#start_time").on("dp.change", function (e) {
         $('#end_time').data("DateTimePicker").minDate(e.date);
     });
