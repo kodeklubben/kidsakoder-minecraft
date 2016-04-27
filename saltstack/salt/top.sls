@@ -5,5 +5,6 @@ base:
     - cloud
   'web*':
     - webserver
+    - overviewer
   '*mc*':
     - minecraft
