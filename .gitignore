@@ -95,7 +95,7 @@ $RECYCLE.BIN/
 *.config
 
 # Secret configs and files
-flask_app/config/secret_key.py
+secret_key.py
 flask_app/config/secret_config.py
 # Secret certificates
 *.pem
