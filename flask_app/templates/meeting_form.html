@@ -113,7 +113,28 @@ $(document).ready(function () {
         locale: 'nb',
         showClose: true,
         toolbarPlacement: 'top',
-        minDate: moment()
+        minDate: moment(),
+        tooltips: {
+            close: 'Lukk velgeren',
+            selectTime: 'Velg tid',
+            pickHour: 'Velg time',
+            incrementHour: 'Øk timer',
+            decrementHour: 'Reduser timer',
+            pickMinute: 'Velg minutt',
+            incrementMinute: 'Øk minutter',
+            decrementMinute: 'Reduser minutter',
+            selectMonth: 'Velg måned',
+            prevMonth: 'Forrige måned',
+            nextMonth: 'Neste måned',
+            selectYear: 'Velg år',
+            prevYear: 'Forrige år',
+            nextYear: 'Neste år',
+            selectDecade: 'Velg tiår',
+            prevDecade: 'Forrige tiår',
+            nextDecade: 'Neste tiår',
+            prevCentury: 'Forrige århundre',
+            nextCentury: 'Neste århundre'
+        }
     });
     $('#end_time').datetimepicker({
         useCurrent: false
