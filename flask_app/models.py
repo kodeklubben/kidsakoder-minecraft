@@ -15,8 +15,9 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    first_name = db.Column(db.String(100), server_default='')  # Do we need - or even want - to register our users with names?
-    last_name = db.Column(db.String(100), server_default='')  # Removed from user registration for now
+    name = db.Column(db.String(255), server_default='')
+    mojang_playername = db.Column(db.String(255), server_default='')
+    mojang_uuid = db.Column(db.String(64))
     
     def is_admin(self):
         return self.admin
