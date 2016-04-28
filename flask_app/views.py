@@ -119,6 +119,12 @@ def admin():
         title='Adminside - Registrer nye brukere',
     )
 
+@app.route('/bruker')
+def user():
+    return render_template(
+        'user/user.html',
+        title='Instillinger'
+    )
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
