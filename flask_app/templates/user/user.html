@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="col-md-10">
+<div>
     <h2> Instillinger for denne brukeren </h2>
     <a href="{{ url_for('user') }}" class="btn btn-default btn-block"
        style="text-align: left; padding-left: 6px; padding-right: 6px">
@@ -28,6 +28,6 @@
         <strong class="pull-right">{{ current_user.mojang_playername }}</strong>
     </a>
 </div>
-<div class="clearfix"></div>
+<span class="clearfix"></span>
 
 {% endblock %}

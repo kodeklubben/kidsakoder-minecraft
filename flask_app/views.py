@@ -119,12 +119,39 @@ def admin():
         title='Adminside - Registrer nye brukere',
     )
 
+
 @app.route('/bruker')
+@login_required
 def user():
     return render_template(
         'user/user.html',
         title='Instillinger'
     )
+
+
+@app.route('/bruker/endre_epost', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    pass
+
+
+@app.route('/bruker/endre_navn', methods=['GET', 'POST'])
+@login_required
+def change_name():
+    pass
+
+
+@app.route('/bruker/endre_passord', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    pass
+
+
+@app.route('/bruker/endre_spillernavn', methods=['GET', 'POST'])
+@login_required
+def change_playername():
+    pass
+
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
 @login_required
