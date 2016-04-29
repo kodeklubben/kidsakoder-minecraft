@@ -9,6 +9,7 @@ from models import Meeting, World, User
 from flask_security import login_required, current_user, roles_required
 import forms
 import files
+import urllib2
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,7 +40,7 @@ def home():
             return render_template(
                 'index.html',
                 set_tab=set_tab,
-                title='Hjem',
+                title=u'Hjem',
                 meetings=meeting_list,
                 form=form,
                 world=world,
@@ -59,7 +60,7 @@ def home():
         return render_template(
             'index.html',
             set_tab=set_tab,
-            title='Hjem',
+            title=u'Hjem',
             meetings=meeting_list,
             form=form,
             world=world,
@@ -71,7 +72,7 @@ def home():
     return render_template(
         'index.html',
         set_tab=set_tab,
-        title='Hjem',
+        title=u'Hjem',
         meetings=meeting_list,
         form=form,
         world=world,
@@ -86,7 +87,7 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt oss'
+        title=u'Kontakt oss'
     )
 
 
@@ -100,7 +101,7 @@ def database():
     all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
-        title='Database test',
+        title=u'Database test',
         meetings=all_meetings,
         users=all_users,
         worlds=all_worlds
@@ -116,8 +117,63 @@ def admin():
     """ Enables admins to register new users """
     return render_template(
         'admin/admin.html',
-        title='Adminside - Registrer nye brukere',
+        title=u'Adminside - Registrer nye brukere',
     )
+
+
+@app.route('/bruker')
+@login_required
+def user():
+    return render_template(
+        'user/user.html',
+        title=u'Instillinger'
+    )
+
+
+@app.route('/bruker/endre_epost', methods=['GET', 'POST'])
+@login_required
+def change_email():
+    pass
+
+
+@app.route('/bruker/endre_navn', methods=['GET', 'POST'])
+@login_required
+def change_name():
+    pass
+
+
+@app.route('/bruker/endre_passord', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    pass
+
+
+@app.route('/bruker/endre_spillernavn', methods=['GET', 'POST'])
+@login_required
+def change_playername():
+    form = forms.ChangePlayername(request.form)
+    if form.validate_on_submit():
+        current_user.mojang_playername = form.playername.data
+        current_user.mojang_uuid = form.uuid.data
+        current_user.store()
+        flash(u'Minecraft spillernavnet ble oppdatert')
+        return redirect(url_for('user'))
+
+    form.playername.process_data(current_user.mojang_playername)
+    form.uuid.process_data(current_user.mojang_uuid)
+    return render_template(
+        'user/change_playername.html',
+        title=u'Endre Minecraft spillernavn',
+        form=form,
+        action=url_for('change_playername')
+    )
+
+
+@app.route('/bruker/hent_mojang_uuid_proxy/<playername>')
+@login_required
+def get_mojang_uuid_proxy(playername):
+    response = urllib2.urlopen('https://api.mojang.com/users/profiles/minecraft/' + playername)
+    return app.response_class(response.read(), mimetype='application/json')
 
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
@@ -184,7 +240,7 @@ def from_map():
     form = forms.WorldForm()
     return render_template(
         'map/minecraft_kartverket.html',
-        title='Kart',
+        title=u'Kart',
         form=form,
         action=url_for('home')
     )
@@ -220,13 +276,13 @@ def test_cloud():
                        {'name': 'Dead server', 'location': 5678}]
         return render_template(
             'test_cloud.html',
-            title='Test cloud',
+            title=u'Test cloud',
             server_list=server_list
         )
 
     return render_template(
         'test_cloud.html',
-        title='Test cloud',
+        title=u'Test cloud',
         server_list=[]
     )
 
