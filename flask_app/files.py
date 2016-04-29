@@ -6,15 +6,14 @@ import StringIO
 import urllib2
 
 from flask_security import current_user
-
 from flask import send_file, jsonify
 from icalendar import Calendar, Event
 from pytz import timezone
 from jinja2 import escape
 from models import Meeting, World
-from flask import url_for, safe_join, session
+from flask import safe_join
 from flask_app import app
-import json
+import os
 
 
 def save_world_from_fme(url=None, description=""):
@@ -70,3 +69,17 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
     return send_file(export,
                      attachment_filename=filename + '.ics',
                      as_attachment=True)
+
+
+def delete_world_file(file_ref):
+    file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    file_path = safe_join(file_path, file_ref)
+    try:
+        os.remove(file_path)
+    except OSError:
+        pass
+
+
+def delete_world_preview(file_ref):
+    # TODO Delete generated world preview
+    pass

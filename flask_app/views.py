@@ -267,11 +267,16 @@ def delete_meeting(meeting_id):
 def delete_world(world_id):
     world = World.get_by_id(world_id)
     if world.user_id == current_user.id:
-        world.delete()
+        if world.delete():
+            return jsonify(
+                success=True,
+                message=u'Verdenen ble slettet'
+            )
         return jsonify(
-            success=True,
-            message=u'Verdenen ble slettet'
+            success=False,
+            message=u'Denne verdenen er registrert brukt i et møte'
         )
+
     return jsonify(
         success=False,
         message=u'Du har ikke tilgang til å slette denne verdenen!'

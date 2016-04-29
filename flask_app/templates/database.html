@@ -6,7 +6,7 @@
     <ul class=meetings>
     {% for meeting in meetings %}
         <li><h3>{{ meeting.title }}</h3>
-            {{ meeting.start_time }} Deltakere: {{ meeting.participant_count }} Verden: {{ meeting.world_id }}</li>
+            {{ meeting.start_time }} Deltakere: {{ meeting.participant_count }} Verden: {{ meeting._world_id }}</li>
 
     {%  endfor %}
     </ul><hr>
