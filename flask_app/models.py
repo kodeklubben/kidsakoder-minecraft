@@ -144,8 +144,9 @@ class World(db.Model):
         db.session.commit()
 
     def delete(self):
-        meetings = Meeting.query.filter_by(world_id=self.world_id)
-        if len(meetings) > 0:
+        meeting_count = Meeting.query.filter_by(_world_id=self.id).count()
+        if meeting_count > 0:
+            # Do not delete
             return False
 
         if self.file_ref:
