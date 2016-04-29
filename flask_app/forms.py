@@ -27,7 +27,7 @@ class WorldForm(Form):
 class ChangeEmail(Form):
     new_email = EmailField(u'Ny e-post adresse', [Email()])
     confirm_email = EmailField(u'Bekreft e-post adressen',
-                               [Email(), EqualTo(u'new_email', u'E-post adressene er ikke like')])
+                               [Email(), EqualTo('new_email', u'E-post adressene er ikke like')])
     password = PasswordField(u'Skriv inn passordet ditt for å bekrefte endringen', [InputRequired()])
 
 
@@ -39,9 +39,11 @@ class ChangePassword(Form):
     # TODO password length requirements?
     old_password = PasswordField(u'Gammelt passord', [InputRequired()])
     new_password = PasswordField(u'Nytt passord', [InputRequired()])
-    confirm_password = PasswordField(u'Bekreft passordet', [InputRequired()])
+    confirm_password = PasswordField(u'Bekreft nytt passord',
+                                     [InputRequired(), EqualTo('new_password', u'Passordene er ikke like')])
 
 
 class ChangePlayername(Form):
     playername = StringField(u'Ditt minecraft spillernavn', [InputRequired()])
     uuid = StringField(u'Mojang UUID', [InputRequired()])
+    password = PasswordField(u'Skriv inn passordet ditt for å bekrefte endringen', [InputRequired()])

@@ -6,7 +6,7 @@ Routes and views for the flask application.
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
 from flask_app import app
 from models import Meeting, World, User
-from flask_security import login_required, current_user, roles_required
+from flask_security import login_required, current_user, roles_required, utils
 import forms
 import files
 import urllib2
@@ -133,19 +133,60 @@ def user():
 @app.route('/bruker/endre_epost', methods=['GET', 'POST'])
 @login_required
 def change_email():
-    pass
+    form = forms.ChangeEmail(request.form)
+    if form.validate_on_submit():
+        if utils.verify_password(form.password.data, current_user.password):
+            current_user.email = form.new_email.data
+            current_user.store()
+            flash(u'E-post adressen ble oppdatert')
+            return redirect(url_for('user'))
+        form.password.errors.append(u'Feil passord')
+
+    return render_template(
+        'user/change_email.html',
+        title=u'Endre e-post',
+        form=form,
+        action=url_for('change_email')
+    )
 
 
 @app.route('/bruker/endre_navn', methods=['GET', 'POST'])
 @login_required
 def change_name():
-    pass
+    form = forms.ChangeName(request.form)
+    if form.validate_on_submit():
+        current_user.name = form.new_name.data
+        current_user.store()
+        flash(u'Navn ble oppdatert')
+        return redirect(url_for('user'))
+
+    form.new_name.process_data(current_user.name)
+    return render_template(
+        'user/change_name.html',
+        title=u'Endre navn',
+        form=form,
+        action=url_for('change_name')
+    )
 
 
 @app.route('/bruker/endre_passord', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    pass
+    form = forms.ChangePassword(request.form)
+    if form.validate_on_submit():
+        if utils.verify_password(form.old_password.data, current_user.password):
+            current_user.password = utils.encrypt_password(form.new_password.data)
+            current_user.store()
+            flash(u'Passordet ble endret')
+            return redirect(url_for('user'))
+        form.old_password.errors.append(u'Feil passord')
+
+    return render_template(
+        'user/change_password.html',
+        title=u'Endre passord',
+        form=form,
+        action=url_for('change_password')
+    )
 
 
 @app.route('/bruker/endre_spillernavn', methods=['GET', 'POST'])
@@ -153,14 +194,18 @@ def change_password():
 def change_playername():
     form = forms.ChangePlayername(request.form)
     if form.validate_on_submit():
-        current_user.mojang_playername = form.playername.data
-        current_user.mojang_uuid = form.uuid.data
-        current_user.store()
-        flash(u'Minecraft spillernavnet ble oppdatert')
-        return redirect(url_for('user'))
+        if utils.verify_password(form.password.data, current_user.password):
+            current_user.mojang_playername = form.playername.data
+            current_user.mojang_uuid = form.uuid.data
+            current_user.store()
+            flash(u'Minecraft spillernavnet ble oppdatert')
+            return redirect(url_for('user'))
+        form.password.errors.append(u'Feil passord')
 
-    form.playername.process_data(current_user.mojang_playername)
-    form.uuid.process_data(current_user.mojang_uuid)
+    else:
+        form.playername.process_data(current_user.mojang_playername)
+        form.uuid.process_data(current_user.mojang_uuid)
+
     return render_template(
         'user/change_playername.html',
         title=u'Endre Minecraft spillernavn',
