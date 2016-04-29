@@ -19,15 +19,6 @@ class User(db.Model, UserMixin):
     mojang_playername = db.Column(db.String(255), server_default='')
     mojang_uuid = db.Column(db.String(64))
     
-    def is_admin(self):
-        return self.admin
-        
-    @classmethod
-    def store(self):
-        """ Store itself to database """
-        db.session.add(self)
-        db.session.commit()
-        
     @classmethod
     def get_all_as_dict(cls):
         """
@@ -35,6 +26,18 @@ class User(db.Model, UserMixin):
         """
         user_list = cls.query.all()
         return [vars(user) for user in user_list]
+
+    @classmethod
+    def get_by_id(cls, user_id):
+        return cls.query.get(user_id)
+
+    def store(self):
+        """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
+
+    def is_admin(self):
+        return self.admin
 
 
 class Role(db.Model, RoleMixin):

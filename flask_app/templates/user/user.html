@@ -4,25 +4,25 @@
 
 <div>
     <h2> Instillinger for denne brukeren </h2>
-    <a href="{{ url_for('user') }}" class="btn btn-default btn-block"
+    <a href="{{ url_for('change_email') }}" class="btn btn-default btn-block"
        style="text-align: left; padding-left: 6px; padding-right: 6px">
         Endre brukernavn / e-post adresse
         <strong class="pull-right">{{ current_user.email }}</strong>
     </a>
 
-    <a href="{{ url_for('user') }}" class="btn btn-default btn-block"
+    <a href="{{ url_for('change_name') }}" class="btn btn-default btn-block"
        style="text-align: left; padding-left: 6px; padding-right: 6px">
         Endre navn / beskrivelse
         <strong class="pull-right">{{ current_user.name }}</strong>
     </a>
 
-    <a href="{{ url_for('user') }}" class="btn btn-default btn-block"
+    <a href="{{ url_for('change_password') }}" class="btn btn-default btn-block"
        style="text-align: left; padding-left: 6px; padding-right: 6px">
         Endre passord
         <strong class="pull-right">********</strong>
     </a>
 
-    <a href="{{ url_for('user') }}" class="btn btn-default btn-block"
+    <a href="{{ url_for('change_playername') }}" class="btn btn-default btn-block"
        style="text-align: left; padding-left: 6px; padding-right: 6px">
         Registrer / endre Minecraft spillernavn
         <strong class="pull-right">{{ current_user.mojang_playername }}</strong>
