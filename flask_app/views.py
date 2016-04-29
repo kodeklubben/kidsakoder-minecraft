@@ -10,6 +10,7 @@ from flask_security import login_required, current_user, roles_required, utils
 import forms
 import files
 import urllib2
+import locale
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -44,7 +45,8 @@ def home():
                 meetings=meeting_list,
                 form=form,
                 world=world,
-                action=url_for('home')
+                action=url_for('home'),
+                locale=locale.getpreferredencoding()
             )
 
         form = forms.MeetingForm(request.form)
@@ -64,7 +66,8 @@ def home():
             meetings=meeting_list,
             form=form,
             world=world,
-            action=url_for('home')
+            action=url_for('home'),
+            locale=locale.getpreferredencoding()
         )
 
     # else GET blank frontpage
@@ -76,7 +79,8 @@ def home():
         meetings=meeting_list,
         form=form,
         world=world,
-        action=url_for('home')
+        action=url_for('home'),
+        locale=locale.getpreferredencoding()
     )
 
 

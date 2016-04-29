@@ -55,13 +55,6 @@
         <div class="row body-content">
             <p><span class="btn btn-default glyphicon glyphicon-arrow-left" id="back-btn" style="display: none"></span></p>
 
-            <div id="kartverket" style="display: none">
-
-                <!-- Placeholder -->
-                <div style="background-color: green; width: 100%; height: 400px;"></div>
-
-            </div>
-
             <div id="template" style="display: none">
 
                 <!-- Placeholder -->
@@ -99,6 +92,7 @@
             {% endif %}
 
             <input type="submit" class="btn btn-default" value="Lagre">
+            <a class="btn btn-default" href= {{ url_for('home') }}>Avbryt</a>
         </form>
     </div>
 </div>
@@ -117,10 +111,40 @@ tab_load=(obj_load ? "#meeting-tab" : "#");
 
 $(document).ready(function () {
     $('#start_time').datetimepicker({
-        locale: 'nb'
+        locale: 'nb',
+        showClose: true,
+        toolbarPlacement: 'top',
+        minDate: moment(),
+        tooltips: {
+            close: 'Lukk velgeren',
+            selectTime: 'Velg tid',
+            pickHour: 'Velg time',
+            incrementHour: 'Øk timer',
+            decrementHour: 'Reduser timer',
+            pickMinute: 'Velg minutt',
+            incrementMinute: 'Øk minutter',
+            decrementMinute: 'Reduser minutter',
+            selectMonth: 'Velg måned',
+            prevMonth: 'Forrige måned',
+            nextMonth: 'Neste måned',
+            selectYear: 'Velg år',
+            prevYear: 'Forrige år',
+            nextYear: 'Neste år',
+            selectDecade: 'Velg tiår',
+            prevDecade: 'Forrige tiår',
+            nextDecade: 'Neste tiår',
+            prevCentury: 'Forrige århundre',
+            nextCentury: 'Neste århundre'
+        }
     });
     $('#end_time').datetimepicker({
-        locale: 'nb'
+        useCurrent: false
+    });
+    $('#end_time').data("DateTimePicker").options(
+        $('#start_time').data("DateTimePicker").options()
+    );
+    $("#start_time").on("dp.change", function (e) {
+        $('#end_time').data("DateTimePicker").minDate(e.date);
     });
 });
 
@@ -138,16 +162,6 @@ $(document).ready(function(){
         document.getElementById("world-tab").style.opacity = "1";
     });
 });
-
-/*
-$(document).ready(function(){
-$("#kartverket-btn").click(function(){
-$("#gen-choise").hide();
-$("#kartverket").show();
-$("#back-btn").show();
-});
-});
-*/
 
 $(document).ready(function(){
     $("#template-btn").click(function(){

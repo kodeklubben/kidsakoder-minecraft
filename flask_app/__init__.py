@@ -35,7 +35,7 @@ except locale.Error:
             print 'Locale set to norwegian-bokmal'
         except locale.Error:
             print 'Norwegian locale not found'
-
+print 'Preferred locale: ' + locale.getpreferredencoding()
 
 # Initialize Flask-Security
 from database import db, roles_users
