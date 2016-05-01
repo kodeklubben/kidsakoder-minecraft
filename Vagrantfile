@@ -77,8 +77,8 @@ Vagrant.configure(2) do |config|
     
     # Virtualbox settings
     minion.vm.provider "virtualbox" do |v|
-      # Use 256 MB RAM
-      v.memory = 256
+      # Use 512 MB RAM
+      v.memory = 512
     end
   end
 
@@ -97,6 +97,15 @@ Vagrant.configure(2) do |config|
     minion.vm.post_up_message = "The Minecraft Forge server is up and running at #{ip}.\n" \
                                 "Connect to localhost:25565 or #{ip}:25565 to play.\n" \
                                 "Use the command 'vagrant ssh mc' to connect via SSH."
+
+    # Saltstack grains 
+    minion.vm.provision "shell", run: "always", inline: <<-SHELL
+      mkdir /etc/salt/
+      echo 'forge_version: 189' > /etc/salt/grains
+      echo 'mod: raspberryjam' >> /etc/salt/grains
+      echo 'raspberryjam_version: 0.52' >> /etc/salt/grains
+      echo 'size: small' >> /etc/salt/grains
+    SHELL
 
     # Saltstack provisioning
     minion.vm.provision "salt" do |salt|
