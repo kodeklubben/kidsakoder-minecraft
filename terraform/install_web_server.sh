@@ -4,6 +4,8 @@
 mkdir /etc/salt/
 # Copy Salt minion configuration
 cp /tmp/saltstack/etc/minion.conf /etc/salt/minion
+# Copy Salt grains
+cp /tmp/grains /etc/salt/grains
 
 # Download SaltStack bootstrap script
 wget -O /tmp/bootstrap-salt.sh https://bootstrap.saltstack.com

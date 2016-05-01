@@ -36,11 +36,10 @@ resource "azure_instance" "mc" {
     # Set which Minecraft mod and size should be used
     provisioner "remote-exec" {
         inline = [
-          "sudo mkdir /etc/salt/",
-          "sudo echo 'forge_version: 1.8.8' > /etc/salt/grains",
-          "sudo echo 'mod: raspberryjam' >> /etc/salt/grains",
-          "sudo echo 'raspberryjam_version: 0.52' >> /etc/salt/grains",
-          "sudo echo 'size: ${lookup(var.sizes, count.index)}' >> /etc/salt/grains"
+          "echo 'forge_version: 1.8.8' > /tmp/grains",
+          "echo 'mod: raspberryjam' >> /tmp/grains",
+          "echo 'raspberryjam_version: 0.52' >> /tmp/grains",
+          "echo 'size: ${lookup(var.sizes, count.index)}' >> /tmp/grains"
         ]
     }
 
