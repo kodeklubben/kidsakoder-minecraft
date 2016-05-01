@@ -1,7 +1,3 @@
-include:
-  - minecraft.mods.computercraft
-  - minecraft.mods.raspberryjam
-
 minecraft:
   server:
     user: minecraft
@@ -13,23 +9,6 @@ minecraft:
     max_mem: 512M
     min_mem: 512M
     java_log: /opt/minecraft/log/hs_err_pid%p.log
-
-  forge:
-    jar_name: forge-1.8.9-11.15.1.1722-universal.jar
-    link: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.8.9-11.15.1.1722/forge-1.8.9-11.15.1.1722-installer.jar
-    checksum: sha1=49e4e6a9509e77c8649c95c01b29e8e120db3c70
-
-    # Version 1.8.9
-    189:
-      jar_name: forge-1.8.9-11.15.1.1722-universal.jar
-      link: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.8.9-11.15.1.1722/forge-1.8.9-11.15.1.1722-installer.jar
-      checksum: sha1=49e4e6a9509e77c8649c95c01b29e8e120db3c70
-
-    # Version 1.8.8
-    188:
-      jar_name: forge-1.8.8-11.15.0.1655-universal.jar
-      link: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.8.8-11.15.0.1655/forge-1.8.8-11.15.0.1655-installer.jar
-      checksum: sha1=10599036e610de81e4e747a2e747cedf3a08b081
 
 
   # Minecraft Server Properties

@@ -14,3 +14,5 @@ base:
   # Minecraft server states
   '*mc*':
     - minecraft
+    - minecraft.forgeserver
+
