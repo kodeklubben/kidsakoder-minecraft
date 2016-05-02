@@ -11,6 +11,15 @@ python:
 env:
   - HELLO=WORLD
 
+# Allow sudo
+# NOTE: This makes Travis run in regular infrastructure and not container based infrastructure
+sudo: True
+
+# Install packages and other requirements
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y unixodbc-dev
+
 # Install requirements before testing
 install:
   - pip install -q pytest
