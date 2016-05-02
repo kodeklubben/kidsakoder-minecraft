@@ -18,6 +18,7 @@ sudo: True
 # Install packages and other requirements
 before_install:
   - sudo apt-get -qq update
+  # Add odbc package necessary for pyodbc in requirements.txt
   - sudo apt-get install -y unixodbc-dev
 
 # Install requirements before testing
@@ -27,7 +28,9 @@ install:
 
 # Do necessary things before testing
 before_script:
+  # Copy the empty secret_config.py template necessary to run app
   - cp flask_app/config/secret_config.py.template flask_app/config/secret_config.py
+  # Generate secret key and initialize database
   - python setup_app.py --quiet
 
 # Run pytest
