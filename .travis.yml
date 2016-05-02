@@ -28,7 +28,7 @@ install:
 # Do necessary things before testing
 before_script:
   - cp flask_app/config/secret_config.py.template flask_app/config/secret_config.py
-  - python setup_app.py
+  - python setup_app.py --quiet
 
 # Run pytest
 script:
