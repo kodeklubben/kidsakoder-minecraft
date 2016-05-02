@@ -102,16 +102,13 @@ class Meeting(db.Model):
 
     def delete(self):
         """ Delete itself from the database """
-        if self.world_id:
-            # Check if world is favoured and delete if not
-            # TODO only if meeting user is also owner of world
-            # TODO maybe check if world is used in other meetings?
-            # meetings = Meeting.query.filter_by(self.world_id)
-            world = World.get_by_id(self.world_id)
-            if not world.favourite:
-                world.delete()
         db.session.delete(self)
         db.session.commit()
+        if self.world_id:
+            # Check if world is favoured and delete if not
+            world = World.get_by_id(self.world_id)
+            if self.user_id == world.user_id and not world.favourite:
+                world.delete()
 
 
 class World(db.Model):
@@ -147,8 +144,16 @@ class World(db.Model):
         db.session.commit()
 
     def delete(self):
+        meeting_count = Meeting.query.filter_by(_world_id=self.id).count()
+        if meeting_count > 0:
+            # Do not delete
+            return False
+
         if self.file_ref:
-            # TODO delete file in file_ref
-            pass
+            import files
+            files.delete_world_file(self.file_ref)
+            files.delete_world_preview(self.file_ref)
+
         db.session.delete(self)
         db.session.commit()
+        return True
