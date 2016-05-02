@@ -63,9 +63,10 @@ def generate_world_preview(world_ref):
         world_zip.extractall(unzip_path)
 
     print('finding')
-    # TODO find name of mc world:
+    # Find minecraft world inside unzipped directory:
     world_path = safe_join(unzip_path, 'saves')
-    world_path = safe_join(world_path, 'Kodeklubben')
+    # We assume there is only one minecraft world, so we pick the first subdir
+    world_path = safe_join(world_path, os.listdir(world_path)[0]) 
     # path to put preview
     preview_path = safe_join(app.root_path, 'static')
     preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
@@ -88,9 +89,6 @@ def generate_world_preview(world_ref):
             'defaultzoom = 12 \n'
             ])
     # Call overviewer to generate
-    # WIN:
-    # subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
-    # LINUX: 
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
     # TODO Clean up tmp files
     return '<p> Verden generert tror jeg </p>'
