@@ -14,7 +14,7 @@ env:
 # Install requirements before testing
 install:
   - pip install -q pytest
-  - pip install -q -r requirements
+  - pip install -q -r requirements.txt
 
 # Do necessary things before testing
 before_script:
