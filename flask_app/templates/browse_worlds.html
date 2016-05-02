@@ -1,0 +1,38 @@
+
+<h2> Dine Minecraft verdener:</h2>
+<div class="panel-group">
+{% for world in world_list %}
+    <div class="panel panel-default" id="world_id_{{ world.id }}">
+
+    <div class="panel-body">
+    {% if world.description %} {{ world.description }} {% else %} Ingen beskrivelse {% endif %}
+
+        <span class="pull-right">
+            <button type="button" class="btn btn-default panel-btn use_world_btn"
+                    value="{{ world.id }}" title="Bruk denne verdenen i et møte">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                Bruk </button>
+
+            <a href="{{ url_for('get_world', file_name=world.file_ref) }}" class="btn btn-default panel-btn"
+               title="Last ned denne Minecraft verdenen">
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                Last ned </a>
+
+            <button type="button" class="btn btn-default panel-btn delete_world_btn"
+                    value="{{ world.id }}" title="Slett denne Minecraft verdenen">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                Slett </button>
+
+            <button type="button" class="btn btn-default panel-btn toggle_favourite_btn"
+                    value="{{ world.id }}" title="Lagre som favoritt. &#10;Favoritter blir ikke slettet automatisk når et møte slettes">
+            {% if world.favourite %}
+                <span class="glyphicon glyphicon-star" id="favourite_star_{{ world.id }}" aria-hidden="true" style="color: #FFD00F;"></span>
+            {% else %}
+                <span class="glyphicon glyphicon-star-empty" id="favourite_star_{{ world.id }}" aria-hidden="true"></span>
+            {% endif %}
+            Favoritt </button>
+        </span>
+    </div>
+    </div>
+{% endfor %}
+</div>

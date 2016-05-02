@@ -120,6 +120,12 @@ class World(db.Model):
     favourite = db.Column(db.Boolean)
 
     @classmethod
+    def get_user_worlds(cls, user_id=None):
+        if user_id is None:
+            return None
+        return cls.query.filter_by(user_id=user_id).all()
+
+    @classmethod
     def get_all_as_dict(cls):
         """
         :return:  All worlds as list of dictionaries with all fields
