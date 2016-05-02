@@ -1,0 +1,30 @@
+# Travis-CI.org configuration file
+
+# Language
+language: python
+
+# Python version
+python:
+  - 2.7
+
+# Environment variables
+env:
+  - HELLO=WORLD
+
+# Install requirements before testing
+install:
+  - pip install -q pytest
+  - pip install -q -r requirements
+
+# Do necessary things before testing
+before_script:
+  - cp flask_app/config/secret_config.py.template flask_app/config/secret_config.py
+  - python setup_app.py
+
+# Run pytest
+script:
+  - py.test
+
+# Disable email notificaitons
+notifications:
+  email: false
