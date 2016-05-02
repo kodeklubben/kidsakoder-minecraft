@@ -16,15 +16,21 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 {{ meeting.title }}
-                <span class="pull-right">{{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M') }}</span>
+                <span class="pull-right">{{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }}</span>
             </h3>
         </div>
         <div class="panel-body">
             <span class="pull-left">
                 Deltakere: {{ meeting.participant_count }}
             </span>
-            <span class="pull-right">
-                <a class="btn btn-default" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">Rediger</a>
+            <span class="pull-right" style="margin-right: 15px">
+                <div class="row">
+                    <a class="btn btn-default" style="width: 100%" href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}">Rediger</a>
+                </div>
+                <div class="row">
+                    <a class="btn btn-default glyphicon glyphicon-play"></a>
+                    <a id="{{ meeting.id }}" class="del-btn btn btn-default glyphicon glyphicon-remove-circle"></a>
+                </div>
             </span>
         </div>
     </div>
@@ -39,6 +45,24 @@
 
 
 {% block scripts %}
+
+<script type=text/javascript>
+
+$(document).ready(function(){
+    $(".del-btn").click(function(){
+        m_id = "#meeting_id_" + this.id;
+        $.getJSON("delete_meeting/" + this.id, function(result){
+            if (result.success) {
+                $(m_id).hide();
+            }
+            else {
+
+            }
+        });
+    });
+});
+
+</script>
 
 {{meeting_scripts(set_tab)}}
 

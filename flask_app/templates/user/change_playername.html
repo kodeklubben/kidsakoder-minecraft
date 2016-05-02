@@ -1,0 +1,65 @@
+{% from "security/_macros.html" import render_field_with_errors %}
+{% extends "layout.html" %}
+
+{% block content %}
+
+<form action="{{ action }}" method="POST">
+
+    <h2> Registrer eller endre ditt Minecraft spillernavn </h2>
+    <p class="text-info"><em> For å kunne få operatørtilgang på Minecraft tjenerene må du registrere ditt Minecraft spillernavn </em></p>
+
+    {{ form.hidden_tag() }}
+    {{ render_field_with_errors(form.playername, class='form-control') }}
+    {{ render_field_with_errors(form.uuid, class='form-control', readonly=True) }}<br>
+    {{ render_field_with_errors(form.password, class='form-control') }}
+    <p id="error_message"></p>
+    <button type="submit" class="btn btn-default" id="submit_button"> Lagre </button>
+    <a href="{{ url_for('user') }}" class="btn btn-default"> Avbryt </a>
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('document').ready(function () {
+        $('#submit_button').prop('disabled', true);
+    });
+
+    function get_uuid() {
+        $('#submit_button').prop('disabled', true);
+        $('#uuid').val('');
+        $('#error_message').html('');
+        $('#error_message').removeClass('text-danger');
+
+        var playername = $('#playername').val();
+        $.getJSON('{{ url_for('get_mojang_uuid_proxy', playername='') }}' + playername).done(function (data) {
+            if ('id' in data) {
+                $('#uuid').val(data.id);
+                $('#submit_button').prop('disabled', false);
+            } else {
+                $('#error_message').html(data.error + ': ' + data.errorMessage);
+                $('#error_message').addClass('text-danger');
+            }
+            console.log('success');
+            console.log(data);
+        }).fail(function (data) {
+            // TODO could not contact mojang
+            $('#error_message').html('Noe gikk galt. Sjekk at spillernavnet er riktig eller prøv igjen senere.');
+            $('#error_message').addClass('text-danger');
+            console.log('fail');
+            console.log(data);
+        });
+    }
+
+    $('#playername').focusout(get_uuid);
+    $('#playername').keydown(function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            get_uuid();
+        }
+
+    })
+
+</script>
+{% endblock %}

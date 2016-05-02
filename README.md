@@ -29,6 +29,9 @@ pip install -r requirements.txt
 ```
 #### Running Flask locally
 To run Flask locally on `http://localhost:5000`, you need to do the following:
+
+Make a copy of (do not rename) `secret_config.py.template` in `flask_app/config` and name it `secret_config.py`. Then you can fill in your super secret config settings.
+
 Setup the app by running the following command in the project folder:
 ```
 python setup_app.py

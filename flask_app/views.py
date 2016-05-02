@@ -6,9 +6,11 @@ Routes and views for the flask application.
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
 from flask_app import app
 from models import Meeting, World, User
-from flask_security import login_required, current_user, roles_required
+from flask_security import login_required, current_user, roles_required, utils
 import forms
 import files
+import urllib2
+import locale
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,11 +41,12 @@ def home():
             return render_template(
                 'index.html',
                 set_tab=set_tab,
-                title='Hjem',
+                title=u'Hjem',
                 meetings=meeting_list,
                 form=form,
                 world=world,
-                action=url_for('home')
+                action=url_for('home'),
+                locale=locale.getpreferredencoding()
             )
 
         form = forms.MeetingForm(request.form)
@@ -59,11 +62,12 @@ def home():
         return render_template(
             'index.html',
             set_tab=set_tab,
-            title='Hjem',
+            title=u'Hjem',
             meetings=meeting_list,
             form=form,
             world=world,
-            action=url_for('home')
+            action=url_for('home'),
+            locale=locale.getpreferredencoding()
         )
 
     # else GET blank frontpage
@@ -71,11 +75,12 @@ def home():
     return render_template(
         'index.html',
         set_tab=set_tab,
-        title='Hjem',
+        title=u'Hjem',
         meetings=meeting_list,
         form=form,
         world=world,
-        action=url_for('home')
+        action=url_for('home'),
+        locale=locale.getpreferredencoding()
     )
 
 
@@ -86,7 +91,7 @@ def contact():
     """ Renders the contact page. """
     return render_template(
         'contact.html',
-        title='Kontakt oss'
+        title=u'Kontakt oss'
     )
 
 
@@ -100,7 +105,7 @@ def database():
     all_worlds = World.get_all_as_dict()
     return render_template(
         'database.html',
-        title='Database test',
+        title=u'Database test',
         meetings=all_meetings,
         users=all_users,
         worlds=all_worlds
@@ -116,8 +121,108 @@ def admin():
     """ Enables admins to register new users """
     return render_template(
         'admin/admin.html',
-        title='Adminside - Registrer nye brukere',
+        title=u'Adminside - Registrer nye brukere',
     )
+
+
+@app.route('/bruker')
+@login_required
+def user():
+    return render_template(
+        'user/user.html',
+        title=u'Instillinger'
+    )
+
+
+@app.route('/bruker/endre_epost', methods=['GET', 'POST'])
+@login_required
+def change_email():
+    form = forms.ChangeEmail(request.form)
+    if form.validate_on_submit():
+        if utils.verify_password(form.password.data, current_user.password):
+            current_user.email = form.new_email.data
+            current_user.store()
+            flash(u'E-post adressen ble oppdatert')
+            return redirect(url_for('user'))
+        form.password.errors.append(u'Feil passord')
+
+    return render_template(
+        'user/change_email.html',
+        title=u'Endre e-post',
+        form=form,
+        action=url_for('change_email')
+    )
+
+
+@app.route('/bruker/endre_navn', methods=['GET', 'POST'])
+@login_required
+def change_name():
+    form = forms.ChangeName(request.form)
+    if form.validate_on_submit():
+        current_user.name = form.new_name.data
+        current_user.store()
+        flash(u'Navn ble oppdatert')
+        return redirect(url_for('user'))
+
+    form.new_name.process_data(current_user.name)
+    return render_template(
+        'user/change_name.html',
+        title=u'Endre navn',
+        form=form,
+        action=url_for('change_name')
+    )
+
+
+@app.route('/bruker/endre_passord', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = forms.ChangePassword(request.form)
+    if form.validate_on_submit():
+        if utils.verify_password(form.old_password.data, current_user.password):
+            current_user.password = utils.encrypt_password(form.new_password.data)
+            current_user.store()
+            flash(u'Passordet ble endret')
+            return redirect(url_for('user'))
+        form.old_password.errors.append(u'Feil passord')
+
+    return render_template(
+        'user/change_password.html',
+        title=u'Endre passord',
+        form=form,
+        action=url_for('change_password')
+    )
+
+
+@app.route('/bruker/endre_spillernavn', methods=['GET', 'POST'])
+@login_required
+def change_playername():
+    form = forms.ChangePlayername(request.form)
+    if form.validate_on_submit():
+        if utils.verify_password(form.password.data, current_user.password):
+            current_user.mojang_playername = form.playername.data
+            current_user.mojang_uuid = form.uuid.data
+            current_user.store()
+            flash(u'Minecraft spillernavnet ble oppdatert')
+            return redirect(url_for('user'))
+        form.password.errors.append(u'Feil passord')
+
+    else:
+        form.playername.process_data(current_user.mojang_playername)
+        form.uuid.process_data(current_user.mojang_uuid)
+
+    return render_template(
+        'user/change_playername.html',
+        title=u'Endre Minecraft spillernavn',
+        form=form,
+        action=url_for('change_playername')
+    )
+
+
+@app.route('/bruker/hent_mojang_uuid_proxy/<playername>')
+@login_required
+def get_mojang_uuid_proxy(playername):
+    response = urllib2.urlopen('https://api.mojang.com/users/profiles/minecraft/' + playername)
+    return app.response_class(response.read(), mimetype='application/json')
 
 
 @app.route('/edit_meeting/<int:meeting_id>', methods=['GET', 'POST'])
@@ -166,11 +271,16 @@ def delete_meeting(meeting_id):
 def delete_world(world_id):
     world = World.get_by_id(world_id)
     if world.user_id == current_user.id:
-        world.delete()
+        if world.delete():
+            return jsonify(
+                success=True,
+                message=u'Verdenen ble slettet'
+            )
         return jsonify(
-            success=True,
-            message=u'Verdenen ble slettet'
+            success=False,
+            message=u'Denne verdenen er registrert brukt i et møte'
         )
+
     return jsonify(
         success=False,
         message=u'Du har ikke tilgang til å slette denne verdenen!'
@@ -184,7 +294,7 @@ def from_map():
     form = forms.WorldForm()
     return render_template(
         'map/minecraft_kartverket.html',
-        title='Kart',
+        title=u'Kart',
         form=form,
         action=url_for('home')
     )
@@ -236,13 +346,13 @@ def test_cloud():
                        {'name': 'Dead server', 'location': 5678}]
         return render_template(
             'test_cloud.html',
-            title='Test cloud',
+            title=u'Test cloud',
             server_list=server_list
         )
 
     return render_template(
         'test_cloud.html',
-        title='Test cloud',
+        title=u'Test cloud',
         server_list=[]
     )
 

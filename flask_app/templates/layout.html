@@ -26,9 +26,6 @@
             <div class="navbar-collapse collapse">
                 {% if current_user.is_authenticated %}
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('database') }}">
-                        /database</a>
-                    </li>
                     <li><a href="{{ url_for('contact') }}">
                         <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
                         Kontakt</a>
@@ -39,17 +36,15 @@
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                         Logg ut</a>
                     </li>
-                    {% if current_user.is_admin %}
-                    <li><a href="{{ url_for('admin') }}">
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        {{ current_user.email }}</a>
-                    </li>
+                    <li>
+                    {% if current_user.has_role('admin') %}
+                        <a href="{{ url_for('admin') }}">
                     {% else %}
-                    <li><a href="{{ url_for_security('logout') }}">
+                        <a href="{{ url_for('user') }}">
+                    {% endif %}
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         {{ current_user.email }}</a>
                     </li>
-                    {% endif %}
                 </ul>
                 {% endif %}
             </div>

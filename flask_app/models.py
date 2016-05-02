@@ -15,18 +15,10 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-    first_name = db.Column(db.String(100), server_default='') #Do we need - or even want - to register our users with names?
-    last_name = db.Column(db.String(100), server_default='') #Removed from user registration for now
+    name = db.Column(db.String(255), server_default='')
+    mojang_playername = db.Column(db.String(255), server_default='')
+    mojang_uuid = db.Column(db.String(64))
     
-    def is_admin(self):
-        return self.admin
-        
-    @classmethod
-    def store(self):
-        """ Store itself to database """
-        db.session.add(self)
-        db.session.commit()
-        
     @classmethod
     def get_all_as_dict(cls):
         """
@@ -34,6 +26,18 @@ class User(db.Model, UserMixin):
         """
         user_list = cls.query.all()
         return [vars(user) for user in user_list]
+
+    @classmethod
+    def get_by_id(cls, user_id):
+        return cls.query.get(user_id)
+
+    def store(self):
+        """ Store itself to database """
+        db.session.add(self)
+        db.session.commit()
+
+    def is_admin(self):
+        return self.admin
 
 
 class Role(db.Model, RoleMixin):
@@ -57,7 +61,7 @@ class Meeting(db.Model):
     start_time = db.Column(db.DateTime)  # YYYY-MM-DD HH:MM:SS.SSS
     end_time = db.Column(db.DateTime)
     participant_count = db.Column(db.Integer)
-    world_id = db.Column(db.Integer, db.ForeignKey('world.id'))
+    _world_id = db.Column('world_id', db.Integer, db.ForeignKey('world.id'))
 
     @classmethod
     def get_all_as_dict(cls):
@@ -79,6 +83,18 @@ class Meeting(db.Model):
         meeting = cls.query.get(meeting_id)
         return meeting
 
+    @property
+    def world_id(self):
+        return self._world_id
+
+    @world_id.setter
+    def world_id(self, value):
+        try:
+            int_val = int(value)
+        except ValueError:
+            int_val = None
+        self._world_id = int_val
+
     def store(self):
         """ Store itself to database """
         db.session.add(self)
@@ -86,16 +102,13 @@ class Meeting(db.Model):
 
     def delete(self):
         """ Delete itself from the database """
-        if self.world_id:
-            # Check if world is favoured and delete if not
-            # TODO only if meeting user is also owner of world
-            # TODO maybe check if world is used in other meetings?
-            # meetings = Meeting.query.filter_by(self.world_id)
-            world = World.get_by_id(self.world_id)
-            if not world.favourite:
-                world.delete()
         db.session.delete(self)
         db.session.commit()
+        if self.world_id:
+            # Check if world is favoured and delete if not
+            world = World.get_by_id(self.world_id)
+            if self.user_id == world.user_id and not world.favourite:
+                world.delete()
 
 
 class World(db.Model):
@@ -131,8 +144,16 @@ class World(db.Model):
         db.session.commit()
 
     def delete(self):
+        meeting_count = Meeting.query.filter_by(_world_id=self.id).count()
+        if meeting_count > 0:
+            # Do not delete
+            return False
+
         if self.file_ref:
-            # TODO delete file in file_ref
-            pass
+            import files
+            files.delete_world_file(self.file_ref)
+            files.delete_world_preview(self.file_ref)
+
         db.session.delete(self)
         db.session.commit()
+        return True

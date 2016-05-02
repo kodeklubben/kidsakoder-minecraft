@@ -33,6 +33,16 @@ resource "azure_instance" "mc" {
         password = "${var.ssh.password}"
     }
 
+    # Set which Minecraft mod and size should be used
+    provisioner "remote-exec" {
+        inline = [
+          "echo 'forge_version: 1.8.8' > /tmp/grains",
+          "echo 'mod: raspberryjam' >> /tmp/grains",
+          "echo 'raspberryjam_version: 0.52' >> /tmp/grains",
+          "echo 'size: ${lookup(var.sizes, count.index)}' >> /tmp/grains"
+        ]
+    }
+
     # Copy saltstack dir with config, states and pillar
     provisioner "file" {
         source = "../saltstack"

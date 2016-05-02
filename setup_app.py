@@ -1,13 +1,19 @@
+""" Script to set up application """
 
-import os
 
 # Generate new secret key
-key_file_path = 'flask_app/secret_key.py'
-if not os.path.isfile(key_file_path):
+input_answer = raw_input('Generate new secret key? (y, n)\n')
+if input_answer.strip() == 'y':
+    import os
+    key_file_path = 'flask_app/config/secret_key.py'
     secret_key = os.urandom(24).encode('hex').strip()
     with open(key_file_path, 'w') as key_file:
-        key_file.write('secret_key = """' + secret_key + '""".decode("hex")')
+        key_file.write('""" Auto generated secret key file """\n\n' +
+                       'SECRET_KEY = "' + secret_key + '".decode("hex")\n')
+
 
 # Initialize database
-from flask_app.database import init_db
-init_db()
+input_answer = raw_input('Initialize database? (y, n)\n')
+if input_answer.strip() == 'y':
+    from flask_app.database import init_db
+    init_db()

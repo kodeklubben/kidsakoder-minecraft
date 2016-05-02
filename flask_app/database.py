@@ -29,6 +29,4 @@ def init_db():
                                )
     user_datastore.create_user(email='admin@mail.com', password='adminpass123')
     user_datastore.add_role_to_user('admin@mail.com', 'admin')
-    user_datastore.create_user(email='user@mail.com', password='userpass123')
-    user_datastore.add_role_to_user('user@mail.com', 'instructor')
     db.session.commit()
