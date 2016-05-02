@@ -25,6 +25,7 @@ class Development(Production):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     WORLD_UPLOAD_PATH = 'world_storage'
     PREVIEW_STORAGE_PATH = 'preview_storage'
+    TEXTUREPACK_PATH = 'static/texturepack'
 
 #class VM_dev(Development):
     #SERVER_NAME = '0.0.0.0'

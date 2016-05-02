@@ -71,11 +71,27 @@ def generate_world_preview(world_ref):
     preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
     preview_path = safe_join(preview_path, world_ref)
 
+    texturepack_path = safe_join(app.root_path, app.config['TEXTUREPACK_PATH'])
+
+    config_path = safe_join(app.root_path, 'tmp')
+    config_path = safe_join(config_path, 'overviewer_config_%s' % world_ref)
+
+    # Create config file
+    with open(config_path, 'w+') as cfile:
+        cfile.writelines(
+            ['worlds["world"] = "%s" \n \n' % world_path,
+            'renders["normalrender"] = { \n',
+            '   "world": "world", \n',
+            '   "title": "Kart over din Minecraft-verden", \n',
+            '} \n \n', 'outputdir = "%s" \n' % preview_path,
+            'texturepath = "%s" \n' % texturepack_path,
+            'defaultzoom = 12 \n'
+            ])
     # Call overviewer to generate
     # WIN:
     # subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
     # LINUX: 
-    subprocess.call(["overviewer.py", world_path, preview_path])
+    subprocess.call(["overviewer.py", "--config=%s" % config_path])
     # TODO Clean up tmp files
     return '<p> Verden generert tror jeg </p>'
 
