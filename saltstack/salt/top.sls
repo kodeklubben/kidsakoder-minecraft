@@ -10,6 +10,7 @@ base:
   # Web server states
   'web*':
     - webserver
+    - overviewer
 
   # Minecraft server states
   '*mc*':
