@@ -4,6 +4,9 @@ File storage controller
 """
 import StringIO
 import urllib2
+import os
+import subprocess
+from zipfile import ZipFile
 
 from flask_security import current_user
 from flask import send_file, jsonify
@@ -46,6 +49,50 @@ def save_world_from_fme(url=None, description=""):
     return '<p>Noe gikk galt!</p>'
 
 
+def generate_world_preview(world_ref):
+    # create file path
+    zip_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
+    zip_path = safe_join(zip_path, world_ref)
+    # open file:
+    unzip_path = safe_join(app.root_path, 'tmp')
+    unzip_path = safe_join(unzip_path, world_ref)
+    print('unzipping')
+    with ZipFile(zip_path, 'r') as world_zip:
+        # unzip file
+        world_zip.extractall(unzip_path)
+
+    print('finding')
+    # Find minecraft world inside unzipped directory:
+    world_path = safe_join(unzip_path, 'saves')
+    # We assume there is only one minecraft world, so we pick the first subdir
+    world_path = safe_join(world_path, os.listdir(world_path)[0]) 
+    # path to put preview
+    preview_path = safe_join(app.root_path, 'static')
+    preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
+    preview_path = safe_join(preview_path, world_ref)
+
+    texturepack_path = safe_join(app.root_path, app.config['TEXTUREPACK_PATH'])
+
+    config_path = safe_join(app.root_path, 'tmp')
+    config_path = safe_join(config_path, 'overviewer_config_%s' % world_ref)
+
+    # Create config file
+    with open(config_path, 'w+') as cfile:
+        cfile.writelines(
+            ['worlds["world"] = "%s" \n \n' % world_path,
+            'renders["normalrender"] = { \n',
+            '   "world": "world", \n',
+            '   "title": "Kart over din Minecraft-verden", \n',
+            '} \n \n', 'outputdir = "%s" \n' % preview_path,
+            'texturepath = "%s" \n' % texturepack_path,
+            'defaultzoom = 12 \n'
+            ])
+    # Call overviewer to generate
+    subprocess.call(["overviewer.py", "--config=%s" % config_path])
+    # TODO Clean up tmp files
+    return '<p> Verden generert tror jeg </p>'
+
+
 def export_calendar_for_user(cal_user_id=None, filename="export"):
     """Create and export iCalendar file with the meetings of the chosen user"""
     if cal_user_id is None:
@@ -60,7 +107,8 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
         e.add('summary', meeting['title'])
         e.add('dtstart', tz.localize(meeting['start_time']))
         e.add('dtend', tz.localize(meeting['end_time']))
-        e.add('description', u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting['participant_count']))
+        e.add('description',
+              u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting['participant_count']))
         c.add_component(e)
 
     export = StringIO.StringIO()
@@ -69,6 +117,14 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
     return send_file(export,
                      attachment_filename=filename + '.ics',
                      as_attachment=True)
+
+
+
+def show_preview(world_ref):
+    preview_path = safe_join(app.root_path, app.config['PREVIEW_STORAGE_PATH'])
+    preview_path = safe_join(preview_path, world_ref)
+    preview_path = safe_join(preview_path, 'index.html')
+    return preview_path
 
 
 def delete_world_file(file_ref):

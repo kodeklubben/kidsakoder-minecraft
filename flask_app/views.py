@@ -388,6 +388,23 @@ def toggle_favourite(world_id):
     )
 
 
+@app.route('/generate_preview/<world_ref>', methods=['POST', 'GET'])  # TODO POST on generate preview?
+@login_required
+def generate_preview(world_ref):
+    return files.generate_world_preview(world_ref)
+
+
+@app.route('/show_preview/<world_ref>')
+@login_required
+def show_preview(world_ref):
+    # TODO Check if file is present, return spinner if not.
+    return render_template(
+        'preview.html',
+        title='Preview',
+        world_ref=world_ref
+        )
+
+
 @app.route('/test_cloud', methods=['GET', 'POST'])
 @login_required
 def test_cloud():

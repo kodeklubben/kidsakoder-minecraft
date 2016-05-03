@@ -1,5 +1,6 @@
 kidsakoder-minecraft
 ====================
+[![Build Status](https://travis-ci.org/szeestraten/kidsakoder-minecraft.svg?branch=master)](https://travis-ci.org/szeestraten/kidsakoder-minecraft)
 
 ## Project information
 ### Tools used 

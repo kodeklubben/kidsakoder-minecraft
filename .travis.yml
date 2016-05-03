@@ -1,0 +1,42 @@
+# Travis-CI.org configuration file
+
+# Language
+language: python
+
+# Python version
+python:
+  - 2.7
+
+# Environment variables
+env:
+  - HELLO=WORLD
+
+# Allow sudo
+# NOTE: This makes Travis run in regular infrastructure and not container based infrastructure
+sudo: True
+
+# Install packages and other requirements
+before_install:
+  - sudo apt-get -qq update
+  # Add odbc package necessary for pyodbc in requirements.txt
+  - sudo apt-get install -y unixodbc-dev
+
+# Install requirements before testing
+install:
+  - pip install -q pytest
+  - pip install -q -r requirements.txt
+
+# Do necessary things before testing
+before_script:
+  # Copy the empty secret_config.py template necessary to run app
+  - cp flask_app/config/secret_config.py.template flask_app/config/secret_config.py
+  # Generate secret key and initialize database
+  - python setup_app.py --quiet
+
+# Run pytest
+script:
+  - py.test
+
+# Disable email notificaitons
+notifications:
+  email: false
