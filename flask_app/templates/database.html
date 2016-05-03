@@ -12,7 +12,7 @@
     </ul><hr>
     <ul class=worlds>
     {% for world in worlds %}
-        <li>Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }} <a href="{{ url_for('generate_preview', world_ref=world.file_ref) }}"> Gen preview </a> <a href=" {{ url_for('show_preview', world_ref=world.file_ref) }} "> Show preview </a> </li>
+        <li>Created by: {{ world.user_id }} File_ref: {{ world.file_ref }} Description: {{ world.description }} Favourite: {{ world.favourite }} <a href="{{ url_for('generate_preview', world_ref=world.file_ref) }}"> Gen preview </a> <a href=" {{ url_for('show_preview', world_ref=world.file_ref) }} "> Show preview </a> </li>
     {%  endfor %}
     </ul>
     <ul class=users>

@@ -51,6 +51,7 @@ def home():
 
         form = forms.MeetingForm(request.form)
         if form.validate():
+            # TODO Check if world actually exists
             meeting = Meeting(user_id=current_user.id)
             form.populate_obj(meeting)
             meeting.store()
@@ -255,6 +256,7 @@ def edit_meeting(meeting_id):
 def delete_meeting(meeting_id):
     meeting = Meeting.get_meeting_by_id(meeting_id)
     if meeting.user_id == current_user.id:
+        # TODO remove world from world list if loaded
         meeting.delete()
         return jsonify(
             success=True,
@@ -266,9 +268,16 @@ def delete_meeting(meeting_id):
     )
 
 
+@app.route('/delete_world/', defaults={'world_id': None})
 @app.route('/delete_world/<int:world_id>')
 @login_required
 def delete_world(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
+
     world = World.get_by_id(world_id)
     if world.user_id == current_user.id:
         if world.delete():
@@ -321,13 +330,71 @@ def get_world(file_name):
     return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
 
 
-@app.route('/generate_preview/<world_ref>', methods=['POST', 'GET'])
+@app.route('/dine_verdener')
+@login_required
+def browse_worlds():
+    world_list = World.get_user_worlds(current_user.id)
+    return render_template(
+        'browse_worlds.html',
+        world_list=world_list
+    )
+
+
+@app.route('/generer_test_verdener')
+@login_required
+@roles_required('admin')
+def generate_test_worlds():
+    # Generate some test worlds
+    world = World(
+        user_id=current_user.id,
+        description=''
+    )
+    world.file_ref = str(world.id) + '_1_mc_world.zip'
+    world.store()
+    for i in range(0, 5):
+        world = World(
+            user_id=current_user.id,
+            description='Verden' + str(i)
+        )
+        world.file_ref = str(world.id) + '_1_mc_world.zip'
+        world.store()
+    # End test worlds code
+    return 'Success'
+
+
+@app.route('/veksle_favoritt/', defaults={'world_id': None})
+@app.route('/veksle_favoritt/<int:world_id>')
+@login_required
+def toggle_favourite(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
+    world = World.get_by_id(world_id)
+    if current_user.id == world.user_id:
+        world.favourite = not world.favourite
+        world.store()
+
+        return jsonify(
+            success=True,
+            message=u'Lagret som favoritt' if world.favourite else u'Favoritt fjernet',
+            favourite=world.favourite
+        )
+
+    return jsonify(
+        success=False,
+        message=u'Du har ikke tilgang til å lagre denne verdenen som favoritt'
+    )
+
+
+@app.route('/generate_preview/<world_ref>', methods=['POST', 'GET'])  # TODO POST on generate preview?
 @login_required
 def generate_preview(world_ref):
     return files.generate_world_preview(world_ref)
 
 
-@app.route('/show_preview/<world_ref>', methods=['GET'])
+@app.route('/show_preview/<world_ref>')
 @login_required
 def show_preview(world_ref):
     # TODO Check if file is present, return spinner if not.
@@ -336,6 +403,7 @@ def show_preview(world_ref):
         title='Preview',
         world_ref=world_ref
         )
+
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
 @login_required

@@ -53,7 +53,8 @@
         </div>
 
         <div class="row body-content">
-            <p><span class="btn btn-default glyphicon glyphicon-arrow-left" id="back-btn" style="display: none"></span></p>
+            <button class="btn btn-default" id="back-btn" style="display: none">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Tilbake </button>
 
             <div id="template" style="display: none">
 
@@ -149,37 +150,36 @@ $(document).ready(function () {
 });
 
 $(document).ready(function() {
+    /* Select tab on page load */
     if (location.hash || obj_load) {
         $('a[href=' + (location.hash || tab_load) + ']').tab('show');
     } else {
         document.getElementById("world-tab").style.opacity = "1";
     }
-});
 
-$(document).ready(function(){
+    /* World and detail tabs click event */
     $(".nav-tabs a").click(function(){
         $(this).tab('show');
         document.getElementById("world-tab").style.opacity = "1";
     });
-});
 
-$(document).ready(function(){
+    /* World list click event */
     $("#template-btn").click(function(){
         $("#gen-choise").hide();
         $("#template").show();
         $("#back-btn").show();
-    });
-});
 
-$(document).ready(function(){
+        world_list_loader();
+    });
+
+    /* Upload world click event */
     $("#upload-btn").click(function(){
         $("#gen-choise").hide();
         $("#upload").show();
         $("#back-btn").show();
     });
-});
 
-$(document).ready(function(){
+    /* Back button click event */
     $("#back-btn").click(function(){
         $("#kartverket").hide();
         $("#template").hide();
@@ -187,6 +187,58 @@ $(document).ready(function(){
         $("#back-btn").hide();
         $("#gen-choise").show();
     });
+
+    function world_list_loader() {
+        /* Load world list */
+        $.get('{{ url_for('browse_worlds') }}', function (data) {
+            $('#template').html(data);
+
+            /* Toggle world favourite click event */
+            $('.toggle_favourite_btn').click(function () {
+                var world_id = $(this).val();
+                console.log(world_id);
+                $.getJSON('{{ url_for('toggle_favourite') }}' + world_id, function (data) {
+                    console.log(data);
+                    if (data.success) {
+                        var favourite_star = $('#favourite_star_' + world_id);
+                        if (data.favourite) {
+                            favourite_star.removeClass('glyphicon-star-empty');
+                            favourite_star.addClass('glyphicon-star');
+                            favourite_star.css('color', '#FFD00F');
+                        } else {
+                            favourite_star.removeClass('glyphicon-star');
+                            favourite_star.addClass('glyphicon-star-empty');
+                            favourite_star.css('color', 'inherit');
+                        }
+                    }
+                });
+            });
+            /* Delete world click event */
+            $('.delete_world_btn').click(function () {
+                var world_id = $(this).val();
+                $.getJSON('{{ url_for('delete_world') }}' + world_id, function (data) {
+                    var world_panel = $('#world_id_' + world_id);
+                    if (data.success) {
+                        world_panel.remove();
+                    } else {
+                        world_panel.append('<div class="alert alert-warning alert-dismissible" ' +
+                                'style="margin-left:15px;margin-right:15px">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span></button>' +
+                                data.message + '</div>');
+                    }
+                });
+
+            });
+            /* Use world click event */
+            $('.use_world_btn').click(function () {
+                var world_id = $(this).val();
+                $('#world_id').val(world_id);
+                $('a[href=#meeting-tab]').click();
+            });
+        });
+    }
+
 });
 </script>
 
