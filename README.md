@@ -3,19 +3,19 @@ kidsakoder-minecraft
 [![Build Status](https://travis-ci.org/szeestraten/kidsakoder-minecraft.svg?branch=master)](https://travis-ci.org/szeestraten/kidsakoder-minecraft)
 
 ## Project information
-### Tools used 
+### Tools used
 #### Configuration management
-[Salt](http://saltstack.com/community/) from [SaltStack](http://saltstack.com/) is the configuration management tool used in this project. 
+[Salt](http://saltstack.com/community/) from [SaltStack](http://saltstack.com/) is the configuration management tool used in this project.
 See the [Salt Docs](https://docs.saltstack.com/en/latest/) for more documentation.
 
 #### Development environment
 In order to ease the development and testing of this project, a tool called [Vagrant](https://www.vagrantup.com/) is used.
-Vagrant allows for easily creating defined local development environments with virtual machines using [Virtualbox](https://www.virtualbox.org/) or other providers. 
+Vagrant allows for easily creating defined local development environments with virtual machines using [Virtualbox](https://www.virtualbox.org/) or other providers.
 The aim is to define an environment that looks like the production environment (such as the cloud) that is the same for everyone so developers can quickly test changes without impacting the production environment.
 
 #### Deployment
-In order to deploy and orchestrate the cloud infrastructure (storage, network, security, instances and  etc.), a tool called [Terraform](https://terraform.io) is used. 
-Terraform is a multi-platform tool which supports writing infrastructure as code for multiple different cloud providers such as Azure, AWS. 
+In order to deploy and orchestrate the cloud infrastructure (storage, network, security, instances and  etc.), a tool called [Terraform](https://terraform.io) is used.
+Terraform is a multi-platform tool which supports writing infrastructure as code for multiple different cloud providers such as Azure, AWS.
 See the [Terraform docs](https://www.terraform.io/docs/index.html) for more information on how it works.
 
 
@@ -107,7 +107,7 @@ vagrant provision mc
 
 ### Requirements
 #### Terraform
-Follow the guide on how to [install Terraform](https://www.terraform.io/intro/getting-started/install.html) and verify it by executing `terraform` in a terminal. 
+Follow the guide on how to [install Terraform](https://www.terraform.io/intro/getting-started/install.html) and verify it by executing `terraform` in a terminal.
 If you are using Windows, the terminal [Cmder](http://cmder.net) is highly recommended as it supports color output, ssh, git and other things.
 See the [Terraform documentation](https://www.terraform.io/docs/index.html) for more infomation on how it works.
 ##### SSH Settings
@@ -115,9 +115,9 @@ Terraform uses SSH to provision the initial virtual machines when deploying.
 As of right now, it only supports authentication with username and password.
 Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the SSH settings in `terraform/terraform.tfvars`.  
 
-#### Azure 
+#### Azure
 ##### Authentication
-In order to authenticate with Azure, Terraform needs a **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings). 
+In order to authenticate with Azure, Terraform needs a **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings).
 Rename the file to `secret.publishsettings` and place it in the `terraform/` directory.
 
 ##### Generating keys and certificates
@@ -136,10 +136,10 @@ openssl req -x509 -nodes -days 1068 -newkey rsa:4096 -keyout kidsakoder.pem -out
 openssl x509 -inform pem -in kidsakoder.pem -outform der -out kidsakoder.cer
 ```
 
-#### DNSimple 
+#### DNSimple
 [DNSimple](https://dnsimple.com) is used to manage the domain and records for this project.
 
-##### Authentication 
+##### Authentication
 In order to create and edit DNS records, Terraform needs the **email** and an **API token** of a DNSimple account.
 The **API token** can be found on the [user page](https://dnsimple.com/user) on DNSimple.
 Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the email and API token in `terraform/terraform.tfvars`.  
@@ -147,13 +147,17 @@ Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a temp
 _Please note that **Single-domain tokens** do not work as of writing._
 
 
-### How to deploy
+### How to deploy with Terraform
 Make sure you are in the [terraform](terraform/) directory when you are using Terraform to deploy.
 
 #### Initial deployment
 ```
+# Get the Terraform modules used in this directory
+# NOTE: Only needed when running for the first time or changes have been made to the modules
+terraform get
+
 # Generate an execution plan of what Terraform plans to deploy
-terraform plan 
+terraform plan
 
 # Build the infrastructure
 terraform apply
@@ -162,14 +166,40 @@ terraform apply
 #### Changing the infrastructure
 ```
 # See how the changes will impact the infrastructure
-terraform plan 
+terraform plan
 
-# If there is an resource that needs to be redeployed use the taint command
-terraform taint azure_instance.webserver
+# Apply any changes
+terraform apply
+```
+
+##### Redeploying a resource in a module
+If one needs to redeploy a resource (such as a VM), one can use the `taint` command in Terraform.
+If a resource has been tainted, Terraform will try to destroy and recreate it the next time you run `apply`.
+Again, before applying any changes, it is smart to see what Terraform is planning to do by running `play` first.
+Should you taint the wrong resource, you can easily revert it by using the `untaint` command.
+
+###### Taint command format
+```
+# In order to redeploy a resource, you can taint it.
+terraform taint -module=<module-name> <resource_type>.<resource_name>
+
+# In case a resource has been tainted by accident, you can just untaint it.
+terraform untaint -module=<module-name> <resource_type>.<resource_name>
+```
+
+###### Example scenario: redeploying the Salt master using taint
+```
+# Here we taint the Salt master which is an Azure instance in the master module.
+terraform taint -module=master azure_instance.master
+
+# See how the changes will impact the infrastructure
+terraform plan
 
 # Apply the changes to the infrastructure
 terraform apply
 ```
+
+---
 
 ## Contributing
 ### Project coding conventions
