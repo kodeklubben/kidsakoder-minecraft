@@ -10,7 +10,7 @@ from wtforms.validators import InputRequired, Length, Email, EqualTo
 
 
 class MeetingForm(Form):
-    title = StringField(u'Navn', [Length(min=4, max=50)])
+    title = StringField(u'Tittel', [Length(min=4, max=50)])
     start_time = DateTimeField(u'Starttidspunkt', [InputRequired()], format='%d.%m.%Y %H:%M')
     end_time = DateTimeField(u'Sluttidspunkt', [InputRequired()], format='%d.%m.%Y %H:%M')
     participant_count = IntegerField(u'Antall deltakere', [InputRequired()])
