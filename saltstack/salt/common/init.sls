@@ -8,3 +8,9 @@ python-pkgs:
       - python-pip
       - python-dev
       - python-virtualenv
+
+# Install odbc dependencies required for pyodbc
+odbc-dependencies:
+  pkg.installed:
+    - names:
+      - unixodbc-dev
