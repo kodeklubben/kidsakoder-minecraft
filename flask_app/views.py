@@ -55,13 +55,17 @@ def home():
             # A meeting form is posted
             meeting = Meeting(user_id=current_user.id)
             form.populate_obj(meeting)
-            if World.exists(meeting.world_id):
-                meeting.store()
-                flash(u'Nytt møte lagt til')
-            else:
-                flash(u'Den valgte Minecraft verdenen eksisterer ikke')
-
-            return redirect(url_for('home'))
+            if meeting.world_id:
+                if World.exists(meeting.world_id):
+                    meeting.store()
+                    flash(u'Nytt møte lagt til')
+                    return redirect(url_for('home'))
+                else:
+                    flash(u'Den valgte Minecraft verdenen eksisterer ikke')
+                    set_tab = 1
+            else:  # World probably not chosen
+                flash(u'Ingen Minecraft verden valgt')
+                set_tab = 0
 
         else:  # Form not valid
             flash(u'Feil i skjema!')
@@ -369,10 +373,8 @@ def generate_test_worlds():
     world.file_ref = str(world.id) + '_1_mc_world.zip'
     world.store()
     for i in range(0, 5):
-        world = World(
-            user_id=current_user.id,
-            description='Verden' + str(i)
-        )
+        world = World(user_id=current_user.id)
+        world.description = 'Verden ' + str(world.id)
         world.file_ref = str(world.id) + '_1_mc_world.zip'
         world.store()
     # End test worlds code
