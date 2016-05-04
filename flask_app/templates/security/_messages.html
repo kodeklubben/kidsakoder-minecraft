@@ -1,8 +1,10 @@
+
+{% from "security/_macros.html" import render_error %}
 {%- with messages = get_flashed_messages(with_categories=true) -%}
   {% if messages %}
     <ul class="flashes">
     {% for category, message in messages %}
-      <li class="{{ category }}">{{ message }}</li>
+      <li class="{{ category }}">{{ render_error(message) }}</li>
     {% endfor %}
     </ul>
   {% endif %}

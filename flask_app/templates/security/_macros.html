@@ -1,10 +1,17 @@
+
+{% macro render_error(error) %}
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button> {{ error }} </div>
+{% endmacro %}
+
 {% macro render_field_with_errors(field) %}
   <p>
     {{ field.label }} {{ field(**kwargs)|safe }}
     {% if field.errors %}
-      <ul>
+      <ul class="field_error_list">
       {% for error in field.errors %}
-        <li>{{ error }}</li>
+        <li>{{ render_error(error) }}</li>
       {% endfor %}
       </ul>
     {% endif %}
@@ -15,9 +22,9 @@
   <p>
     {{ field.label }} <br> {{ field(**kwargs)|safe }}
     {% if field.errors %}
-      <ul>
+      <ul class="field_error_list">
       {% for error in field.errors %}
-        <li>{{ error }}</li>
+        <li>{{ render_error(error) }}</li>
       {% endfor %}
       </ul>
     {% endif %}
@@ -28,9 +35,9 @@
   <p>
     {{ field(**kwargs)|safe }} {{ field.label }}
     {% if field.errors %}
-      <ul>
+      <ul class="field_error_list">
       {% for error in field.errors %}
-        <li>{{ error }}</li>
+        <li>{{ render_error(error) }}</li>
       {% endfor %}
       </ul>
     {% endif %}
