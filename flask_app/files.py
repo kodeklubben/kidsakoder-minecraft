@@ -91,7 +91,9 @@ def generate_world_preview(world_ref):
             ])
     # Call overviewer to generate
     result = generate_preview_task.delay(config_path=config_path, world_ref=world_ref)
+    # subprocess.call(["overviewer.py", "--config=%s" % config_path])
     # TODO Clean up tmp files
+
     return '<p> Verden generert tror jeg </p>'
 
 
