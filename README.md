@@ -37,6 +37,16 @@ Setup the app by running the following command in the project folder:
 ```
 python setup_app.py
 ```
+If you want render previews of minecraft worlds, the task scheduler Celery and message broker Rabbitmq needs to be installed and started, and running in a virtual machine is preferred.
+With these installed, the message server and task scheduler can be started by running the script (note: superuser):
+```
+sudo bash rabbit_script.sh
+```
+and then, within the flask_app folder (note: not superuser):
+```
+bash celery_script.sh
+```
+
 This will generate a secret key and initialize the database.
 Then start the server by running:
 ```
