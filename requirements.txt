@@ -1,3 +1,4 @@
+celery
 icalendar
 Flask<1
 Flask-Security

@@ -50,6 +50,7 @@ def save_world_from_fme(url=None, description=""):
 
 
 def generate_world_preview(world_ref):
+    from tasks import generate_preview_task
     # create file path
     zip_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
     zip_path = safe_join(zip_path, world_ref)
@@ -71,7 +72,8 @@ def generate_world_preview(world_ref):
     preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
     preview_path = safe_join(preview_path, world_ref)
 
-    texturepack_path = safe_join(app.root_path, app.config['TEXTUREPACK_PATH'])
+    texturepack_path = safe_join(app.root_path, 'static')
+    texturepack_path = safe_join(texturepack_path, app.config['TEXTUREPACK_PATH'])
 
     config_path = safe_join(app.root_path, 'tmp')
     config_path = safe_join(config_path, 'overviewer_config_%s' % world_ref)
@@ -88,7 +90,7 @@ def generate_world_preview(world_ref):
             'defaultzoom = 12 \n'
             ])
     # Call overviewer to generate
-    subprocess.call(["overviewer.py", "--config=%s" % config_path])
+    result = generate_preview_task.delay(config_path=config_path, world_ref=world_ref)
     # TODO Clean up tmp files
     return '<p> Verden generert tror jeg </p>'
 
