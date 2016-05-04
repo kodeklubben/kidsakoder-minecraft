@@ -24,6 +24,7 @@ def home():
     if request.method == 'POST':
         world_form = forms.WorldForm(request.form)
         if world_form.validate():
+            # Request is a redirect from map page
             set_tab = 1
             form = forms.MeetingForm()
             try:
@@ -51,28 +52,29 @@ def home():
 
         form = forms.MeetingForm(request.form)
         if form.validate():
-            # TODO Check if world actually exists
+            # A meeting form is posted
             meeting = Meeting(user_id=current_user.id)
             form.populate_obj(meeting)
-            meeting.store()
-            flash(u'Nytt møte lagt til!')
-            return redirect(url_for('home'))
+            if meeting.world_id:
+                if World.exists(meeting.world_id):
+                    meeting.store()
+                    flash(u'Nytt møte lagt til')
+                    return redirect(url_for('home'))
+                else:
+                    flash(u'Den valgte Minecraft verdenen eksisterer ikke')
+                    set_tab = 1
+            else:  # World probably not chosen
+                flash(u'Ingen Minecraft verden valgt')
+                set_tab = 0
 
-        flash(u'Feil i skjema!')
-        set_tab = 1
-        return render_template(
-            'index.html',
-            set_tab=set_tab,
-            title=u'Hjem',
-            meetings=meeting_list,
-            form=form,
-            world=world,
-            action=url_for('home'),
-            locale=locale.getpreferredencoding()
-        )
+        else:  # Form not valid
+            flash(u'Feil i skjema!')
+            set_tab = 1
 
-    # else GET blank frontpage
-    form = forms.MeetingForm()
+    else:  # If not POST
+        # Serve blank form
+        form = forms.MeetingForm()
+
     return render_template(
         'index.html',
         set_tab=set_tab,
@@ -251,13 +253,32 @@ def edit_meeting(meeting_id):
     return redirect(url_for('home'))
 
 
+@app.route('/delete_meeting/', defaults={'meeting_id': None})
 @app.route('/delete_meeting/<int:meeting_id>')
 @login_required
 def delete_meeting(meeting_id):
+    if not meeting_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen møte ID mottatt'
+        )
+
     meeting = Meeting.get_meeting_by_id(meeting_id)
     if meeting.user_id == current_user.id:
-        # TODO remove world from world list if loaded
+        # Delete meeting before deleting world
         meeting.delete()
+
+        if meeting.world_id:
+            # Also delete world if it's not favoured
+            world = World.get_by_id(meeting.world_id)
+            if meeting.user_id == world.user_id and not world.favourite:
+                if world.delete():  # Will return false if in use by meeting
+                    return jsonify(
+                        success=True,
+                        message=u'Møtet ble slettet',
+                        world_id=world.id
+                    )
+
         return jsonify(
             success=True,
             message=u'Møtet ble slettet'
@@ -352,10 +373,8 @@ def generate_test_worlds():
     world.file_ref = str(world.id) + '_1_mc_world.zip'
     world.store()
     for i in range(0, 5):
-        world = World(
-            user_id=current_user.id,
-            description='Verden' + str(i)
-        )
+        world = World(user_id=current_user.id)
+        world.description = 'Verden ' + str(world.id)
         world.file_ref = str(world.id) + '_1_mc_world.zip'
         world.store()
     # End test worlds code

@@ -104,11 +104,6 @@ class Meeting(db.Model):
         """ Delete itself from the database """
         db.session.delete(self)
         db.session.commit()
-        if self.world_id:
-            # Check if world is favoured and delete if not
-            world = World.get_by_id(self.world_id)
-            if self.user_id == world.user_id and not world.favourite:
-                world.delete()
 
 
 class World(db.Model):
@@ -137,6 +132,10 @@ class World(db.Model):
     def get_by_id(cls, world_id):
         return cls.query.get(world_id)
 
+    @classmethod
+    def exists(cls, world_id):
+        return cls.query.get(world_id) is not None
+
     @property
     def id(self):
         if not self._id:
@@ -152,7 +151,7 @@ class World(db.Model):
     def delete(self):
         meeting_count = Meeting.query.filter_by(_world_id=self.id).count()
         if meeting_count > 0:
-            # Do not delete
+            # Do not delete if in use
             return False
 
         if self.file_ref:

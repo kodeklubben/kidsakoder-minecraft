@@ -50,10 +50,18 @@
 
 $(document).ready(function(){
     $(".del-btn").click(function(){
-        m_id = "#meeting_id_" + this.id;
-        $.getJSON("delete_meeting/" + this.id, function(result){
+        var m_id = "#meeting_id_" + this.id;
+        $.getJSON("{{ url_for('delete_meeting') }}" + this.id, function(result){
             if (result.success) {
-                $(m_id).hide();
+                $(m_id).remove();
+
+                /* Check if world exists in world list and remove */
+                if (result.hasOwnProperty('world_id')) {
+                    var world_panel = $('#world_id_' + result.world_id);
+                    if (world_panel.length === 1) {
+                        world_panel.remove();
+                    }
+                }
             }
             else {
 

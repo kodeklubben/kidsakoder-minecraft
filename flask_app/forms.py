@@ -14,7 +14,6 @@ class MeetingForm(Form):
     start_time = DateTimeField(u'Starttidspunkt', [InputRequired()], format='%d.%m.%Y %H:%M')
     end_time = DateTimeField(u'Sluttidspunkt', [InputRequired()], format='%d.%m.%Y %H:%M')
     participant_count = IntegerField(u'Antall deltakere', [InputRequired()])
-    # TODO set ID as required
     world_id = HiddenField(u'Verden ID')
 
 
