@@ -430,7 +430,8 @@ def show_preview(world_id):
     # TODO Check if file is present, return spinner if not.
     w = World.get_by_id(world_id)
     if(w.preview):
-        return render_template(    
+        world_ref = w.file_ref
+        return render_template(   
             'preview.html',
             title='Preview',
             world_ref=world_ref
