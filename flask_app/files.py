@@ -17,6 +17,8 @@ from models import Meeting, World
 from flask import safe_join
 from flask_app import app
 import os
+import shutil
+
 
 def safe_join_all(root, *arg):
     """ Splits unix-style paths, and joins all paths to a single safe path."""
@@ -148,5 +150,8 @@ def delete_world_file(file_ref):
 
 
 def delete_world_preview(file_ref):
-    # TODO Delete generated world preview
-    pass
+    dir_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], file_ref)
+    try:
+        shutil.rmtree(dir_path)
+    except OSError:
+        pass
