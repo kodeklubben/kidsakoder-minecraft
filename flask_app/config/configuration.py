@@ -10,7 +10,7 @@ DEBUG = False
 CSRF_ENABLED = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 WORLD_UPLOAD_PATH = 'world_storage'
-PREVIEW_STORAGE_PATH = 'preview_storage'
-TEXTUREPACK_PATH = 'texturepack'
+PREVIEW_STORAGE_PATH = 'static/preview_storage'
+TEXTUREPACK_PATH = 'static/texturepack'
 
 SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'

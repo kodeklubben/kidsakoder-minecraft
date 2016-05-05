@@ -51,8 +51,7 @@ def save_world_from_fme(url=None, description=""):
 
     world = World(user_id=current_user.id)
     file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
-    file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
-    file_path = safe_join(file_path, file_name)
+    file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_name)
     with open(file_path, 'wb') as world_file:
         world_file.write(response.read())
         world.file_ref = file_name
@@ -69,31 +68,25 @@ def save_world_from_fme(url=None, description=""):
 def generate_world_preview(world_ref):
     from tasks import generate_preview_task
     # create file path
-    zip_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
-    zip_path = safe_join(zip_path, world_ref)
+    zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
     # open file:
-    unzip_path = safe_join(app.root_path, 'tmp')
-    unzip_path = safe_join(unzip_path, world_ref)
+    unzip_path = safe_join_all(app.root_path, 'tmp', world_ref)
     print('unzipping')
     with ZipFile(zip_path, 'r') as world_zip:
         # unzip file
         world_zip.extractall(unzip_path)
 
     print('finding')
-    # Find minecraft world inside unzipped directory:
-    world_path = safe_join(unzip_path, 'saves')
-    # We assume there is only one minecraft world, so we pick the first subdir
-    world_path = safe_join(world_path, os.listdir(world_path)[0]) 
+    # Find minecraft world inside unzipped directory.
+    world_path = safe_join_all(unzip_path, 'saves')
+    # We assume there is only one minecraft world, so we pick the first subdir:
+    world_path = safe_join_all(world_path, os.listdir(world_path)[0])
     # path to put preview
-    preview_path = safe_join_all(app.root_path, 'static')
-    preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
-    preview_path = safe_join(preview_path, world_ref)
+    preview_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], world_ref)
 
-    texturepack_path = safe_join(app.root_path, 'static')
-    texturepack_path = safe_join(texturepack_path, app.config['TEXTUREPACK_PATH'])
+    texturepack_path = safe_join_all(app.root_path, app.config['TEXTUREPACK_PATH'])
 
-    config_path = safe_join(app.root_path, 'tmp')
-    config_path = safe_join(config_path, 'overviewer_config_%s' % world_ref)
+    config_path = safe_join_all(app.root_path, 'tmp', 'overviewer_config_%s' % world_ref)
 
     # Create config file
     with open(config_path, 'w+') as cfile:
@@ -142,15 +135,12 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
 
 
 def show_preview(world_ref):
-    preview_path = safe_join(app.root_path, app.config['PREVIEW_STORAGE_PATH'])
-    preview_path = safe_join(preview_path, world_ref)
-    preview_path = safe_join(preview_path, 'index.html')
+    preview_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], world_ref, 'index.html')
     return preview_path
 
 
 def delete_world_file(file_ref):
-    file_path = safe_join(app.root_path, app.config['WORLD_UPLOAD_PATH'])
-    file_path = safe_join(file_path, file_ref)
+    file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_ref)
     try:
         os.remove(file_path)
     except OSError:
