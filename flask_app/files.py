@@ -18,6 +18,23 @@ from flask import safe_join
 from flask_app import app
 import os
 
+def safe_join_all(root, *arg):
+    """ Splits unix-style paths, and joins all paths to a single safe path."""
+    path = root # sets first as root
+    # SPLIT
+    paths = []
+    for a in arg:
+        p = a.split('/')
+        paths += p
+
+    paths.reverse() # reverse, so we go left to right.
+    # JOIN
+    while paths:
+        path = safe_join(path, paths.pop()) # join all paths, one by one
+
+    return path
+
+
 
 def save_world_from_fme(url=None, description=""):
     """ Save generated Minecraft world from FME cloud """
@@ -68,7 +85,7 @@ def generate_world_preview(world_ref):
     # We assume there is only one minecraft world, so we pick the first subdir
     world_path = safe_join(world_path, os.listdir(world_path)[0]) 
     # path to put preview
-    preview_path = safe_join(app.root_path, 'static')
+    preview_path = safe_join_all(app.root_path, 'static')
     preview_path = safe_join(preview_path, app.config['PREVIEW_STORAGE_PATH'])
     preview_path = safe_join(preview_path, world_ref)
 
