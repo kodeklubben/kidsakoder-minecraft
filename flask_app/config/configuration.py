@@ -4,7 +4,7 @@ Configuration file
 Change what configuration is used in __init__.py
 """
 
-APP_NAME = 'Minecraft Madness test'
+APP_NAME = 'Minecraft Madness'
 DEBUG = False
 # SESSION_COOKIE_SECURE = True # Should be set when using https
 CSRF_ENABLED = True
