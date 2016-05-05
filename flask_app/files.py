@@ -7,7 +7,7 @@ import urllib2
 import os
 import subprocess
 from zipfile import ZipFile
-
+import shutil
 from flask_security import current_user
 from flask import send_file, jsonify
 from icalendar import Calendar, Event
@@ -16,26 +16,36 @@ from jinja2 import escape
 from models import Meeting, World
 from flask import safe_join
 from flask_app import app
-import os
-import shutil
 
 
 def safe_join_all(root, *arg):
     """ Splits unix-style paths, and joins all paths to a single safe path."""
-    path = root # sets first as root
+    path = root  # sets first as root
     # SPLIT
     paths = []
     for a in arg:
         p = a.split('/')
         paths += p
 
-    paths.reverse() # reverse, so we go left to right.
+    paths.reverse()  # reverse, so we go left to right.
     # JOIN
     while paths:
         path = safe_join(path, paths.pop()) # join all paths, one by one
 
     return path
 
+
+def super_safe_join(directory, filename):
+    """
+    Allow slashes in `filename` and safely join `directory` and `filename`
+
+    :param directory: the base directory.
+    :param filename: the untrusted path relative to that directory.
+    """
+    path_list = filename.split('/')
+    for path in path_list:
+        directory = safe_join(directory, path)
+    return directory
 
 
 def save_world_from_fme(url=None, description=""):
@@ -47,8 +57,7 @@ def save_world_from_fme(url=None, description=""):
     split_url = url.strip().split('/')
     sane_url = '/'.join(split_url[0:5]) == 'https://mc-sweco.fmecloud.com:443/fmedatadownload/results'
     if not sane_url:
-
-        return '<p>Ugyldig <a href="' + escape(url) + '">URL</a></p>'
+        return jsonify(message=u'Ugyldig <a href="' + escape(url) + u'">URL</a>')
     response = urllib2.urlopen(url)
 
     world = World(user_id=current_user.id)
@@ -133,7 +142,6 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
     return send_file(export,
                      attachment_filename=filename + '.ics',
                      as_attachment=True)
-
 
 
 def show_preview(world_ref):

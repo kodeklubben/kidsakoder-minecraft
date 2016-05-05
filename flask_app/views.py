@@ -408,14 +408,18 @@ def toggle_favourite(world_id):
 
 
 @app.route('/generate_preview/', defaults={'world_id': None})
-@app.route('/generate_preview/<int:world_id>', methods=['GET'])  # TODO POST on generate preview?
+@app.route('/generate_preview/<int:world_id>')
 @login_required
 def generate_preview(world_id):
-
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
     w = World.get_by_id(world_id)
     world_ref = w.file_ref
     success = files.generate_world_preview(world_ref)
-    if(success):
+    if success:
         w.preview = True
         w.store()
         return 'Success'
@@ -427,11 +431,16 @@ def generate_preview(world_id):
 @app.route('/show_preview/<int:world_id>')
 @login_required
 def show_preview(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
     # TODO Check if file is present, return spinner if not.
     w = World.get_by_id(world_id)
-    if(w.preview):
+    if w.preview:
         world_ref = w.file_ref
-        return render_template(   
+        return render_template(
             'preview.html',
             title='Preview',
             world_ref=world_ref
