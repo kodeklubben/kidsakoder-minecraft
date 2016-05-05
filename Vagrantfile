@@ -77,8 +77,8 @@ Vagrant.configure(2) do |config|
     
     # Virtualbox settings
     minion.vm.provider "virtualbox" do |v|
-      # Use 512 MB RAM
-      v.memory = 512
+      # Use 1024 MB RAM
+      v.memory = 1024
     end
   end
 

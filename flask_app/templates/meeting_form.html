@@ -267,6 +267,22 @@ $(document).ready(function() {
                 $('a[href=#meeting-tab]').click();
                 world_id.change();
             });
+            /* Generate preview click event */
+            $('.gen_preview_btn').click(function () {
+                var world_id = $(this).val();
+                $.get('{{ url_for('generate_preview') }}' + world_id, function(data) {
+                    var btn = $('#preview_world_btn_' + world_id);
+                    btn = $(this).button('loading')
+
+                });
+            });
+            /* Show preview click event */
+            $('.show_preview_btn').click(function () {
+                var world_id = $(this).val();
+                $.get('{{ url_for('show_preview') }}' + world_id, function(data) {
+
+                });
+            });
         });
     } // function world_list_loader
 
