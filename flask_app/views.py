@@ -407,21 +407,45 @@ def toggle_favourite(world_id):
     )
 
 
-@app.route('/generate_preview/<world_ref>', methods=['POST', 'GET'])  # TODO POST on generate preview?
+@app.route('/generate_preview/', defaults={'world_id': None})
+@app.route('/generate_preview/<int:world_id>')
 @login_required
-def generate_preview(world_ref):
-    return files.generate_world_preview(world_ref)
-
-
-@app.route('/show_preview/<world_ref>')
-@login_required
-def show_preview(world_ref):
-    # TODO Check if file is present, return spinner if not.
-    return render_template(
-        'preview.html',
-        title='Preview',
-        world_ref=world_ref
+def generate_preview(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
         )
+    w = World.get_by_id(world_id)
+    world_ref = w.file_ref
+    success = files.generate_world_preview(world_ref)
+    if success:
+        w.preview = True
+        w.store()
+        return 'Success'
+    else:
+        return 'Failure'
+
+
+@app.route('/show_preview/', defaults={'world_id': None})
+@app.route('/show_preview/<int:world_id>')
+@login_required
+def show_preview(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
+    # TODO Check if file is present, return spinner if not.
+    w = World.get_by_id(world_id)
+    if w.preview:
+        world_ref = w.file_ref
+        return render_template(
+            'preview.html',
+            title='Preview',
+            world_ref=world_ref
+        )
+    return u'Ingen forhåndsvisning.'
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])

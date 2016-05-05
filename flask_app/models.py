@@ -111,6 +111,7 @@ class World(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     description = db.Column(db.String(512), server_default='')
     file_ref = db.Column(db.String(255), unique=True)
+    preview = db.Column(db.Boolean)
     seed = db.Column(db.String(100))
     favourite = db.Column(db.Boolean)
 
