@@ -1,7 +1,7 @@
 cloud:
   ### Salt specific configurations
   salt:
-    # The hostname of the Salt master to be used
+    # The hostname of the Salt master
     master: 'master.kode-kidza.no'
 
   ### Azure configuration
@@ -29,6 +29,6 @@ cloud:
     subnet: 'public'
 
     ### VM profiles
-    vm_size_small: 'Standard_A0'
+    vm_size_small: 'Standard_DS1_v2'
     vm_size_medium: 'Standard_DS1_v2'
     vm_size_large: 'Standard_DS2_v2'

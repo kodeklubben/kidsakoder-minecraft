@@ -13,10 +13,10 @@ base:
     - cloud
 
   # Minecraft base configuration
-  'mc*':
+  '*mc*':
     - minecraft
 
-  # Forge Server version 
+  # Forge Server version
   {% set forge_version = salt['grains.get']('forge_version', '') %}
   {% if forge_version %}
   'forge_version:{{ forge_version }}':
