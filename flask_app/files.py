@@ -16,7 +16,19 @@ from jinja2 import escape
 from models import Meeting, World
 from flask import safe_join
 from flask_app import app
-import os
+
+
+def super_safe_join(directory, filename):
+    """
+    Allow slashes in `filename` and safely join `directory` and `filename`
+
+    :param directory: the base directory.
+    :param filename: the untrusted path relative to that directory.
+    """
+    path_list = filename.split('/')
+    for path in path_list:
+        directory = safe_join(directory, path)
+    return directory
 
 
 def save_world_from_fme(url=None, description=""):
