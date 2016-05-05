@@ -6,8 +6,8 @@ import StringIO
 import urllib2
 import os
 import subprocess
-from zipfile import ZipFile
 import shutil
+from zipfile import ZipFile
 from flask_security import current_user
 from flask import send_file, jsonify
 from icalendar import Calendar, Event
@@ -89,6 +89,7 @@ def generate_world_preview(world_ref):
 
     print('finding')
     # Find minecraft world inside unzipped directory.
+    # TODO locate level.dat file. For user uploaded worlds file structure probably does not contain entire saves dir
     world_path = safe_join_all(unzip_path, 'saves')
     # We assume there is only one minecraft world, so we pick the first subdir:
     world_path = safe_join_all(world_path, os.listdir(world_path)[0])
