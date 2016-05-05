@@ -351,6 +351,21 @@ def get_world(file_name):
     return send_from_directory(directory, file_name, as_attachment=True, attachment_filename=file_name)
 
 
+@app.route('/verden_info/', defaults={'world_id': None})
+@app.route('/verden_info/<int:world_id>')
+def world_info(world_id):
+    if not world_id:
+        return jsonify(
+            success=False,
+            message=u'Ingen verden ID mottatt'
+        )
+    world = World.get_by_id(world_id)
+    return render_template(
+        'world_info.html',
+        world=world
+    )
+
+
 @app.route('/dine_verdener')
 @login_required
 def browse_worlds():
