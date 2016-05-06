@@ -124,7 +124,7 @@ def admin():
     """ Enables admins to register new users """
     return render_template(
         'admin/admin.html',
-        title=u'Adminside - Registrer nye brukere',
+        title=u'Adminside - Registrer nye brukere'
     )
 
 
