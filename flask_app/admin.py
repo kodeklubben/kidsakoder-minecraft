@@ -11,6 +11,7 @@ from models import User, Role, Meeting, World
 from flask.ext.security import utils
 from flask_app import app
 
+
 def initAdmin():
     # Initialize Flask-Admin and add needed views/pages
     admin = Admin(app)
@@ -26,7 +27,7 @@ def initAdmin():
 
     # Configurations to a view for displaying, deleting, adding and editing users.
     class UserView(ModelView):
-        column_exclude_list = ['password', 'first_name', 'last_name']
+        column_exclude_list = ['password']
         
         # Automatically display readable roles
         column_auto_select_related = True
@@ -42,7 +43,7 @@ def initAdmin():
         # Replaces Flask's standard textfield for passwords with an actual password field
         def scaffold_form(self):
             form_class = super(UserView, self).scaffold_form()
-            form_class.password2 = PasswordField('Passord',[
+            form_class.password2 = PasswordField('Passord', [
                 validators.EqualTo('confirm', message = 'Passwords must match')
             ])
             form_class.confirm = PasswordField('Bekreft passordet')

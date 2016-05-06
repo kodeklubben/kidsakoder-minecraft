@@ -1,5 +1,7 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-    <p>Velkommen til adminsiden! Velg "User" fra menyen over for å legge til nye brukere.</p>
+    <p> Velkommen til adminsiden! Velg "User" fra menyen over for å legge til nye brukere. </p><br>
+    <p> Du kan også endre instillinger for <a href="{{ url_for('user') }}"> denne brukeren </a></p>
+    <p> Eller gå videre til <a href="https://portal.azure.com/"> Azure portalen </a></p>
 {% endblock %}
