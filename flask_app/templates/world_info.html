@@ -1,0 +1,13 @@
+
+<p>
+    {% if world.description %} {{ world.description }} {% else %} Ingen beskrivelse {% endif %}
+</p>
+<button type="button" class="btn btn-default panel-btn preview_btn" value="{{ world.id }}"
+        title="Forhåndsvis denne Minecraft verdenen">
+    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+    Forhåndsvis</button>
+
+<a href="{{ url_for('get_world', file_name=world.file_ref) }}" class="btn btn-default panel-btn"
+   title="Last ned denne Minecraft verdenen">
+    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+    Last ned </a>
