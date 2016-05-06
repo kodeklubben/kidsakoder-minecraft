@@ -97,7 +97,6 @@
                     <div id="world_info" class="well">
                         {% if world %}
                             {% include 'world_info.html' %}
-{#                            <a href="{{ url_for('get_world', file_name=world.file_ref) }}">Last ned verden</a>#}
                         {% else %}
                             Ingen Minecraft verden valgt
                         {% endif %}
@@ -201,6 +200,12 @@ $(document).ready(function() {
         $("#back-btn").hide();
         $("#gen-choise").show();
     });
+
+    /* Preview button click event (world info well) */
+    $('.preview_btn').click(function () {
+        /* Give clicked button (this) to function */
+        preview_loader.call(this);
+    });
     
     /* Detect world ID change */
     $('#world_id').change(function () {
@@ -216,6 +221,7 @@ $(document).ready(function() {
         });
     });
 
+    /* Load world preview */
     function preview_loader() {
         var world_id = $(this).val();
         // Do preview stuff
