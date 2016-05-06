@@ -12,7 +12,7 @@ base:
     - webserver
     - cloud
 
-  # Minecraft base configuration
+  # Minecraft configuration
   '*mc*':
     - minecraft
 
