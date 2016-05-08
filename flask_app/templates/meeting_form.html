@@ -210,6 +210,9 @@ $(document).ready(function() {
     /* Detect world ID change */
     $('#world_id').change(function () {
         var world_id = $('#world_id').val();
+        /* Clear preview tab */
+        $('#world_preview_tab').hide();
+        $('#preview-tab').html('');
         /* Fetch world info */
         $.get('{{ url_for('world_info') }}' + world_id, function (data) {
             $('#world_info').html(data);
@@ -224,11 +227,12 @@ $(document).ready(function() {
     /* Load world preview */
     function preview_loader() {
         var world_id = $(this).val();
-        // Do preview stuff
-        console.log(world_id)
         $('#world_preview_tab').show();
-        $('#temp_preview_contents').html('Verden ID: ' + world_id);
-        $('#temp_preview_contents').append(new Spinner().spin().el);
+        // TODO Load preview or show spinner and poll for finished preview
+        $('#preview-tab').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
+        $('#preview-tab').children(':first').append(new Spinner().spin().el);
+
+        /* Activate preview tab */
         $('a[href=#preview-tab]').click();
     }
 
