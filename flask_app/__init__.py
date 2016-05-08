@@ -19,23 +19,22 @@ app.config.from_pyfile('config/development.py')
 
 # Set locale for datetime format
 import locale
-try:
-    # For UNIX(-like) if the locale is installed
-    locale.setlocale(locale.LC_TIME, 'nb_NO')
-    print 'Locale set to nb_NO'
-except locale.Error:
+def try_locale(locale_list):
+    """ Recursively try locales from a list """
+    if not locale_list:
+        print 'Locale not found'
+        return
+    head, tail = locale_list[0], locale_list[1:]
     try:
-        # This might be generally more default installed
-        locale.setlocale(locale.LC_TIME, 'no_NO')
-        print 'Locale set to no_NO'
+        locale.setlocale(locale.LC_TIME, head)
+        print 'Locale set to ' + head
     except locale.Error:
-        try:
-            # Should work for windows
-            locale.setlocale(locale.LC_TIME, 'norwegian-bokmal')
-            print 'Locale set to norwegian-bokmal'
-        except locale.Error:
-            print 'Norwegian locale not found'
-print 'Preferred locale: ' + locale.getpreferredencoding()
+        try_locale(tail)
+
+our_locales = ('nb_NO', 'no_NO', 'norwegian-bokmal')
+try_locale(our_locales)
+
+print 'Preferred locale encoding: ' + locale.getpreferredencoding()
 
 # Initialize Flask-Security
 from database import db, roles_users
