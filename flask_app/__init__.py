@@ -10,8 +10,8 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Load configurations
+app.config.from_pyfile('config/secret_key.py')  # Load first in case we want to use in other config opt
 app.config.from_pyfile('config/configuration.py')
-app.config.from_pyfile('config/secret_key.py')
 app.config.from_pyfile('config/secret_config.py')
 # Development configuration overrides. Comment out for production
 app.config.from_pyfile('config/development.py')
