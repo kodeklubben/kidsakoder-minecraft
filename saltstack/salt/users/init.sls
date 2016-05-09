@@ -13,8 +13,3 @@
   {% endif %}
 
 {% endfor %}
-
-# Remove the default Terraform user used for initial provisioning
-remove-terraform-user:
-  user.absent:
-    - name: terraform

@@ -1,21 +1,21 @@
 # Hosted service required in order to create virtual machine
-resource "azure_hosted_service" "webserver" {
-  name = "kidsakoder-hs-webserver"
+resource "azure_hosted_service" "minion" {
+  name = "kidsakoder-hs-minion"
   location = "${var.location}"
   ephemeral_contents = false
 }
 
 # Virtual machine instance for webserver
-resource "azure_instance" "webserver" {
+resource "azure_instance" "minion" {
   # Hostname of instance
-  name = "webserver"
+  name = "minion"
 
   # VM image and size
   image = "${var.vm_image}"
   size = "${var.vm_size}"
 
   # Azure resources
-  hosted_service_name = "${azure_hosted_service.webserver.name}"
+  hosted_service_name = "${azure_hosted_service.minion.name}"
   storage_service_name = "${var.storage_name}"
   virtual_network = "${var.network_name}"
   subnet = "${var.subnet_name}"
@@ -31,14 +31,6 @@ resource "azure_instance" "webserver" {
     protocol = "tcp"
     public_port = 22
     private_port = 22
-  }
-
-  # Enable HTTP endpoint
-  endpoint {
-    name = "HTTP"
-    protocol = "tcp"
-    public_port = 80
-    private_port = 80
   }
 
   # Connection details for Terraform provisioner
@@ -66,23 +58,4 @@ resource "azure_instance" "webserver" {
       "cat /tmp/install_minion.sh | sudo -E sh -s",
     ]
   }
-}
-
-
-# A record for internal IP of the webserver
-resource "dnsimple_record" "internal" {
-    domain = "${var.domain}"
-    name = "${var.dns_webserver_internal}"
-    value = "${azure_instance.webserver.ip_address}"
-    type = "A"
-    ttl = 360
-}
-
-# A record for external IP of the webserver
-resource "dnsimple_record" "external" {
-    domain = "${var.domain}"
-    name = "${var.dns_webserver_external}"
-    value = "${azure_instance.webserver.vip_address}"
-    type = "A"
-    ttl = 360
 }

@@ -29,7 +29,7 @@ module "master" {
 
   # Set the VM image and size
   vm_image = "${var.vm_image}"
-  vm_size = "${var.vm_sizes.2}"
+  vm_size = "${var.vm_sizes.0}"
 
   # Get the shared resources necessary from the site module
   network_name = "${module.site.network_name}"
