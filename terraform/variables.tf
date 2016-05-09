@@ -31,10 +31,8 @@ variable "vm_image" {
 variable "vm_sizes" {
   description = "The size of the virtual machines to be used"
   default = {
-    "0" = "Basic_A0"
-    "1" = "Basic_A1"
-    "2" = "Standard_DS1_v2"
-    "3" = "Standard_DS2_v2"
+    "0" = "Standard_DS1_v2"
+    "1" = "Standard_DS2_v2"
   }
 }
 
