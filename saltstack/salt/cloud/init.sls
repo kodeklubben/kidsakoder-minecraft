@@ -41,8 +41,15 @@ azure-profile:
     - template: jinja
 
 
-# Upload our Salt Cloud Azure python module
-azure-python-module:
+# Upload our Salt Cloud Azure python modules
+azure-client-python-module:
   file.managed:
-    - name: /etc/salt/azure.py
-    - source: salt://cloud/azure.py
+    - name: /etc/salt/azure_client.py
+    - source: salt://cloud/azure_client.py
+    - mode: 655
+
+azure-scheduler-python-module:
+  file.managed:
+    - name: /etc/salt/azure_scheduler.py
+    - source: salt://cloud/azure_scheduler.py
+    - mode: 655

@@ -25,9 +25,9 @@ base:
   {% endif %}
 
   # Minecraft instance sizes
-  {% set size = salt['grains.get']('size', '') %}
+  {% set size = salt['grains.get']('minecraft_size', '') %}
   {% if size %}
-  'size:{{ size }}':
+  'minecraft_size:{{ size }}':
     - match: grain
     - minecraft.sizes.{{ size }}
   {% endif %}

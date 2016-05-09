@@ -28,6 +28,7 @@ download-minecraft-forge:
     - mode: 755
     - require:
       - pkg: install-openjdk
+      
 
 # Installs Minecraft Forge server using the installer.
 # This takes a short while as it downloads other dependencies and sets up directories.
@@ -43,10 +44,11 @@ install-minecraft-forge:
       - file: download-minecraft-forge
 
 
-# Creates an symlink for the runnable jar for Forge to something simpler
+# Creates an symlink for the runnable jar for Forge to something simpler.
+# The jar created by the forge installer has a lot of versioning info in the filename.
 setup-minecraft-forge-symlink:
   file.symlink:
-    - name: {{ server.path }}/forge-universal.jar
+    - name: {{ server.path }}/{{ forge.jar_symlink_name }}
     - target: {{ server.path }}/{{ forge.jar_name }}
     - user: {{ server.user }}
     - group: {{ server.group }}
