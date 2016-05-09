@@ -32,7 +32,12 @@
             {% endif %}
             Favoritt </button>
 
-            {% if world.preview %}
+            <button type="button" class="btn btn-default panel-btn preview_btn_list" value="{{ world.id }}"
+                    title="Forhåndsvis denne Minecraft verdenen">
+                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                Forhåndsvis </button>
+
+            {#{% if world.preview %}
             <button type="button" class="btn btn-default panel-btn show_preview_btn" data-loading-text="Genererer verden..." autocomplete="off"
                     value="{{ world.id }}" title="Forhåndsvisning av denne Minecraft verdenen" id="show_preview_{{ world.id }}">
                 <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
@@ -42,9 +47,9 @@
             <button type="button" class="btn btn-default panel-btn gen_preview_btn"
                     value="{{ world.id }}" title="Lag forhåndsvisning av denne Minecraft verdenen" id="preview_world_btn_{{ world.id }}">
                 <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
-                Lag forhåndsvisning 
+                Lag forhåndsvisning
             </button>
-            {% endif %}
+            {% endif %}#}
         </span>
     </div>
     </div>

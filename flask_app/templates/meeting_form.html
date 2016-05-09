@@ -107,7 +107,11 @@
     </div>
 
     <div class="tab-pane fade" id="preview-tab">
-        <div id="temp_preview_contents" style="width: 100%; height: 400px; background: deepskyblue"> Hellu </div>
+        <div id="preview_content"></div>
+        <button type="button" class="btn btn-default panel-btn" id="use_preview_btn" value=""
+                title="Bruk denne verdenen i et møte" style="display: none">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            Bruk </button>
     </div>
 </div>
 
@@ -210,6 +214,15 @@ $(document).ready(function() {
     /* Detect world ID change */
     $('#world_id').change(function () {
         var world_id = $('#world_id').val();
+        /* Clear preview tab if world id is different */
+        if (world_id !== $('#use_preview_btn').val()) {
+            $('#world_preview_tab').hide();
+            $('#preview_content').html('');
+            var preview_button = $('#use_preview_btn');
+            preview_button.hide();
+            preview_button.val('');
+            preview_button.off('click');
+        }
         /* Fetch world info */
         $.get('{{ url_for('world_info') }}' + world_id, function (data) {
             $('#world_info').html(data);
@@ -224,11 +237,25 @@ $(document).ready(function() {
     /* Load world preview */
     function preview_loader() {
         var world_id = $(this).val();
-        // Do preview stuff
-        console.log(world_id)
         $('#world_preview_tab').show();
-        $('#temp_preview_contents').html('Verden ID: ' + world_id);
-        $('#temp_preview_contents').append(new Spinner().spin().el);
+        // TODO Load preview or show spinner and poll for finished preview
+        $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
+        $('#preview_content').children(':first').append(new Spinner().spin().el);
+
+        /* Add use button if world not already in use */
+        var preview_button = $('#use_preview_btn');
+        preview_button.val(world_id);
+        if (world_id !== $('#world_id').val()) {
+            preview_button.click(function () {
+                /* Keep this context */
+                use_world_handler.call(this);
+            });
+            preview_button.show();
+        } else {
+            preview_button.hide();
+            preview_button.off('click');
+        }
+        /* Activate preview tab */
         $('a[href=#preview-tab]').click();
     }
 
@@ -276,12 +303,16 @@ $(document).ready(function() {
             });
             /* Use world click event */
             $('.use_world_btn').click(function () {
-                var world_id = $('#world_id');
-                world_id.val( $(this).val() );
-                $('a[href=#meeting-tab]').click();
-                world_id.change();
+                /* Keep this context */
+                use_world_handler.call(this);
             });
-            /* Generate preview click event */
+            /* Preview world click event in world list */
+            $('.preview_btn_list').click(function () {
+                /* Keep this context */
+                preview_loader.call(this);
+            });
+
+            {#/* Generate preview click event */
             $('.gen_preview_btn').click(function () {
                 var world_id = $(this).val();
                 $.get('{{ url_for('generate_preview') }}' + world_id, function(data) {
@@ -296,9 +327,17 @@ $(document).ready(function() {
                 $.get('{{ url_for('show_preview') }}' + world_id, function(data) {
 
                 });
-            });
+            });#}
         });
     } // function world_list_loader
+
+    /* Handler for use world click event */
+    function use_world_handler() {
+        var world_id = $('#world_id');
+        world_id.val( $(this).val() );
+        $('a[href=#meeting-tab]').click();
+        world_id.change();
+    }
 
 });
 </script>

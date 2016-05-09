@@ -1,4 +1,4 @@
-{% from "security/_macros.html" import render_field_with_errors, render_field, render_field_with_errors_and_linebreak, render_field_with_errors_and_label_last %}
+{% from "security/_macros.html" import render_field, render_error %}
 {% set title = 'Logg inn' %}
 {% extends "layout.html" %}
 {% block content %}
@@ -8,11 +8,28 @@
         <h2> {{ title }} </h2>
         <form action="{{ url_for_security('login') }}" method="POST" name="login_user_form">
             {{ login_user_form.hidden_tag() }}
-            {{ render_field_with_errors(login_user_form.email, class="form-control") }}
-            {{ render_field_with_errors(login_user_form.password, class="form-control") }}
-            {{ render_field_with_errors_and_label_last(login_user_form.remember) }}
-            {{ render_field(login_user_form.next) }}
-            {{ render_field(login_user_form.submit, class="btn btn-default") }}
+            <p>
+                <label for="email"> E-post adresse </label> {{ login_user_form.email(class="form-control")|safe }}
+            </p>
+            <p>
+                <label for="password"> Passord </label> {{ login_user_form.password(class="form-control")|safe }}
+            </p>
+            {% if login_user_form.email.errors or login_user_form.password.errors %}
+            <p>
+                <ul class="field_error_list">
+                {% for error in login_user_form.email.errors %}
+                    <li>{{ render_error(error) }}</li>
+                {% endfor %}
+                {% for error in login_user_form.password.errors %}
+                    <li>{{ render_error(error) }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+            {% endif %}
+            <p>
+                {{ login_user_form.remember()|safe }} <label for="remember"> Husk meg </label>
+            </p>
+            {{ render_field(login_user_form.submit, class="btn btn-default", value="Logg inn") }}
         </form>
     </div>
 </div>
