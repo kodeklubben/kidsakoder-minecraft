@@ -28,10 +28,11 @@ download-minecraft-forge:
     - mode: 755
     - require:
       - pkg: install-openjdk
-      
+
 
 # Installs Minecraft Forge server using the installer.
 # This takes a short while as it downloads other dependencies and sets up directories.
+# See http://www.minecraftforge.net/wiki/Installation/Universal for more information
 install-minecraft-forge:
   cmd.run:
     - name: "java -jar forge_installer.jar --installServer"
