@@ -238,10 +238,69 @@ $(document).ready(function() {
     function preview_loader() {
         var world_id = $(this).val();
         $('#world_preview_tab').show();
-        // TODO Load preview or show spinner and poll for finished preview
-        $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
-        $('#preview_content').children(':first').append(new Spinner().spin().el);
+        
+        function poll(fn, callback, errback, timeout, interval) {
+            var endTime = Number(new Date()) + (timeout || 2000); // default 
+            interval = interval || 100; // default 100
 
+            (function p() {
+                    // If the condition is met, we're done! 
+                    
+                    var xhr = fn();
+                    xhr.done()
+                    console.log(xhr.Status)
+                    if(true) {
+                        console.log("success!");
+                        callback();
+                    }
+                    // If the condition isn't met but the timeout hasn't elapsed, go again
+                    else if (Number(new Date()) < endTime) {
+                        console.log("polling...");
+                        timer = setTimeout(p, interval);
+                    }
+                    // Didn't match and too much time, reject!
+                    else {
+                        console.log("timeout!");
+                        errback(new Error('timed out for ' + fn + ': ' + arguments));
+                    }
+            })();
+        };
+
+        // TODO Load preview or show spinner and poll for finished preview
+        poll(
+            function () {
+                var xhr;
+                xhr = $.get('{{ url_for('show_preview') }}' + world_id, function (data) {
+                    console.log("Trying to fill preview content");
+                    
+                }).done(function (data, textStatus, xhr) {
+                    console.log("Status: " + xhr.status);
+                    if (xhr.status === 204){
+                        $('#preview_content').html(
+                            '<div style="width:100%;height:400px;background:deepskyblue">'
+                            + ' Verden ID: ' + world_id + '</div>');
+                        $('#preview_content').children(':first').append(new Spinner().spin().el);
+                        console.log("returning false.");
+                    } else {
+                        console.log("returning true.");
+                        $('#preview_content').html(data);
+                    }
+                });
+                return xhr;
+            },
+            function () {
+                // TODO success callback
+            },
+            function (error) {
+                // TODO error callback
+
+            }, (1000 * 60 * 5), 10000 // interval of ten seconds, timeout after 5 minutes.
+        );
+
+
+
+
+        
         /* Add use button if world not already in use */
         var preview_button = $('#use_preview_btn');
         preview_button.val(world_id);

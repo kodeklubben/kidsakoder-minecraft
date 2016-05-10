@@ -7,10 +7,10 @@ app.conf.update(
 )
 
 @app.task(name='tasks.generate_preview_task')
-def generate_preview_task(config_path, world_ref):
+def generate_preview_task(config_path):
     # Call overviewer to generate
     # WINDOWS
     # subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
     # Linux
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
-    return "Preview of %s complete."
+    return "Preview complete."
