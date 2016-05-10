@@ -4,13 +4,9 @@ base:
     - users
 
   # Salt master configuration
-  'master*':
+  'master':
     - cloud
-
-  # Web server configuration
-  'web*':
     - webserver
-    - cloud
 
   # Minecraft configuration
   '*mc*':

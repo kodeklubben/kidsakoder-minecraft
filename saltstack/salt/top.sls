@@ -4,11 +4,8 @@ base:
     - users
 
   # Salt master states
-  'master*':
+  'master':
     - cloud
-
-  # Web server states
-  'web*':
     - webserver
     - overviewer
 
