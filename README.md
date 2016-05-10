@@ -31,13 +31,12 @@ pip install -r requirements.txt
 #### Running Flask locally
 To run Flask locally on `http://localhost:5000`, you need to do the following:
 
-Make a copy of (do not rename) `secret_config.py.template` in `flask_app/config` and name it `secret_config.py`. Then you can fill in your super secret config settings.
-
 Setup the app by running the following command in the project folder:
 ```
 python setup_app.py
 ```
-This will generate a secret key and initialize the database.
+This will generate a secret key, create a secret config file and initialize the database.
+
 If you want render previews of minecraft worlds, the task scheduler Celery and message broker Rabbitmq needs to be installed and started, and running in a virtual machine is preferred.
 With these installed, the message server and task scheduler can be started by running the script (note: superuser):
 ```
