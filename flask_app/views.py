@@ -438,7 +438,7 @@ def generate_preview(world_id):
     if success:
         w.preview = True
         w.store()
-        return 'Success'
+        return 'Genererer forhåndsvisning. Dette kan ta noen minutter.'
     else:
         return 'Failure'
 
@@ -447,6 +447,7 @@ def generate_preview(world_id):
 @app.route('/show_preview/<int:world_id>')
 @login_required
 def show_preview(world_id):
+    from tasks import generate_preview_task
     if not world_id:
         return jsonify(
             success=False,
@@ -454,14 +455,40 @@ def show_preview(world_id):
         )
     # TODO Check if file is present, return spinner if not.
     w = World.get_by_id(world_id)
-    if w.preview:
+    preview = generate_preview_task.AsyncResult(w.file_ref)
+    if preview.status == 'PENDING':
+        print(str(world_id) + " PENDING")
+        # Probably not started. Start it.
         world_ref = w.file_ref
+        success = files.generate_world_preview(world_ref)
+        if success:
+            return jsonify(
+                status='PENDING',
+                message=u'Ingen forhåndsvisning lagret. Ber om forhåndsvisning...'
+            )
+        else:
+            return 'Noe gikk galt!'
+    elif preview.status == 'SENT':
+        print(str(world_id) + " SENT")
+        # Received by the worker, and in queue. Tell user to wait.
+        return jsonify(
+            status='SENT',
+            message=u'Forespørsel om forhåndsvisning er sendt. Hvis det er stor pågang kan dette ta en stund.'
+        )
+    elif preview.status == 'STARTED':
+        print(str(world_id) + " STARTED")
+        return jsonify(
+            status='STARTED',
+            message=u'Vi lager en forhåndsvisning. Dette kan ta noen minutter.'
+        )
+    elif preview.status == 'SUCCESS':
+        print(str(world_id) + " SUCCESS")
+        # Finished. Show the preview.
+        print('forhåndsvisningen er ferdig')
         return render_template(
             'preview.html',
-            title='Preview',
-            world_ref=world_ref
-        )
-    return u'Ingen forhåndsvisning.'
+            world_ref=w.file_ref,
+        ), 200
 
 
 @app.route('/test_cloud', methods=['GET', 'POST'])

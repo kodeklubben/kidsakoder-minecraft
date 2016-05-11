@@ -238,10 +238,35 @@ $(document).ready(function() {
     function preview_loader() {
         var world_id = $(this).val();
         $('#world_preview_tab').show();
-        // TODO Load preview or show spinner and poll for finished preview
-        $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
-        $('#preview_content').children(':first').append(new Spinner().spin().el);
+        
 
+
+        function poll(world_id) {
+            console.log("preview of " + world_id.toString());
+            var xhr;
+            xhr = $.get('{{ url_for('show_preview') }}' + world_id, function (data) {
+                console.log("Trying to fill preview content");
+                
+            }).done(function (data, textStatus, xhr) {
+                var ct = xhr.getResponseHeader("content-type") || "";
+
+                console.log(textStatus)
+                if(ct.indexOf('html') > -1) {
+                    console.log("returning true.");
+                    $('#preview_content').html(data);
+                    
+                } else if(ct.indexOf('json') > -1) {
+                    var response = data;
+
+                    $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '<br>' + response.message + ' </div>');
+                    $('#preview_content').children(':first').append(new Spinner().spin().el);
+                    console.log("returning false.");
+                    setTimeout  (function() {poll(world_id);}, 20000);
+                }
+            });
+        };
+        poll(world_id)
+        
         /* Add use button if world not already in use */
         var preview_button = $('#use_preview_btn');
         preview_button.val(world_id);

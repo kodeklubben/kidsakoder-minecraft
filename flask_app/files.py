@@ -112,7 +112,7 @@ def generate_world_preview(world_ref):
             'defaultzoom = 12 \n'
             ])
     # Call overviewer to generate
-    result = generate_preview_task.delay(config_path=config_path, world_ref=world_ref)
+    result = generate_preview_task.apply_async((config_path,), task_id=world_ref) # Note: singleton arg tuple needs a trailing comma
     # subprocess.call(["overviewer.py", "--config=%s" % config_path])
     # TODO Clean up tmp files
 
