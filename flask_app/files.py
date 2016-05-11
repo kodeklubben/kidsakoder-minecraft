@@ -159,8 +159,7 @@ def delete_world_file(file_ref):
 
 
 def delete_world_preview(file_ref):
+    from tasks import delete_preview_task
     dir_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], file_ref)
-    try:
-        shutil.rmtree(dir_path)
-    except OSError:
-        pass
+    result = delete_preview_task.delay(dir_path)
+    return result
