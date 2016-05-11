@@ -31,13 +31,12 @@ pip install -r requirements.txt
 #### Running Flask locally
 To run Flask locally on `http://localhost:5000`, you need to do the following:
 
-Make a copy of (do not rename) `secret_config.py.template` in `flask_app/config` and name it `secret_config.py`. Then you can fill in your super secret config settings.
-
 Setup the app by running the following command in the project folder:
 ```
 python setup_app.py
 ```
-This will generate a secret key and initialize the database.
+This will generate a secret key, create a secret config file and initialize the database.
+
 If you want render previews of minecraft worlds, the task scheduler Celery and message broker Rabbitmq needs to be installed and started, and running in a virtual machine is preferred.
 With these installed, the message server and task scheduler can be started by running the script (note: superuser):
 ```
@@ -62,17 +61,17 @@ See [Development environment](#Development-environment) for why we are using Vag
 
 #### Development environment
 The Vagrant environment is defined in [Vagrantfile](Vagrantfile).
-It defines 3 different virtual machines which are listed below.
+It defines 2 different virtual machines which are listed below.
 The aim is to replicate the different virtual machines that are deployed in production.
 The virtual machines are configured and installed using Salt based on the Salt States and Pillars in [saltstack/](saltstack/) (see [Configuration management](#Configuration-management) for more details).
 
-_Please note that the `web` and `mc` servers require that the `master` server is up in order for Salt to get the configuration files from the master._
+_Please note that the `mc` server require that the `master` server is up in order for Salt to get the configuration files from the master._
 
-| VM Name | Role             | Configuration Mgmt.        | IP              | Port-Forwarding                   | VM Memory |
-|---------|------------------|----------------------------|-----------------|-----------------------------------|-----------|
-| master  | Salt Master      | Master                     | 192.168.100.100 | None                              | 512 MB    |
-| web     | Web Server       | Minion (depends on Master) | 192.168.100.101 | Guest: 80, 5000, Host: 8080, 5000 | 256 MB    |
-| mc      | Minecraft Server | Minion (depends on Master) | 192.168.100.102 | Guest: 25565, Host: 25565         | 1024 MB   |
+| VM Name | Role                     | Configuration Mgmt.        | IP              | Port-Forwarding                   | VM Memory |
+|---------|--------------------------|----------------------------|-----------------|-----------------------------------|-----------|
+| master  | Salt Master & Web Server | Master                     | 192.168.100.100 | Guest: 80, 5000, Host: 8080, 5000 | 1024 MB   |
+| mc      | Minecraft Server         | Minion (depends on Master) | 192.168.100.101 | Guest: 25565, Host: 25565         | 1024 MB   |
+
 
 #### How to use Vagrant
 ```

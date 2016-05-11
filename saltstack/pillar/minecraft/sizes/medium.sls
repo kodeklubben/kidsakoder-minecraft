@@ -1,4 +1,4 @@
 minecraft:
   server:
-    max_mem: 1280M
-    min_mem: 512M
+    max_mem: 6G
+    min_mem: 2G

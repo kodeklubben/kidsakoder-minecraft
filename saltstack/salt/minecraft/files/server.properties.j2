@@ -1,45 +1,44 @@
-{% set prop = pillar['minecraft']['properties']  %}
-{% set server = pillar['minecraft']['server']  %}
+{% set p = pillar['minecraft']['properties']  %}
 
 #Minecraft server properties
-server-ip={{ server.ip }}
-server-port={{ server.port }}
+server-ip={{ p.ip }}
+server-port={{ p.port }}
 
-level-name={{ prop.level_name }}
-level-type={{ prop.level_type }}
-level-seed={{ prop.level_seed }}
-allow-nether={{ prop.allow_nether }}
-max-world-size={{ prop.max_world_size }}
-max-build-height={{ prop.max_build_height }}
-generate-structures={{ prop.generate_structures }}
-generator-settings={{ prop.generator_settings }}
+level-name={{ p.level_name }}
+level-type={{ p.level_type }}
+level-seed={{ p.level_seed }}
+allow-nether={{ p.allow_nether }}
+max-world-size={{ p.max_world_size }}
+max-build-height={{ p.max_build_height }}
+generate-structures={{ p.generate_structures }}
+generator-settings={{ p.generator_settings }}
 
-gamemode={{ prop.gamemode }}
-force-gamemode={{ prop.force_gamemode }}
-allow-flight={{ prop.allow_flight  }}
-difficulty={{ prop.difficulty }}
-hardcore={{ prop.hardcore }}
-pvp={{ prop.pvp }}
+gamemode={{ p.gamemode }}
+force-gamemode={{ p.force_gamemode }}
+allow-flight={{ p.allow_flight  }}
+difficulty={{ p.difficulty }}
+hardcore={{ p.hardcore }}
+pvp={{ p.pvp }}
 
-max-players={{ prop.max_players }}
-max-tick-time={{ prop.max_tick_time }}
+max-players={{ p.max_players }}
+max-tick-time={{ p.max_tick_time }}
 
-spawn-npcs={{ prop.spawn_npcs }}
-spawn-animals={{ prop.spawn_animals }}
-spawn-monsters={{ prop.spawn_monsters }}
+spawn-npcs={{ p.spawn_npcs }}
+spawn-animals={{ p.spawn_animals }}
+spawn-monsters={{ p.spawn_monsters }}
 
-online-mode={{ prop.online_mode }}
-motd={{ prop.motd }}
-announce-player-achievements={{ prop.announce_player_achievements }}
-op-permission-level={{ prop.op_permission_level }}
-white-list={{ prop.white_list }}
-player-idle-timeout={{ prop.player_idle_timeout }}
-network-compression-threshold={{ prop.network_compression_threshold }}
-view-distance={{ prop.view_distance }}
+online-mode={{ p.online_mode }}
+motd={{ p.motd }}
+announce-player-achievements={{ p.announce_player_achievements }}
+op-permission-level={{ p.op_permission_level }}
+white-list={{ p.white_list }}
+player-idle-timeout={{ p.player_idle_timeout }}
+network-compression-threshold={{ p.network_compression_threshold }}
+view-distance={{ p.view_distance }}
 
-enable-query={{ prop.enable_query }}
-enable-rcon={{ prop.enable_rcon }}
-enable-command-block={{ prop.enable_command_block }}
-snooper-enabled={{ prop.snooper_enabled }}
-resource-pack={{ prop.resource_pack }}
-resource-pack-sha1={{ prop.resource_pack_sha1 }}
+enable-query={{ p.enable_query }}
+enable-rcon={{ p.enable_rcon }}
+enable-command-block={{ p.enable_command_block }}
+snooper-enabled={{ p.snooper_enabled }}
+resource-pack={{ p.resource_pack }}
+resource-pack-sha1={{ p.resource_pack_sha1 }}

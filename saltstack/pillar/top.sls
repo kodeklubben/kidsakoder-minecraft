@@ -4,19 +4,15 @@ base:
     - users
 
   # Salt master configuration
-  'master*':
+  'master':
     - cloud
-
-  # Web server configuration
-  'web*':
     - webserver
-    - cloud
 
-  # Minecraft base configuration
-  'mc*':
+  # Minecraft configuration
+  '*mc*':
     - minecraft
 
-  # Forge Server version 
+  # Forge Server version
   {% set forge_version = salt['grains.get']('forge_version', '') %}
   {% if forge_version %}
   'forge_version:{{ forge_version }}':
@@ -25,9 +21,9 @@ base:
   {% endif %}
 
   # Minecraft instance sizes
-  {% set size = salt['grains.get']('size', '') %}
+  {% set size = salt['grains.get']('minecraft_size', '') %}
   {% if size %}
-  'size:{{ size }}':
+  'minecraft_size:{{ size }}':
     - match: grain
     - minecraft.sizes.{{ size }}
   {% endif %}

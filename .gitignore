@@ -111,6 +111,7 @@ uninstall.txt
 .idea/
 
 # Terraform
+.terraform/
 *.tfstate
 *.backup
 *.tfvars

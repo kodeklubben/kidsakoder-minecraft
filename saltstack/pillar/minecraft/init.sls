@@ -1,20 +1,39 @@
 minecraft:
   server:
+    # The user and group account that owns and runs Minecraft
     user: minecraft
     group: minecraft
+
+    # The path where we install and run Minecraft
     path: /opt/minecraft
+
+    # The path to the Minecraft mods for Forge
     mods_path: /opt/minecraft/mods
-    ip: ""
-    port: 25565
+
+    # Default Minecraft instance memory sizes
+    # These values should be overwritten by the other sizes in the sizes directory
     max_mem: 512M
     min_mem: 512M
+
+    # The location of the error logs for the Java process
     java_log: /opt/minecraft/log/hs_err_pid%p.log
 
 
+  forge:
+    # The name of the executable Forge server jar
+    # We symlink the actual jar file to this as it has a lot of versioning info
+    jar_symlink_name: forge-universal.jar
+
+
   # Minecraft Server Properties
+  # See http://minecraft.gamepedia.com/Server.properties for more information
   properties:
+    # The port to be used for Minecraft
+    port: 25565
+    ip: ""
+
     # Game rules
-    gamemode: 1 
+    gamemode: 1
     force_gamemode: true
     allow_flight: true
     allow_nether: false

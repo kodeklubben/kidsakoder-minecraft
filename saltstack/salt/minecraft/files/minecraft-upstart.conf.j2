@@ -14,13 +14,12 @@ setuid {{ server.user }}
 setgid {{ server.group }}
 
 env CWD={{ server.path }}
-env JAR=forge-universal.jar
-env PORT={{ server.port }}
+env JAR={{ forge.jar_symlink_name }}
 env MAX_MEM={{ server.max_mem }}
 env MIN_MEM={{ server.min_mem }}
 env LOG={{ server.java_log }}
 
-script 
+script
   cd $CWD
   java -Xmx$MAX_MEM -Xms$MIN_MEM -XX:ErrorFile=$LOG -jar $JAR nogui
 end script

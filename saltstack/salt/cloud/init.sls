@@ -18,13 +18,38 @@ salt-cloud:
       - pip: apache-libcloud
 
 
-# Create cloud configs
-/etc/salt/cloud.providers.d/azure.conf:
+# Pull down latest Salt bootstrap script for Salt Cloud due to issue #26699 in Salt
+salt-cloud-bootstrap-script:
+  cmd.wait:
+    - name: salt-cloud -u
+    - cwd: /
+    - watch:
+      - pkg: salt-cloud
+
+
+# Create Azure cloud configs
+azure-provider:
   file.managed:
+    - name: /etc/salt/cloud.providers.d/azure.conf
     - source: salt://cloud/cloud.providers.d/azure.conf
     - template: jinja
 
-/etc/salt/cloud.profiles.d/azure.conf:
+azure-profile:
   file.managed:
+    - name: /etc/salt/cloud.profiles.d/azure.conf
     - source: salt://cloud/cloud.profiles.d/azure.conf
     - template: jinja
+
+
+# Upload our Salt Cloud Azure python modules
+azure-client-python-module:
+  file.managed:
+    - name: /etc/salt/azure_client.py
+    - source: salt://cloud/azure_client.py
+    - mode: 655
+
+azure-scheduler-python-module:
+  file.managed:
+    - name: /etc/salt/azure_scheduler.py
+    - source: salt://cloud/azure_scheduler.py
+    - mode: 655
