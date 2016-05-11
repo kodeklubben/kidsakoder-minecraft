@@ -1,9 +1,10 @@
 from celery import Celery
 import subprocess
 
-app = Celery('tasks', broker='amqp://guest@web//')
+app = Celery('tasks', broker='amqp://guest@master//')
 app.conf.update(
-    CELERY_RESULT_BACKEND='rpc://'
+    CELERY_RESULT_BACKEND='rpc://',
+    CELERY_TRACK_STARTED=True,
 )
 
 @app.task(name='tasks.generate_preview_task')

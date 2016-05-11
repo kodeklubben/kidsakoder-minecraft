@@ -460,30 +460,44 @@ def show_preview(world_id):
         print('Failure')
         return 'FAILURE'
     elif preview.status == 'PENDING':
+        print(str(world_id) + " PENDING")
         # Probably not started. Start it.
         world_ref = w.file_ref
         success = files.generate_world_preview(world_ref)
+        preview.update_state(state='RECEIVED')
         if success:
-            return 'false', 204
+            return jsonify(
+                status='PENDING',
+                message=u'Ingen forhåndsvisning lagret. Ber om forhåndsvisning...'
+            )
         else:
             return 'Noe gikk galt!'
     elif preview.status == 'RECEIVED':
+        print(str(world_id) + " RECEIVED")
         # Received by the worker, and in queue. Tell user to wait.
-        return 'false', 204
+        return jsonify(
+            status='RECEIVED',
+            message=u'Forespørsel om forhåndsvisning er mottatt. Hvis det er stor pågang kan dette ta en stund.'
+        )
         # return render_template(
         #     'preview.html',
         #     finished=False,
         #     message="Forhåndsvisningen er mottatt, og står i kø. Dette kan ta noen minutter."
         # )
     elif preview.status == 'STARTED':
+        print(str(world_id) + " STARTED")
         # being worked on. Tell user it should be finished in 5 minutes.
         # return render_template(
         #     'preview.html',
         #     finished=False,
         #     message="Vi lager en forhåndsvisning. Dette tar et par minutter."
         # )
-        return 'false', 204
+        return jsonify(
+            status='STARTED',
+            message=u'Vi lager en forhåndsvisning. Dette kan ta noen minutter.'
+        )
     elif preview.status == 'SUCCESS':
+        print(str(world_id) + " SUCCESS")
         # Finished. Show the preview.
         print('forhåndsvisningen er ferdig')
         return render_template(
