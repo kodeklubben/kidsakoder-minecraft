@@ -239,7 +239,9 @@ $(document).ready(function() {
         var world_id = $(this).val();
         $('#world_preview_tab').show();
         
-        function p(world_id) {
+
+
+        function poll(world_id) {
             console.log("preview of " + world_id.toString());
             var xhr;
             xhr = $.get('{{ url_for('show_preview') }}' + world_id, function (data) {
@@ -257,11 +259,11 @@ $(document).ready(function() {
                     $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
                     $('#preview_content').children(':first').append(new Spinner().spin().el);
                     console.log("returning false.");
-                    setTimeout  (function() {p(world_id);}, 20000);
+                    setTimeout  (function() {poll(world_id);}, 20000);
                 }
             });
         };
-        p(world_id)
+        poll(world_id)
         
         /* Add use button if world not already in use */
         var preview_button = $('#use_preview_btn');
