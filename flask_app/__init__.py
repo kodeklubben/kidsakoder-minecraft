@@ -31,7 +31,7 @@ def try_locale(locale_list):
     except locale.Error:
         try_locale(tail)
 
-our_locales = ('nb_NO', 'no_NO', 'norwegian-bokmal')
+our_locales = ('nb_NO.utf8', 'nb_NO', 'no_NO', 'norwegian-bokmal')
 try_locale(our_locales)
 
 print 'Preferred locale encoding: ' + locale.getpreferredencoding()
