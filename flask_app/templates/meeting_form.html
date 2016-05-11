@@ -256,7 +256,9 @@ $(document).ready(function() {
                     $('#preview_content').html(data);
                     
                 } else if(ct.indexOf('json') > -1) {
-                    $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '</div>');
+                    var response = data;
+
+                    $('#preview_content').html('<div style="width:100%;height:400px;background:deepskyblue"> Verden ID: ' + world_id + '<br>' + response.message + ' </div>');
                     $('#preview_content').children(':first').append(new Spinner().spin().el);
                     console.log("returning false.");
                     setTimeout  (function() {poll(world_id);}, 20000);
