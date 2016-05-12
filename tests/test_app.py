@@ -38,3 +38,12 @@ def test_login_logout(client):
     assert 'Feil brukernavn og / eller passord' in rv.data
     rv = login(client, 'admin@mail.com', 'adminpass123' + 'x')
     assert 'Feil brukernavn og / eller passord' in rv.data
+
+
+def test_access_before_after_login(client):
+    rv = client.get('/kontakt', follow_redirects=True)
+    assert 'Kode-Kidza' not in rv.data
+    assert 'Venligst logg inn' in rv.data
+    login(client, 'admin@mail.com', 'adminpass123')
+    rv = client.get('/kontakt', follow_redirects=True)
+    assert 'Kode-Kidza' in rv.data
