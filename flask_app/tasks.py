@@ -1,6 +1,7 @@
 from celery import Celery, current_app
 from celery.signals import after_task_publish
-import subprocess
+import subprocess, shutil
+
 
 app = Celery('tasks', broker='amqp://guest@master//')
 app.conf.update(
@@ -20,3 +21,9 @@ def generate_preview_task(self, config_path):
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
     return "Preview complete."
 
+@app.task(name='tasks.delete_preview_task')
+def delete_preview_task(dir_path):
+    try:
+        shutil.rmtree(dir_path)
+    except OSError:
+        pass
