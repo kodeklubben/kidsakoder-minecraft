@@ -4,4 +4,6 @@ flask:
   srv_dir: /srv/flask_app
   venv_dir: /srv/flask_app/venv
 
+celery:
+  app: flask_app.tasks:celery
   proj_dir: /opt/kidsakoder-minecraft/

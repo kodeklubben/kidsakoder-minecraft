@@ -7,6 +7,7 @@ base:
   'master':
     - cloud
     - webserver
+    - celery
     - overviewer
 
   # Minecraft server states
