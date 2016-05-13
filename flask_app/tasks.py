@@ -1,6 +1,8 @@
 from celery import Celery, current_app
-from flask_app import app
 from celery.signals import after_task_publish
+
+from flask_app import app
+
 import subprocess
 import shutil
 

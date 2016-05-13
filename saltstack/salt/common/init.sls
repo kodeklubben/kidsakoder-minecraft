@@ -8,6 +8,7 @@ python-pkgs:
       - python-pip
       - python-dev
       - python-virtualenv
+      - ipython
 
 # Install odbc dependencies required for pyodbc
 odbc-dependencies:
