@@ -62,7 +62,7 @@
             <div id="upload" style="display: none">
 
                 <!-- Placeholder -->
-                <div style="background-color: yellow; width: 100%; height: 400px;"></div>
+{#                <div style="background-color: yellow; width: 100%; height: 400px;"></div>#}
 
             </div>
         </div>
@@ -194,6 +194,8 @@ $(document).ready(function() {
         $("#gen-choise").hide();
         $("#upload").show();
         $("#back-btn").show();
+
+        upload_form_loader();
     });
 
     /* Back button click event */
@@ -355,6 +357,12 @@ $(document).ready(function() {
             });#}
         });
     } // function world_list_loader
+
+    function upload_form_loader() {
+        $.get('{{ url_for('world_upload') }}', function (data) {
+            $('#upload').html(data);
+        });
+    }
 
     /* Handler for use world click event */
     function use_world_handler() {

@@ -76,6 +76,23 @@ def save_world_from_fme(url=None, description=""):
     return '<p>Noe gikk galt!</p>'
 
 
+def save_world(file_data=None, description=""):
+    world = World(user_id=current_user.id)
+    file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
+    file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_name)
+    with open(file_path, 'wb') as world_file:
+        world_file.write(file_data.read())
+        world.file_ref = file_name
+        world.description = description
+        world.store()
+        return jsonify(
+            message=u'Verden overført',
+            world_id=str(world.id)
+        )
+
+    return '<p>Noe gikk galt!</p>'
+
+
 def generate_world_preview(world_ref):
     from tasks import generate_preview_task
     # create file path

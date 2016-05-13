@@ -337,6 +337,29 @@ def from_map():
     )
 
 
+@app.route('/last_opp_verden/', methods=['GET', 'POST'])
+@login_required
+def world_upload():
+    if request.files:
+        print type(request.files['world_file'])
+    form = forms.WorldUpload(request.form)
+    if form.validate_on_submit():
+        print 'Fil type: ' + str(type(form.world_file.data))
+        if form.world_file.has_file():
+            print 'Has file!!'
+            files.save_world(
+                file_data=form.world_file.data,
+                description=form.description.data
+            )
+        return redirect(url_for('home'))
+
+    else:
+        return render_template(
+            'world_upload.html',
+            form=form
+        )
+
+
 @app.route('/mc_world_url', methods=['POST'])
 @login_required
 def mc_world_url():
