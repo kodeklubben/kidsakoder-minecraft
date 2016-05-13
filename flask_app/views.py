@@ -11,6 +11,7 @@ import forms
 import files
 import urllib2
 import locale
+import tasks
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -58,6 +59,11 @@ def home():
             if meeting.world_id:
                 if World.exists(meeting.world_id):
                     meeting.store()
+
+                    # Celery stuff
+                    # tasks.meeting_test.apply_async()
+                    tasks.meeting_test.apply_async(eta=meeting.start_time, expires=meeting.end_time)
+
                     flash(u'Nytt møte lagt til')
                     return redirect(url_for('home'))
                 else:

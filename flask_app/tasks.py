@@ -1,15 +1,15 @@
 from celery import Celery, current_app
+from flask_app import app
 from celery.signals import after_task_publish
-import subprocess, shutil
+import subprocess
+import shutil
 
 
-app = Celery('tasks', broker='amqp://guest@master//')
-app.conf.update(
-    CELERY_RESULT_BACKEND='rpc://',
-    CELERY_TRACK_STARTED=True,
-)
+celery = Celery('tasks', broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
 
-@app.task(name='tasks.generate_preview_task', bind=True)
+
+@celery.task(name='tasks.generate_preview_task', bind=True)
 def generate_preview_task(self, config_path):
     # Call overviewer to generate
     # WINDOWS
@@ -21,9 +21,15 @@ def generate_preview_task(self, config_path):
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
     return "Preview complete."
 
-@app.task(name='tasks.delete_preview_task')
+
+@celery.task(name='tasks.delete_preview_task')
 def delete_preview_task(dir_path):
     try:
         shutil.rmtree(dir_path)
     except OSError:
         pass
+
+
+@celery.task(name='tasks.meeting_test')
+def meeting_test():
+    print "Meeting started"
