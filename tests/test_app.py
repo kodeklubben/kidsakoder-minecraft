@@ -23,7 +23,6 @@ def client(request):
     """ Initialize db and add a test user """
     init_db()
     user_datastore.create_user(email=EMAIL, password=PASSWORD)
-    user_datastore.add_role_to_user(EMAIL, 'admin')
     db.session.commit()
 
     return client
@@ -75,3 +74,27 @@ def test_access_before_after_login(client):
     login(client, EMAIL, PASSWORD)
     rv = client.get('/kontakt', follow_redirects=True)
     assert 'Kode-Kidza' in rv.data
+
+
+def test_admin_access(client):
+    """ Make sure we do not have access to admin while not admin """
+    login(client, EMAIL, PASSWORD)
+    rv = client.get('/admin/user', follow_redirects=True)
+    assert rv.status == '403 FORBIDDEN'
+    rv = client.get('/admin/meeting', follow_redirects=True)
+    assert rv.status == '403 FORBIDDEN'
+    rv = client.get('/admin/world', follow_redirects=True)
+    assert rv.status == '403 FORBIDDEN'
+
+    """ Login as admin """
+    logout(client)
+    user_datastore.add_role_to_user(EMAIL, 'admin')
+    login(client, EMAIL, PASSWORD)
+
+    """ Make sure we get access as admin """
+    rv = client.get('/admin/user', follow_redirects=True)
+    assert rv.status == '200 OK'
+    rv = client.get('/admin/meeting', follow_redirects=True)
+    assert rv.status == '200 OK'
+    rv = client.get('/admin/world', follow_redirects=True)
+    assert rv.status == '200 OK'
