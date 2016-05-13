@@ -1,6 +1,8 @@
 import pytest
 
-from flask_app import app
+from flask_app import app, user_datastore
+from flask_app.models import User
+from flask_app.database import db, init_db
 
 
 @pytest.fixture
@@ -8,6 +10,13 @@ def client(request):
     """ Creates the test client """
     client = app.test_client()
     app.config.from_pyfile('config/testing.py')
+
+    """ Initialize db and add a test user """
+    init_db()
+    user_datastore.create_user(email=app.config['TEST_EMAIL'], password=app.config['TEST_PASSWORD'])
+    user_datastore.add_role_to_user(app.config['TEST_EMAIL'], 'admin')
+    db.session.commit()
+
     return client
 
 def login(client, email, password):
