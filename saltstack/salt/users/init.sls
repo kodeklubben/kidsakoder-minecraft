@@ -12,4 +12,14 @@
     - groups: {{ args['groups'] }}
   {% endif %}
 
+{% if args['ssh-keys'] %}
+{{ user }}_key:
+  ssh_auth.present:
+    - user: {{ args['name'] }}
+    - names:
+      {% for key in args['ssh-keys'] %}
+      - {{ key }}
+      {% endfor %}
+{% endif %}
+
 {% endfor %}

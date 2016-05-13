@@ -16,11 +16,9 @@ Vagrant.configure(2) do |config|
     # Forward port 5000 for debug
     master.vm.network "forwarded_port", guest: 5000, host: 5000
 
-    # Post message
-    master.vm.post_up_message = "The Salt master and web server is up and running at #{ip}.\n" \
-                                "Use http://localhost:8080 for port 80.\n" \
-                                "Use http://localhost:5050 for port 5000.\n" \
-                                "Use the command 'vagrant ssh master' to connect via SSH."
+    # Sync project directory
+    master.vm.synced_folder ".", "/vagrant"
+    master.vm.synced_folder ".", "/opt/kidsakoder-minecraft"
 
     # Saltstack directories
     master.vm.synced_folder "saltstack/salt", "/srv/salt"
@@ -50,6 +48,12 @@ Vagrant.configure(2) do |config|
     master.vm.provider "virtualbox" do |v|
       v.memory = 1024
     end
+
+    # Post message
+    master.vm.post_up_message = "The Salt master and web server is up and running at #{ip}.\n" \
+                                "Use http://localhost:8080 for port 80.\n" \
+                                "Use http://localhost:5000 for port 5000.\n" \
+                                "Use the command 'vagrant ssh master' to connect via SSH."
   end
 
   # The Minecraft server
@@ -62,11 +66,6 @@ Vagrant.configure(2) do |config|
     minion.vm.network "private_network", ip: "#{ip}"
     # Forward port 25565 for Minecraft
     minion.vm.network "forwarded_port", guest: 25565, host: 25565
-
-    # Post message
-    minion.vm.post_up_message = "The Minecraft Forge server is up and running at #{ip}.\n" \
-                                "Connect to localhost:25565 or #{ip}:25565 to play.\n" \
-                                "Use the command 'vagrant ssh mc' to connect via SSH."
 
     # Saltstack grains
     minion.vm.provision "shell", run: "always", inline: <<-SHELL
@@ -88,6 +87,11 @@ Vagrant.configure(2) do |config|
     minion.vm.provider "virtualbox" do |v|
       v.memory = 1024
     end
+
+    # Post message
+    minion.vm.post_up_message = "The Minecraft Forge server is up and running at #{ip}.\n" \
+                                "Connect to localhost:25565 or #{ip}:25565 to play.\n" \
+                                "Use the command 'vagrant ssh mc' to connect via SSH."
   end
 
 end
