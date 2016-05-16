@@ -9,7 +9,7 @@ cloud:
     # The Azure subscription ID to be used
     # This can be found in the Azure portal
     # https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade
-    subscription_id: '2ac9ba3f-cdb8-4ad9-8575-9c0ea4d15fdf'
+    subscription_id: 'd8a5f553-66ae-46a1-a5f4-c599cc2bb502'
 
     # The path of the certificate used to access Azure
     # See README.md for more information on how to create this certificate
