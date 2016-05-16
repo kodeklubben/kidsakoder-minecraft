@@ -510,6 +510,28 @@ def server_list(meeting_id):
             servers=[{'address': 'test.com', 'status': 'OK'}]
         )
 
+
+@app.route('/restart_server/', defaults={'server_address': None})
+@app.route('/restart_server/<string:server_address>')
+@login_required
+def restart_server(server_address):
+    """placholder function for restarting servers"""
+    print("restart server: %s " % server_address)
+    return jsonify(
+        success=True
+    )
+
+@app.route('/destroy_server/', defaults={'server_address': None})
+@app.route('/destroy_server/<string:server_address>')
+@login_required
+def destroy_server(server_address):
+    """placeholder function for destroying servers"""
+    print("destroy server: %s " % server_address)
+    return jsonify(
+        success=True
+    )
+
+
 @app.route('/test_cloud', methods=['GET', 'POST'])
 @login_required
 def test_cloud():
