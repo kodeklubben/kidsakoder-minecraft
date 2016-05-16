@@ -23,7 +23,7 @@ before_install:
 
 # Install requirements before testing
 install:
-  - pip install -q pytest
+  - pip install -q pytest salt
   - pip install -q -r requirements.txt
 
 # Do necessary things before testing
