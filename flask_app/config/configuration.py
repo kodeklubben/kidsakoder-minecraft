@@ -30,6 +30,11 @@ SECURITY_MSG_LOGIN = (u'Venligst logg inn for å få tilgang til denne siden', '
 SECURITY_MSG_PASSWORD_NOT_PROVIDED = (u'Passord mangler', 'error')
 SECURITY_MSG_UNAUTHORIZED = (u'Du har ikke tilgang til å se denne ressursen', 'error')
 
+# Salt Cloud user credentials
+# Used for connection to Salt via Salts LocalCLient API
+SALT_CLOUD_USERNAME = 'salt-cloud'
+SALT_CLOUD_PASSWORD = 'salt-cloud'
+
 # Celery
 CELERY_BROKER_URL = 'amqp://guest@master//'
 CELERY_RESULT_BACKEND = 'rpc://'
