@@ -45,14 +45,13 @@ See https://docs.saltstack.com/en/latest/ref/clients/#localclient for docs on Sa
 See: https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.cloud.html for more info on the Cloud module
 '''
 
-_client = salt.client.LocalClient()
-
 
 def _async(fun, arg=[]):
     '''
     Helper method for asynchronous Salt calls
     '''
-    _client.cmd_async(tgt='master', fun=fun, arg=arg,
+    client = salt.client.LocalClient()
+    client.cmd_async(tgt='master', fun=fun, arg=arg,
                            username=app.config['SALT_CLOUD_USERNAME'],
                            password=app.config['SALT_CLOUD_PASSWORD'],
                            eauth='pam')
@@ -62,7 +61,8 @@ def _sync(fun, arg=[]):
     '''
     Helper method for synchronous Salt calls
     '''
-    return _client.cmd(tgt='master', fun=fun, arg=arg,
+    client = salt.client.LocalClient()
+    return client.cmd(tgt='master', fun=fun, arg=arg,
                             username=app.config['SALT_CLOUD_USERNAME'],
                             password=app.config['SALT_CLOUD_PASSWORD'],
                             eauth='pam')
