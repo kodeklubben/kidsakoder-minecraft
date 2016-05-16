@@ -496,6 +496,15 @@ def show_preview(world_id):
             world_ref=w.file_ref,
         ), 200
 
+@app.route('/server_list/', defaults={'meeting_id': None})
+@app.route('/server_list/<int:meeting_id>')
+def server_list(meeting_id):
+    # TODO handle get servers
+    return render_template(
+            'server_list.html',
+            title=u'Liste over tjenere',
+            servers=[{'address': 'test.com', 'status': 'OK'}]
+        )
 
 @app.route('/test_cloud', methods=['GET', 'POST'])
 @login_required

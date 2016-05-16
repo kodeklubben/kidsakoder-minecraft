@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="body-content">
+<h2>Oversikt over tjenere</h2>
+    <div class="row panel-group servers">
+
+    {% for server in servers %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p> Adresse: {{ server.address }} </p>
+                <p> Status: {{ server.status }} </p>
+            </div>
+        </div>
+
+    {%  endfor %}
+    </div>
+</div>
+{% endblock %}
