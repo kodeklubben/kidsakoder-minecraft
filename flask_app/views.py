@@ -498,11 +498,15 @@ def show_preview(world_id):
 
 @app.route('/server_list/', defaults={'meeting_id': None})
 @app.route('/server_list/<int:meeting_id>')
+@login_required
 def server_list(meeting_id):
     # TODO handle get servers
+    meeting = Meeting.get_meeting_by_id(meeting_id)
     return render_template(
             'server_list.html',
             title=u'Liste over tjenere',
+            meeting=meeting,
+            locale=locale.getpreferredencoding(),
             servers=[{'address': 'test.com', 'status': 'OK'}]
         )
 

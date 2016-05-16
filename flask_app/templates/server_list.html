@@ -2,14 +2,23 @@
 
 {% block content %}
 <div class="body-content">
-<h2>Oversikt over tjenere</h2>
+<h2>Oversikt over tjenere for møte {{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }} </h2>
     <div class="row panel-group servers">
 
     {% for server in servers %}
         <div class="panel panel-default">
             <div class="panel-body">
+                
                 <p> Adresse: {{ server.address }} </p>
                 <p> Status: {{ server.status }} </p>
+            <span class="pull-right">
+                <button type="button" class="btn btn-default panel-btn restart_server_button" value="{{ server.address }}">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                    Omstart </button>
+                <button type="button" class="btn btn-default panel-btn destroy_server_button" value="{{ server.address }}">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    Tilintetgjør </button>
+            </span>
             </div>
         </div>
 
