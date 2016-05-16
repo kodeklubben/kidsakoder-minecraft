@@ -1,5 +1,8 @@
 # Travis-CI.org configuration file
 
+# Use Travis container-based infrastructure
+sudo: False
+
 # Language
 language: python
 
@@ -11,17 +14,13 @@ python:
 env:
   - HELLO=WORLD
 
-# Allow sudo
-# NOTE: This makes Travis run in regular infrastructure and not container based infrastructure
-sudo: True
+# Install packages in container
+addons:
+  apt:
+    packages:
+      - unixodbc-dev
 
-# Install packages and other requirements
-before_install:
-  - sudo apt-get -qq update
-  # Add odbc package necessary for pyodbc in requirements.txt
-  - sudo apt-get install -y unixodbc-dev
-
-# Install requirements before testing
+# Install Python requirements before testing
 install:
   - pip install -q pytest
   - pip install -q -r requirements.txt
