@@ -1,4 +1,7 @@
+# Salt State for setting up Salt Cloud
+
 # Install dependencies for Salt Cloud
+# See https://docs.saltstack.com/en/latest/topics/cloud/azure.html#dependencies
 apache-libcloud:
   pip.installed:
     - name: apache-libcloud
@@ -27,7 +30,16 @@ salt-cloud-bootstrap-script:
       - pkg: salt-cloud
 
 
+# Create Salt Cloud user for external authentication with Flask app
+salt-cloud-user:
+  user.present:
+    - name: salt-cloud
+    - password: $6$H_WomOt8$y2Judd2oYDl7QLvNO5O9QEPDL5/OLTdkRy7UwLRiWc24F3Uth6GxtaZscBnIVnpCflEytJB4fm1CqZTmdBDE9.
+    - shell: /bin/bash
+
+
 # Create Azure cloud configs
+# See https://docs.saltstack.com/en/latest/topics/cloud/azure.html#configuration
 azure-provider:
   file.managed:
     - name: /etc/salt/cloud.providers.d/azure.conf
@@ -39,17 +51,3 @@ azure-profile:
     - name: /etc/salt/cloud.profiles.d/azure.conf
     - source: salt://cloud/cloud.profiles.d/azure.conf
     - template: jinja
-
-
-# Upload our Salt Cloud Azure python modules
-azure-client-python-module:
-  file.managed:
-    - name: /etc/salt/azure_client.py
-    - source: salt://cloud/azure_client.py
-    - mode: 655
-
-azure-scheduler-python-module:
-  file.managed:
-    - name: /etc/salt/azure_scheduler.py
-    - source: salt://cloud/azure_scheduler.py
-    - mode: 655
