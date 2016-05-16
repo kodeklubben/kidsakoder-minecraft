@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="body-content">
-<h2>Oversikt over tjenere for møte {{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }} </h2>
+<h2>Oversikt over tjenere for {{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }} </h2>
     <div class="row panel-group servers">
 
     {% for server in servers %}
