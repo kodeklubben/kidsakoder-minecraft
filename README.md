@@ -18,6 +18,114 @@ In order to deploy and orchestrate the cloud infrastructure (storage, network, s
 Terraform is a multi-platform tool which supports writing infrastructure as code for multiple different cloud providers such as Azure, AWS.
 See the [Terraform docs](https://www.terraform.io/docs/index.html) for more information on how it works.
 
+## Requirements
+### Tools
+#### Python
+This project uses **Python 2.7** and **pip** for installing packages.
+
+Install **Python 2.7.x** (pip should be included) from [here](https://www.python.org/downloads/) and make sure they are both in your path.
+
+You can follow [this guide](http://www.anthonydebarros.com/2011/10/15/setting-up-python-in-windows-7/) for how to add Python and pip to the path in Windows.
+
+You can verify and check which versions are installed by running the commands below in your terminal.
+
+```
+# Check Python version
+python --version
+
+# Check pip version
+pip --version
+```
+
+#### Vagrant
+Install Vagrant and Virtualbox from the links below:
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant](https://www.vagrantup.com/downloads.html)
+
+You can verify that Vagrant is installed by running the following in your terminal.
+```
+vagrant --version
+```
+
+#### Terraform
+Follow the guide on how to [install Terraform](https://www.terraform.io/intro/getting-started/install.html), and make sure that Terraform has been added to your path.
+
+You can verify that Terraform is installed and added to your path by running the following in your terminal.
+```
+terraform --version
+```
+
+If you are using Windows, the terminal [Cmder](http://cmder.net) is highly recommended as it supports color output, SSH, git out of the box.
+
+
+### External resources
+#### Azure
+> **WARNING:** If you're not using a free trial account, then you will be charged for using Azure resources.
+
+In order to deploy this project, you need to have an active Azure subscription.
+
+
+TODO: Add more details on free trial
+
+
+##### Step 1: Download the Azure publish settings file
+> **WARNING:** The Azure publish settings file contains credentials to administer your Azure subscription and services. Please make sure you store it safely.
+
+In order to use Terraform with Azure, Terraform needs a credential file called **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings).
+
+Rename the file to `secret.publishsettings` and place it in the `terraform/` directory.
+
+##### Step 2: Create Azure certificates for Salt Cloud
+> **WARNING:** The Azure certificates contains credentials to administer your Azure subscription and services.
+Please make sure you store it safely.
+If either certificates are compromised, you'll need to revoke the management certificate in the Azure management portal.
+
+In order for Salt to create machines in Azure, two are certificates are needed:
+
+A `.cer` file, which is uploaded to Azure via the "Upload a Management Certificate" action of the "Management Certificates" tab within the "Settings" section of the old [management portal](https://manage.windowsazure.com).
+
+A `.pem` file called `kidsakoder.pem` which should be placed in [saltstack/etc/](saltstack/etc/).
+The `.pem` file will be distributed to the Salt Master so it can create and destroy VMs.
+
+
+###### How to generate certificates
+```
+# Generate the .pem file
+openssl req -x509 -nodes -days 1068 -newkey rsa:4096 -keyout kidsakoder.pem -out kidsakoder.pem
+
+# Generate .cer certificate from .pem file
+openssl x509 -inform pem -in kidsakoder.pem -outform der -out kidsakoder.cer
+```
+
+*Windows:* If you are using Windows, use [Git Shell in Github Desktop](https://desktop.github.com/), [Git for Windows](https://git-for-windows.github.io/), [Cmder](http://cmder.net), or simply use one of the Linux VMs created by Vagrant.
+
+*Taken from [Salt Cloud documentation](https://docs.saltstack.com/en/latest/topics/cloud/azure.html#configuration).*
+
+##### Step 3: Create SSH keys for Azure
+> **WARNING:** The SSH keys
+
+TODO: Add info about SSH
+
+
+###### How to generate SSH keys
+```
+# Create a new ssh key type RSA, 4096 bits, with the filename kidsakoder, using the provided email as a label
+ssh-keygen -t rsa -b 4096 -f kidsakoder -C "your_email@example.com"
+```
+*Windows:* If you are using Windows, use [Git Shell in Github Desktop](https://desktop.github.com/), [Git for Windows](https://git-for-windows.github.io/), [Cmder](http://cmder.net), or simply use one of the Linux VMs created by Vagrant.
+
+
+#### DNSimple
+[DNSimple](https://dnsimple.com) is used to manage the domain and records for this project.
+
+Right now it is only to create a domain record for the master server.
+
+In order to create and edit DNS records, Terraform needs the **email** and an **API token** of a DNSimple account.
+The **API token** can be found on the [user page](https://dnsimple.com/user) on DNSimple.
+Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the email and API token in `terraform/terraform.tfvars`.  
+
+_Please note that **Single-domain tokens** do not work as of writing._
+
 
 
 ## How to develop
@@ -37,26 +145,12 @@ python setup_app.py
 ```
 This will generate a secret key, create a secret config file and initialize the database.
 
-If you want render previews of minecraft worlds, the task scheduler Celery and message broker Rabbitmq needs to be installed and started, and running in a virtual machine is preferred.
-With these installed, the message server and task scheduler can be started by running the script (note: superuser):
-```
-sudo bash rabbit_script.sh
-```
-and then, within the flask_app folder (note: not superuser):
-```
-bash celery_script.sh
-```
 Then start the server by running:
 ```
 python runserver.py
 ```
 
 ### Deploying to local virtual machines?
-#### Requirements
-In order to create the development environment using local virtual machines, [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://virtualbox.org) need to be installed.
-* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-* [Vagrant](https://www.vagrantup.com/downloads.html)
-
 See [Development environment](#Development-environment) for why we are using Vagrant and the [Vagrant Docs](https://www.vagrantup.com/docs/) for more documentation.
 
 #### Development environment
@@ -103,7 +197,6 @@ vagrant provision mc
 ```
 
 
-
 ## Deployment
 ### Architecture
 | Service        | Name                      | Supported |
@@ -115,45 +208,13 @@ vagrant provision mc
 
 ### Requirements
 #### Terraform
-Follow the guide on how to [install Terraform](https://www.terraform.io/intro/getting-started/install.html) and verify it by executing `terraform` in a terminal.
-If you are using Windows, the terminal [Cmder](http://cmder.net) is highly recommended as it supports color output, ssh, git and other things.
-See the [Terraform documentation](https://www.terraform.io/docs/index.html) for more infomation on how it works.
-##### SSH Settings
+First make sure `Terraform` is installed:
+
 Terraform uses SSH to provision the initial virtual machines when deploying.
 As of right now, it only supports authentication with username and password.
 Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the SSH settings in `terraform/terraform.tfvars`.  
 
 #### Azure
-##### Authentication
-In order to authenticate with Azure, Terraform needs a **publish settings** file from Azure which can be found [here](https://manage.windowsazure.com/publishsettings).
-Rename the file to `secret.publishsettings` and place it in the `terraform/` directory.
-
-##### Generating keys and certificates
-In order for Salt to create machines in Azure, two are certificates are needed:
-
-A `.cer` file, which is uploaded to Azure via the "Upload a Management Certificate" action of the "Management Certificates" tab within the "Settings" section of the old [management portal](https://manage.windowsazure.com).
-
-A `.pem` file called `kidsakoder.pem` which should be placed in [saltstack/etc/](saltstack/etc/).
-
-###### Steps to generate keys and certificates
-```
-# Generate the .pem file
-openssl req -x509 -nodes -days 1068 -newkey rsa:4096 -keyout kidsakoder.pem -out kidsakoder.pem
-
-# Generate .cer certificate from .pem file
-openssl x509 -inform pem -in kidsakoder.pem -outform der -out kidsakoder.cer
-```
-
-#### DNSimple
-[DNSimple](https://dnsimple.com) is used to manage the domain and records for this project.
-
-##### Authentication
-In order to create and edit DNS records, Terraform needs the **email** and an **API token** of a DNSimple account.
-The **API token** can be found on the [user page](https://dnsimple.com/user) on DNSimple.
-Use the [terraform.tfvars.example](terraform/terraform.tfvars.example) as a template and fill in the email and API token in `terraform/terraform.tfvars`.  
-
-_Please note that **Single-domain tokens** do not work as of writing._
-
 
 ### How to deploy with Terraform
 Make sure you are in the [terraform](terraform/) directory when you are using Terraform to deploy.
