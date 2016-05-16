@@ -39,6 +39,12 @@ def meeting_test():
 
 
 ### SALT CLOUD
+'''
+Note: We are calling the Salt Cloud module (NOT Salt Cloud) from the LocalClient API.
+See https://docs.saltstack.com/en/latest/ref/clients/#localclient for docs on Salt LocalClient API
+See: https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.cloud.html for more info on the Cloud module
+'''
+
 _client = salt.client.LocalClient()
 
 
@@ -77,6 +83,9 @@ def _action(action, host):
 def create_machines(hostnames, profile):
     '''
     Creates a number of virtual machines from a list of hostnames.
+    Note: Hostnames must be unique in Azure.
+    Profiles can be found in saltstack/salt/cloud/cloud.profiles/azure.conf
+
     '''
     # Go through hostnames and create async jobs for each of them
     for host in hostnames:
