@@ -27,7 +27,7 @@ def initAdmin():
 
     # Configurations to a view for displaying, deleting, adding and editing users.
     class UserView(ModelView):
-        column_exclude_list = ['password']
+        column_exclude_list = ['password', 'confirmed_at']
         
         # Automatically display readable roles
         column_auto_select_related = True
@@ -43,27 +43,28 @@ def initAdmin():
         # Replaces Flask's standard textfield for passwords with an actual password field
         def scaffold_form(self):
             form_class = super(UserView, self).scaffold_form()
-            form_class.password2 = PasswordField('Passord', [
-                validators.EqualTo('confirm', message = 'Passwords must match')
+            form_class.password2 = PasswordField('Password', [
+                validators.EqualTo('confirm', message='Passwords must match')
             ])
-            form_class.confirm = PasswordField('Bekreft passordet')
+            form_class.confirm = PasswordField('Confirm password')
             return form_class
         
-        # Makes sure the data from the new PW field is sent to the DB, so that the new PW field is an actual replacement, and
-        # not just a field that says "Password". Also hashes PW's before sending them to the DB. If PW field is blank in edit user,
+        # Makes sure the data from the new PW field is sent to the DB,
+        # so that the new PW field is an actual replacement, and not just a field that says "Password".
+        # Also hashes PW's before sending them to the DB. If PW field is blank in edit user,
         # existing PW will be kept. Gives error message when PW field is blank in create - not sure how to fix.
         def on_model_change(self, form, model, is_created):
             if len(model.password2):
                 model.password = utils.encrypt_password(model.password2)
         
-        # Excludes fields we don't want to display. Both fields that are not needed (names, confirmed_at), and fields that we
-        # want to avoid using, such as password and (soon) active. Separated on different lines so singular ones can be
-        # commented out, to check what causes errors.
-        form_excluded_columns = [#'active',
-        'confirmed_at',
-        'first_name',
-        'last_name',
-        'password'
+        # Excludes fields we don't want to display. Both fields that are not needed (names, confirmed_at),
+        # and fields that we want to avoid using, such as password and (soon) active.
+        # Separated on different lines so singular ones can be commented out, to check what causes errors.
+        form_excluded_columns = [
+            'confirmed_at',
+            'password',
+            'mojang_playername',
+            'mojang_uuid'
         ]
 
     # Adds previously configured views
