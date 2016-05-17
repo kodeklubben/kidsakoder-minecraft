@@ -6,4 +6,4 @@ Flask-Admin
 Flask-SQLAlchemy
 pyodbc
 argparse
-
+salt
