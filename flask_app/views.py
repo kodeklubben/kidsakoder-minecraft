@@ -340,18 +340,16 @@ def from_map():
 @app.route('/last_opp_verden/', methods=['GET', 'POST'])
 @login_required
 def world_upload():
-    if request.files:
-        print type(request.files['world_file'])
-    form = forms.WorldUpload(request.form)
+    form = forms.WorldUpload()
     if form.validate_on_submit():
-        print 'Fil type: ' + str(type(form.world_file.data))
-        if form.world_file.has_file():
-            print 'Has file!!'
-            files.save_world(
-                file_data=form.world_file.data,
-                description=form.description.data
-            )
-        return redirect(url_for('home'))
+        world = files.save_world(
+            file_data=form.world_file.data,
+            description=form.description.data
+        )
+        return jsonify(
+            success=True,
+            world_id=world.id
+        )
 
     else:
         return render_template(

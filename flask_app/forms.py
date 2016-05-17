@@ -27,7 +27,7 @@ class WorldForm(Form):
 class WorldUpload(Form):
     description = StringField(u'Navn eller kort beskrivelse', [InputRequired()])
     world_file = FileField(u'Minecraft verden',
-                           [FileAllowed(['zip'], u'Filen må være pakket i zip format')])
+                           [FileRequired(), FileAllowed(['zip'], u'Filen må være pakket i zip format')])
 
 
 class ChangeEmail(Form):

@@ -3,7 +3,7 @@
 
 <h2> Last opp en Minecraft verden </h2><br>
 
-<form action="{{ url_for('world_upload') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ url_for('world_upload') }}" method="POST" enctype="multipart/form-data" id="world_upload_form">
 
     <div class="form-group">
         {{ form.hidden_tag() }}

@@ -59,7 +59,7 @@
 
             <div id="template" style="display: none"></div>
 
-            <div id="upload" style="display: none">
+            <div id="upload" style="display: none;">
 
                 <!-- Placeholder -->
 {#                <div style="background-color: yellow; width: 100%; height: 400px;"></div>#}
@@ -338,31 +338,60 @@ $(document).ready(function() {
                 /* Keep this context */
                 preview_loader.call(this);
             });
-
-            {#/* Generate preview click event */
-            $('.gen_preview_btn').click(function () {
-                var world_id = $(this).val();
-                $.get('{{ url_for('generate_preview') }}' + world_id, function(data) {
-                    var btn = $('#preview_world_btn_' + world_id);
-                    btn = $(this).button('loading')
-
-                });
-            });
-            /* Show preview click event */
-            $('.show_preview_btn').click(function () {
-                var world_id = $(this).val();
-                $.get('{{ url_for('show_preview') }}' + world_id, function(data) {
-
-                });
-            });#}
         });
     } // function world_list_loader
 
+    /* Load a blank world upload form */
     function upload_form_loader() {
         $.get('{{ url_for('world_upload') }}', function (data) {
             $('#upload').html(data);
+
+            function upload_submit_handler(event) {
+                event.preventDefault();
+                var form_data = new FormData(this);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: form_data,
+                    cache: false,
+                    processData: false,
+                    contentType: false
+                }).done(function (data, textStatus, xhr) {
+                    // Get content type to check if we received HTML or JSON
+                    var content_type = xhr.getResponseHeader("content-type") || "";
+                    console.log(textStatus + ": " + content_type);
+
+                    if (content_type.indexOf('html') > -1) { // HTML received
+
+                        $('#upload').html(data);
+                        $('#world_upload_form').submit(function (event) {
+                            // Keep this context
+                            upload_submit_handler.call(this, event);
+                        });
+
+                    } else if (content_type.indexOf('json') > -1) { // JSON received
+
+                        if (data.success) {
+                            // We want a pure js input element
+                            var that = document.createElement("input");
+                            // and set its value attribute
+                            $(that).val(data.world_id);
+                            // `that` will be `this` in handler
+                            use_world_handler.call(that);
+                            // Reload upload form
+                            upload_form_loader();
+                        }
+
+                    }
+                }); // ajax
+            } // function upload_submit_handler
+
+            $('#world_upload_form').submit(function (event) {
+                // Keep this context
+                upload_submit_handler.call(this, event);
+            });
         });
-    }
+    } // function upload_form_loader
 
     /* Handler for use world click event */
     function use_world_handler() {
@@ -372,7 +401,7 @@ $(document).ready(function() {
         world_id.change();
     }
 
-});
+}); // ready
 </script>
 
 {% endmacro %}
