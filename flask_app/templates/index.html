@@ -31,6 +31,10 @@
                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                     Start nå</button>
 
+                <a class="btn btn-default panel-btn" href="{{ url_for('server_list', meeting_id=meeting.id) }}">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    Tjenere</a>
+                
                 <button type="button" class="btn btn-default panel-btn delete_meeting_button" value="{{ meeting.id }}">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     Slett </button>

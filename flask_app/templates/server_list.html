@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="body-content">
+<h2>Oversikt over tjenere for {{ meeting.start_time.strftime('%A %d.%m.%Y kl. %H:%M').decode(locale) }} </h2>
+    <div class="row panel-group servers">
+
+    {% for server in servers %}
+        <div class="panel panel-default" id="server_panel_{{ server.address|replace('.', '_') }}">
+            <div class="panel-body">
+                
+                <p> Adresse: {{ server.address }} </p>
+                <p> Status: {{ server.status }} </p>
+            <span class="pull-right">
+                <button type="button" class="btn btn-default panel-btn restart_server_button" value="{{ server.address }}">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                    Omstart </button>
+                <button type="button" class="btn btn-default panel-btn destroy_server_button" value="{{ server.address }}">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    Tilintetgjør </button>
+            </span>
+            </div>
+        </div>
+
+    {%  endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script type=text/javascript>
+
+$(document).ready(function(){
+    /* Restart server click event */
+    $(".restart_server_button").click(function(){
+        var server_address = $(this).val();
+        $.getJSON("{{ url_for('restart_server') }}" + server_address, function(result){
+            if (result.success) {
+
+            }
+        });
+    });
+
+    /* Destory server click event */
+    $(".destroy_server_button").click(function(){
+        var server_address = $(this).val();
+        $.getJSON("{{ url_for('destroy_server') }}" + server_address, function(result){
+            if (result.success) {
+                server_address = server_address.replace(/[\.]/gi, '_'); // Replace . with underscore for selector
+                $("#server_panel_" + server_address).remove();
+                
+            }
+        });
+    });
+});
+</script>
+
+
+{% endblock %}
