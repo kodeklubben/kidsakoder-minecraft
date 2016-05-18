@@ -6,7 +6,12 @@ from flask_app import app
 import subprocess
 import shutil
 
+# Need to import and setup logger, otherwise Salt overrides it
+import sys
+import logging
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
 import salt.client
+
 
 celery = Celery('tasks', broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
