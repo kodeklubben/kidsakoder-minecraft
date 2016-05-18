@@ -40,7 +40,7 @@ def initialize_db():
     init_db()
 
 
-if args.no_log:
+if args.testing:
     with open(config_path + 'configuration.py', 'a') as test_config:
         test_config.write('\nTESTING = True\n')
 
