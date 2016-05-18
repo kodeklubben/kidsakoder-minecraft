@@ -16,13 +16,14 @@ app.config.from_pyfile('config/secret_config.py')
 app.config.from_pyfile('config/development.py')
 
 # Initialize logger
-import logging.handlers
-file_handler = logging.handlers.RotatingFileHandler(app.config['APP_LOG_FILE'])
-if app.debug:  # Log everything in debug mode
-    file_handler.setLevel(logging.DEBUG)
-else:
-    file_handler.setLevel(logging.WARNING)
-app.logger.addHandler(file_handler)
+if not app.testing:
+    import logging.handlers
+    file_handler = logging.handlers.RotatingFileHandler(app.config['APP_LOG_FILE'])
+    if app.debug:  # Log everything in debug mode
+        file_handler.setLevel(logging.DEBUG)
+    else:
+        file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
 
 
 # Set locale for datetime format
