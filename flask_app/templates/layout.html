@@ -38,7 +38,7 @@
                     </li>
                     <li>
                     {% if current_user.has_role('admin') %}
-                        <a href="{{ url_for('admin') }}">
+                        <a href="{{ url_for('admin.index') }}">
                     {% else %}
                         <a href="{{ url_for('user') }}">
                     {% endif %}
