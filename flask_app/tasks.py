@@ -36,7 +36,7 @@ def delete_preview_task(dir_path):
     try:
         shutil.rmtree(dir_path)
     except OSError:
-        pass
+        app.logger.warning('Could not remove: ' + dir_path)
 
 
 @celery.task(name='tasks.meeting_test')
