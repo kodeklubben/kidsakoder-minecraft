@@ -16,6 +16,10 @@ app.config.from_pyfile('config/secret_config.py')
 # Development configuration overrides. Comment out for production
 app.config.from_pyfile('config/development.py')
 
+import logging
+file_handler = logging.FileHandler(app.config['APP_LOG_FILE'])
+file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(file_handler)
 
 # Set locale for datetime format
 import locale
@@ -36,6 +40,8 @@ try_locale(our_locales)
 
 print 'Preferred locale encoding: ' + locale.getpreferredencoding()
 
+app.logger.debug('Preferred locale encoding: ' + locale.getpreferredencoding())
+
 # Initialize Flask-Security
 from database import db, roles_users
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -44,8 +50,8 @@ from models import User, Role
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-from admin import initAdmin
-initAdmin()
+from admin import init_admin
+init_admin()
 
 #from datetime import datetime
 @app.context_processor
