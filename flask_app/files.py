@@ -48,6 +48,21 @@ def super_safe_join(directory, filename):
         directory = safe_join(directory, path)
     return directory
 
+def search_for_file(path, filename):
+    """
+    Searches top down for a filename and returns the path to the folder of the file if found, False if not found
+
+    :param path: path to start looking from.
+    :param filename: file to look for.
+    """
+    for root, dirs, files in os.walk(path): 
+        for file in files:
+            if file == filename:
+                return root
+
+    return False
+
+
 
 def save_world_from_fme(url=None, description=""):
     """ Save generated Minecraft world from FME cloud """
@@ -104,9 +119,8 @@ def generate_world_preview(world_ref):
     print('finding')
     # Find minecraft world inside unzipped directory.
     # TODO locate level.dat file. For user uploaded worlds file structure probably does not contain entire saves dir
-    world_path = safe_join_all(unzip_path, 'saves')
-    # We assume there is only one minecraft world, so we pick the first subdir:
-    world_path = safe_join_all(world_path, os.listdir(world_path)[0])
+
+    world_path = search_for_file(unzip_path, 'level.dat')
     # path to put preview
     preview_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], world_ref)
 
