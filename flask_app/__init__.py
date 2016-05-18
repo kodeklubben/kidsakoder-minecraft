@@ -23,6 +23,8 @@ if not app.testing:
         file_handler.setLevel(logging.DEBUG)
     else:
         file_handler.setLevel(logging.WARNING)
+    file_handler.setFormatter(logging.Formatter(fmt='%(levelname)s: %(message)s'))
+    # ('%(levelname)s: %(message)s')
     app.logger.addHandler(file_handler)
 
 
