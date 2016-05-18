@@ -6,7 +6,13 @@ from flask_app import app
 import subprocess
 import shutil
 
+# Need to import and setup logger, otherwise Salt overrides it
+# See http://stackoverflow.com/questions/28041539/importing-salt-causes-flask-to-output-nothing-in-the-terminal
+import sys
+import logging
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
 import salt.client
+
 
 celery = Celery('tasks', broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
