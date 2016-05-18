@@ -8,6 +8,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--quiet",
                     help="Run quietly and force new secret key and db",
                     action="store_true")
+parser.add_argument("--testing",
+                    help='Set test mode to True',
+                    action="store_true")
 args = parser.parse_args()
 
 config_path = 'flask_app/config/'
@@ -36,6 +39,10 @@ def initialize_db():
     from flask_app.database import init_db
     init_db()
 
+
+if args.testing:
+    with open(config_path + 'configuration.py', 'a') as test_config:
+        test_config.write('\nTESTING = True\n')
 
 copy_secret_config()
 if args.quiet:

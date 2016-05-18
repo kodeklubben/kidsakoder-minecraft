@@ -12,12 +12,17 @@ from flask.ext.security import utils
 from flask_app import app
 
 
-def initAdmin():
-    # Initialize Flask-Admin and add needed views/pages
+def init_admin():
+    """ Initialize Flask-Admin """
+
     admin = Admin(app)
 
-    # Configurations for admin panel about meetings
     class MeetingView(ModelView):
+        """ Configurations for admin panel about meetings """
+
+        can_create = False
+        can_edit = False
+
         def is_accessible(self):
             return current_user.has_role('admin')
 

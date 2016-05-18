@@ -10,6 +10,7 @@ from flask_app import app
 
 APP_NAME = 'Kodeklubben Minecraft'
 DEBUG = False
+APP_LOG_FILE = '/var/log/flask/flask_app.log'
 # SESSION_COOKIE_SECURE = True # Should be set when using https
 CSRF_ENABLED = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -169,7 +169,7 @@ def delete_world_file(file_ref):
     try:
         os.remove(file_path)
     except OSError:
-        pass
+        app.logger.warning('Could not remove: ' + file_path)
 
 
 def delete_world_preview(file_ref):
