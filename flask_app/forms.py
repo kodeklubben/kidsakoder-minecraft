@@ -5,6 +5,7 @@ Flask-WTF form controller
 
 from flask_wtf import Form
 from flask_wtf.html5 import EmailField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, DateTimeField, IntegerField, TextAreaField, HiddenField, PasswordField
 from wtforms.validators import InputRequired, Length, Email, EqualTo
 
@@ -21,6 +22,12 @@ class WorldForm(Form):
     is_world_form = HiddenField(u'Er verden', [InputRequired()], default='True')
     world_id = HiddenField(u'Verden ID', [InputRequired()])
     description = TextAreaField(u'Beskrivelse')
+
+
+class WorldUpload(Form):
+    description = StringField(u'Navn eller kort beskrivelse', [InputRequired()])
+    world_file = FileField(u'Minecraft verden',
+                           [FileRequired(), FileAllowed(['zip'], u'Filen må være pakket i zip format')])
 
 
 class ChangeEmail(Form):

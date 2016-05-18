@@ -16,6 +16,7 @@ from jinja2 import escape
 from models import Meeting, World
 from flask import safe_join
 from flask_app import app
+from werkzeug.datastructures import FileStorage
 
 
 def safe_join_all(root, *arg):
@@ -60,20 +61,32 @@ def save_world_from_fme(url=None, description=""):
         return jsonify(message=u'Ugyldig <a href="' + escape(url) + u'">URL</a>')
     response = urllib2.urlopen(url)
 
+    world = save_world(response, description)
+    return jsonify(
+        message=u'Verden overført',
+        world_id=str(world.id)
+    )
+
+
+def save_world(file_data=None, description=""):
+    """ Save file from form data or download """
     world = World(user_id=current_user.id)
+    # Construct file name with world ID and user ID for reference. End with arbitrary string and zip extension
+    # Example: 7_3_mc_world.zip
     file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
     file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_name)
-    with open(file_path, 'wb') as world_file:
-        world_file.write(response.read())
-        world.file_ref = file_name
-        world.description = description
-        world.store()
-        return jsonify(
-            message=u'Verden overført',
-            world_id=str(world.id)
-        )
 
-    return '<p>Noe gikk galt!</p>'
+    # Check if file data comes from a form submission
+    if isinstance(file_data, FileStorage):
+        file_data.save(file_path)
+    else:  # Else assume it has read() function
+        with open(file_path, 'wb') as world_file:
+            world_file.write(file_data.read())
+
+    world.file_ref = file_name
+    world.description = description
+    world.store()
+    return world
 
 
 def generate_world_preview(world_ref):
@@ -81,6 +94,7 @@ def generate_world_preview(world_ref):
     # create file path
     zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
     # open file:
+    # TODO Use proper temp folder: tempfile.gettempdir()
     unzip_path = safe_join_all(app.root_path, 'tmp', world_ref)
     print('unzipping')
     with ZipFile(zip_path, 'r') as world_zip:
