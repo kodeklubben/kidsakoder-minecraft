@@ -30,7 +30,7 @@ before_script:
   # Copy the empty secret_config.py template necessary to run app
   - cp flask_app/config/secret_config.py.template flask_app/config/secret_config.py
   # Generate secret key and initialize database
-  - python setup_app.py --quiet
+  - python setup_app.py --quiet --testing
 
 # Run pytest
 script:
