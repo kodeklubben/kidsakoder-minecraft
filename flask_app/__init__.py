@@ -4,12 +4,16 @@ The flask application package.
 """
 
 from flask import Flask, g
+import os
 
 
 app = Flask(__name__)
 
 # Load configurations
-app.config.from_pyfile('config/secret_key.py')  # Load first in case we want to use in other config opt
+if os.path.isfile('config/secret_key.py'):
+    app.config.from_pyfile('config/secret_key.py')  # Load first in case we want to use in other config opt
+else:
+    app.config['SECRET_KEY'] = 'secret_key'
 app.config.from_pyfile('config/configuration.py')
 app.config.from_pyfile('config/secret_config.py')
 # Development configuration overrides. Comment out for production
