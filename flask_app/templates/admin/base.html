@@ -43,7 +43,7 @@
             <span class="icon-bar"></span>
           </button>
           {% block brand %}
-          <a class="navbar-brand" href="{{ url_for('admin') }}">{{ admin_view.admin.name }}</a>
+          <a class="navbar-brand" href="{{ url_for('admin.index') }}">{{ admin_view.admin.name }}</a>
           {% endblock %}
         </div>
         <!-- navbar content -->
@@ -65,7 +65,8 @@
       </nav>
 
       {% block messages %}
-      {{ layout.messages() }}
+          {# Commented out to avoid showing flashed messages twice #}
+{#      {{ layout.messages() }}#}
       {% endblock %}
 
       {# store the jinja2 context for form_rules rendering logic #}

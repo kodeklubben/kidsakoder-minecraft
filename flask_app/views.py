@@ -121,20 +121,6 @@ def database():
     )
 
 
-@app.route('/admin', methods=['GET', 'POST'])  # Need post?
-@login_required
-@roles_required('admin')
-def admin():
-    """ This appears to do absolutely nothing except to provide an endpoint for url_for('admin') """
-    # TODO: Unsure about what (if anything) is still necessary here.
-    # This is mostly here to try and make sure non-admins can not access the admin panel.
-    """ Enables admins to register new users """
-    return render_template(
-        'admin/admin.html',
-        title=u'Adminside - Registrer nye brukere'
-    )
-
-
 @app.route('/bruker')
 @login_required
 def user():
