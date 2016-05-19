@@ -9,12 +9,11 @@ import subprocess
 import shutil
 from zipfile import ZipFile
 from flask_security import current_user
-from flask import send_file, jsonify
+from flask import send_file, jsonify, safe_join
 from icalendar import Calendar, Event
 from pytz import timezone
 from jinja2 import escape
 from models import Meeting, World
-from flask import safe_join
 from flask_app import app
 from werkzeug.datastructures import FileStorage
 

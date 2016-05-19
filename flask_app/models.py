@@ -3,7 +3,15 @@
 Database models
 """
 from flask_security import UserMixin, RoleMixin
-from database import db, roles_users
+from database import db
+
+
+# Many-many relation between role and user
+roles_users = db.Table(
+        'roles_users',
+        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+        db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
+        )
 
 
 class User(db.Model, UserMixin):
