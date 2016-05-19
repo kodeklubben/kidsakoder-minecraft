@@ -32,6 +32,7 @@ celeryd-init:
   file.managed:
     - name: /etc/init.d/celeryd
     - source: salt://celery/files/celeryd
+    - template: jinja
     - mode: 755
 
   service.running:
