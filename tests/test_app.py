@@ -2,7 +2,7 @@ import pytest
 
 from flask_app import app, user_datastore
 from flask_app.models import User
-from flask_app.database import db, init_db
+from flask_app.database import db, create_db
 
 
 EMAIL = ''
@@ -21,7 +21,7 @@ def client(request):
     PASSWORD = app.config['TEST_PASSWORD']
 
     """ Initialize db and add a test user """
-    init_db()
+    create_db()
     user_datastore.create_user(email=EMAIL, password=PASSWORD)
     db.session.commit()
 

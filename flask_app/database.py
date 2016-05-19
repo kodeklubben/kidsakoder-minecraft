@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 """ The database controller """
 
-from flask_app import app
-from flask_sqlalchemy import SQLAlchemy
+
+db = None
 
 
-# Initialize Flask-SQLAlchemy
-db = SQLAlchemy(app)
-
-# Many-many relation between role and user
-roles_users = db.Table(
-        'roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-        db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
-        )
+def init(app):
+    """ Initialize Flask-SQLAlchemy """
+    from flask_sqlalchemy import SQLAlchemy
+    global db
+    db = SQLAlchemy(app)
+    return db
 
 
-def init_db():
+def create_db():
     """ Initialize new database """
     from flask_app import user_datastore
     db.drop_all()  # Empty database

@@ -36,8 +36,8 @@ def copy_secret_config():
 
 def initialize_db():
     """ Initializes a new database """
-    from flask_app.database import init_db
-    init_db()
+    from flask_app.database import create_db
+    create_db()
 
 
 if args.testing:
