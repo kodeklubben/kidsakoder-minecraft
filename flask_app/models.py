@@ -26,14 +26,6 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(255), server_default='')
     mojang_playername = db.Column(db.String(255), server_default='')
     mojang_uuid = db.Column(db.String(64))
-    
-    @classmethod
-    def get_all_as_dict(cls):
-        """
-        :return:  All users as list of dictionaries with all fields
-        """
-        user_list = cls.query.all()
-        return [vars(user) for user in user_list]
 
     @classmethod
     def get_by_id(cls, user_id):
@@ -44,9 +36,6 @@ class User(db.Model, UserMixin):
         db.session.add(self)
         db.session.commit()
 
-    def is_admin(self):
-        return self.admin
-
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -56,10 +45,6 @@ class Role(db.Model, RoleMixin):
     # Required to display name of role in a way that is actually readable in admin panel
     def __str__(self):
         return self.name
-
-    # (Apparently) required to avoid TypeError: Unhashable when saving users
-    def __hash__(self):
-        return hash(self.name)
 
 
 class Meeting(db.Model):
@@ -72,19 +57,10 @@ class Meeting(db.Model):
     _world_id = db.Column('world_id', db.Integer, db.ForeignKey('world.id'))
 
     @classmethod
-    def get_all_as_dict(cls):
-        """
-        :return:  All meetings as list of dictionaries with all fields
-        """
-        meeting_list = cls.query.all()
-        return [vars(meeting) for meeting in meeting_list]
-
-    @classmethod
-    def get_user_meetings_as_dict(cls, user_id=None):
+    def get_user_meetings(cls, user_id=None):
         if user_id is None:
             return None
-        meeting_list = cls.query.filter_by(user_id=user_id)
-        return [vars(meeting) for meeting in meeting_list.order_by(Meeting.start_time)]
+        return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
     def get_meeting_by_id(cls, meeting_id):
@@ -128,14 +104,6 @@ class World(db.Model):
         if user_id is None:
             return None
         return cls.query.filter_by(user_id=user_id).all()
-
-    @classmethod
-    def get_all_as_dict(cls):
-        """
-        :return:  All worlds as list of dictionaries with all fields
-        """
-        world_list = cls.query.all()
-        return [vars(world) for world in world_list]
 
     @classmethod
     def get_by_id(cls, world_id):

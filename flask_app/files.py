@@ -5,8 +5,6 @@ File storage controller
 import StringIO
 import urllib2
 import os
-import subprocess
-import shutil
 from zipfile import ZipFile
 from flask_security import current_user
 from flask import send_file, jsonify, safe_join
@@ -47,6 +45,7 @@ def super_safe_join(directory, filename):
         directory = safe_join(directory, path)
     return directory
 
+
 def search_for_file(path, filename):
     """
     Searches top down for a filename and returns the path to the folder of the file if found, False if not found
@@ -60,7 +59,6 @@ def search_for_file(path, filename):
                 return root
 
     return False
-
 
 
 def save_world_from_fme(url=None, description=""):
@@ -152,16 +150,16 @@ def export_calendar_for_user(cal_user_id=None, filename="export"):
         # Defaults to current user
         cal_user_id = current_user.id
 
-    meeting_list = Meeting.get_user_meetings_as_dict(cal_user_id)
+    meeting_list = Meeting.get_user_meetings(cal_user_id)
     tz = timezone('Europe/Oslo')
     c = Calendar()
     for meeting in meeting_list:
         e = Event()
-        e.add('summary', meeting['title'])
-        e.add('dtstart', tz.localize(meeting['start_time']))
-        e.add('dtend', tz.localize(meeting['end_time']))
+        e.add('summary', meeting.title)
+        e.add('dtstart', tz.localize(meeting.start_time))
+        e.add('dtend', tz.localize(meeting.end_time))
         e.add('description',
-              u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting['participant_count']))
+              u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting.participant_count))
         c.add_component(e)
 
     export = StringIO.StringIO()

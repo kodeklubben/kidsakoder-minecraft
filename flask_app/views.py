@@ -5,8 +5,8 @@ Routes and views for the flask application.
 
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
 from flask_app import app
-from models import Meeting, World, User
-from flask_security import login_required, current_user, roles_required, utils
+from models import Meeting, World
+from flask_security import login_required, current_user, utils
 import forms
 import files
 import urllib2
@@ -17,16 +17,21 @@ import tasks
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    """ Renders the home page. """
-    meeting_list = Meeting.get_user_meetings_as_dict(current_user.id)
+    """ Renders the home page """
+    # Meeting list will be shown at the bottom of the page
+    meeting_list = Meeting.get_user_meetings(current_user.id)
+    # Selected world (in meeting tab) defaults to None and gets overridden if there is a world selected
     world = None
+    # Default to world selection tab
     set_tab = 0
 
+    # A form is posted
     if request.method == 'POST':
         world_form = forms.WorldForm(request.form)
-        if world_form.validate():
-            # Request is a redirect from map page
+        if world_form.validate():  # Request is a redirect from map page
+            # Go to meeting details tab
             set_tab = 1
+            # Empty meeting form
             form = forms.MeetingForm()
             try:
                 world_id = int(world_form.world_id.data)
@@ -101,23 +106,6 @@ def contact():
     return render_template(
         'contact.html',
         title=u'Kontakt oss'
-    )
-
-
-@app.route('/database')
-@login_required
-@roles_required('admin')
-def database():
-    """ Test page for database """
-    all_meetings = Meeting.get_all_as_dict()
-    all_users = User.get_all_as_dict()
-    all_worlds = World.get_all_as_dict()
-    return render_template(
-        'database.html',
-        title=u'Database test',
-        meetings=all_meetings,
-        users=all_users,
-        worlds=all_worlds
     )
 
 
@@ -390,26 +378,6 @@ def browse_worlds():
     )
 
 
-@app.route('/generer_test_verdener')
-@login_required
-@roles_required('admin')
-def generate_test_worlds():
-    # Generate some test worlds
-    world = World(
-        user_id=current_user.id,
-        description=''
-    )
-    world.file_ref = str(world.id) + '_1_mc_world.zip'
-    world.store()
-    for i in range(0, 5):
-        world = World(user_id=current_user.id)
-        world.description = 'Verden ' + str(world.id)
-        world.file_ref = str(world.id) + '_1_mc_world.zip'
-        world.store()
-    # End test worlds code
-    return 'Success'
-
-
 @app.route('/veksle_favoritt/', defaults={'world_id': None})
 @app.route('/veksle_favoritt/<int:world_id>')
 @login_required
@@ -503,11 +471,13 @@ def show_preview(world_id):
             world_ref=w.file_ref,
         ), 200
 
+
 @app.route('/server_list/', defaults={'meeting_id': None})
 @app.route('/server_list/<int:meeting_id>')
 @login_required
 def server_list(meeting_id):
     # TODO handle get servers
+    # TODO check if user has access
     meeting = Meeting.get_meeting_by_id(meeting_id)
     return render_template(
             'server_list.html',
@@ -527,6 +497,7 @@ def restart_server(server_address):
     return jsonify(
         success=True
     )
+
 
 @app.route('/destroy_server/', defaults={'server_address': None})
 @app.route('/destroy_server/<string:server_address>')
