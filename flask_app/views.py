@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Routes and views for the flask application.
+flask_app.views
+~~~~~~~~~~~~~~~
+
+Routes and view definitions for the flask application.
 """
 
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, safe_join, jsonify
@@ -61,8 +64,8 @@ def home():
             # A meeting form is posted
             meeting = Meeting(user_id=current_user.id)
             form.populate_obj(meeting)
-            if meeting.world_id:
-                if World.exists(meeting.world_id):
+            if meeting.world_id:  # World ID will be none if the posted value is not an integer
+                if World.exists(meeting.world_id):  # Check that the world exists in the database
                     meeting.store()
 
                     # Celery stuff

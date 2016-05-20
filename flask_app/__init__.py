@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-The flask application package.
+flask_app
+~~~~~~~~~
+
+The flask application package initialization
 """
 
 from flask import Flask
@@ -8,6 +11,7 @@ import logging
 import os
 
 
+# Create Flask app context
 app = Flask(__name__)
 
 # pre_logger logs messages before file logging is initialized.

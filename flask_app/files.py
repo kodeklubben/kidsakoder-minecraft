@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+flask_app.files
+~~~~~~~~~~~~~~~
+
 File storage controller
 """
 import StringIO

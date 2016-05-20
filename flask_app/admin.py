@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-""" Flask-Admin """
+"""
+flask_app.admin
+~~~~~~~~~~~~~~~
+
+Flask-Admin controller
+"""
 
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView

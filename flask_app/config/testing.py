@@ -1,4 +1,7 @@
-""" Testing configuration overrides """
+"""
+Testing configuration overrides
+"""
+
 WTF_CSRF_ENABLED = False
 
 TEST_EMAIL = 'test@mail.com'

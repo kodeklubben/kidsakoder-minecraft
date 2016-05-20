@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-""" The database controller """
+"""
+flask_app.database
+~~~~~~~~~~~~~~~~~~
+
+The database controller
+"""
 
 
 db = None

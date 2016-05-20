@@ -1,4 +1,6 @@
-""" Development configuration overrides """
+"""
+Development configuration overrides
+"""
 
 DEBUG = True
 
