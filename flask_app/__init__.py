@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-The flask application package.
+flask_app
+~~~~~~~~~
+
+The flask application package initialization
 """
 
 from flask import Flask
@@ -8,6 +11,7 @@ import logging
 import os
 
 
+# Create Flask app context
 app = Flask(__name__)
 
 # pre_logger logs messages before file logging is initialized.
@@ -83,12 +87,15 @@ def main():
     try_locale(our_locales)
     app.logger.debug('Preferred locale encoding: ' + locale.getpreferredencoding())
 
-    # Initialize Flask-Security
-    ###########################
+    # Initialize database
+    #####################
     import database
     db = database.init(app)
-    from flask_security import Security, SQLAlchemyUserDatastore
     import models
+
+    # Initialize Flask-Security
+    ###########################
+    from flask_security import Security, SQLAlchemyUserDatastore
     global user_datastore
     user_datastore = SQLAlchemyUserDatastore(db, models.User, models.Role)
     security = Security(app, user_datastore)
@@ -96,7 +103,7 @@ def main():
     # Initialize Flask-Admin
     ########################
     from admin import init_admin
-    init_admin()
+    init_admin(app)
 
     # Context processors
     ####################

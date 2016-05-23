@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Configuration file
-
-Change what configuration is used in __init__.py
+Main configuration file
 """
 
 from flask_app import app
