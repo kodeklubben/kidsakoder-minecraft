@@ -1,11 +1,14 @@
 """
 Unittests with test client
 """
-
+# -*- coding: utf-8 -*-
 import pytest
 from flask_app import app, user_datastore
-from flask_app.models import User
+from flask_app.models import User, World
 from flask_app.database import db, create_db
+from flask_security import current_user
+from celery import current_app
+from datetime import datetime, timedelta
 
 
 EMAIL = ''
@@ -19,6 +22,9 @@ def client(request):
     """ Creates the test client """
     client = app.test_client()
     app.config.from_pyfile('config/testing.py')
+
+    # Update celery app config for testing
+    current_app.conf.update(app.config)
 
     # Add email and password as globals for easy ref.
     global EMAIL
@@ -41,10 +47,26 @@ def login(client, email, password):
         password=password
     ), follow_redirects=True)
 
-
 def logout(client):
     """ Logout of the test client """
     return client.get('/logout', follow_redirects=True)
+
+
+def add_testworld(client):
+    """ Add a mock world for use in testing. Returns the world id """
+    world = World()
+    world.store()
+    return world.id
+
+def add_testmeeting(client, title, world_id, start_time, end_time):
+    """ Add a meeting through the client """
+    return client.post('/', data=dict(
+        title=title,
+        start_time=start_time,
+        end_time=end_time,
+        participant_count=10,
+        world_id=world_id
+    ), follow_redirects=True)
 
 
 def test_front_page(client):
@@ -125,3 +147,29 @@ def test_fme_url(client):
     ))
     result_json = json.loads(rv.data)
     assert result_json['message'] == u'Ugyldig <a href="' + url + u'">URL</a>'
+
+
+def test_add_meeting(client):
+    """ Make sure we are able to add meetings """
+
+    login(client, EMAIL, PASSWORD)
+
+    # Add a testworld to the db
+    world_id = add_testworld(client)
+
+    # Meeting starts one hour from now, and ends one hour later
+    start_time = '{:%d.%m.%Y %H:%M}'.format(datetime.now() + timedelta(hours=1))
+    end_time = '{:%d.%m.%Y %H:%M}'.format(datetime.now() + timedelta(hours=2))
+
+    # Make sure we are able to add a meeting
+    title = 'Testmeeting-1'
+    rv = add_testmeeting(client, title, world_id, start_time, end_time)
+    assert 'Nytt møte lagt til' in rv.data
+    assert 'Testmeeting-1' in rv.data
+
+    # Make sure we can not add meeting with non-existing world
+    title = 'Testmeeting-2'
+    world_id_fail = 10000
+    rv = add_testmeeting(client, title, world_id_fail, start_time, end_time)
+    assert 'Nytt møte lagt til' not in rv.data
+    assert 'Den valgte Minecraft verdenen eksisterer ikke' in rv.data
