@@ -1,3 +1,5 @@
+# Pillar for Salt Cloud
+# See https://docs.saltstack.com/en/latest/topics/cloud/azure.html#configuration
 cloud:
   # Salt Cloud profiles
   profiles:
@@ -8,6 +10,7 @@ cloud:
       grains:
         minecraft_size: small
         forge_version: 189
+        computercraft_version: 179
 
     # Medium Azure VM profile
     medium:
@@ -16,6 +19,7 @@ cloud:
       grains:
         minecraft_size: medium
         forge_version: 189
+        computercraft_version: 179
 
 
   # Salt Cloud provider definition
