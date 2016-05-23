@@ -65,7 +65,7 @@ cloud:
 
       # SSH credentials used for temporary access when creating VM with Salt Cloud.
       # This is account will be removed after the Salt state is run.
-      ssh_username: salt-cloud-provisioner
+      ssh_username: salt-bootstrap
       ssh_password: randompassword
 
       # Cleanup disk, vhd and service when deleting minions

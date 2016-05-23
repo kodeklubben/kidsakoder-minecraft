@@ -23,3 +23,8 @@
 {% endif %}
 
 {% endfor %}
+
+# Make sure the temporary account used for creating VMs with Salt Cloud is not present.
+remove-temporary-salt-cloud-user:
+  user.absent:
+    - name: salt-bootstrap
