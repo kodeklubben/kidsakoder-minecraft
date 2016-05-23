@@ -14,6 +14,7 @@ base:
     - celery
     - overviewer
 
-  # Minecraft server states
-  '*mc*':
+  # Minecraft server states determined by grain.
+  'role:minecraft':
+    - match: grain
     - minecraft

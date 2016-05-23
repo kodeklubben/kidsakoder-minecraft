@@ -2,18 +2,22 @@
 # https://docs.saltstack.com/en/latest/ref/states/top.html
 
 base:
+  # COMMON
   # Pillar data that should be available for all minions
   '*':
     - common
     - users
 
+  # MASTER
   # Salt master configuration
   'master':
     - cloud
     - webserver
 
-  # Minecraft server configuration
-  '*mc*':
+  # MINECRAFT
+  # Minecraft server states determined by grain.
+  'role:minecraft':
+    - match: grain
     - minecraft
 
   # Forge Server version determined by Salt grain.

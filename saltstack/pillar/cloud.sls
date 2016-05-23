@@ -8,6 +8,7 @@ cloud:
       provider: azure-config
       size: Standard_DS1_v2
       grains:
+        role: minecraft
         minecraft_size: small
         forge_version: 189
         computercraft_version: 179
@@ -17,6 +18,7 @@ cloud:
       provider: azure-config
       size: Standard_DS2_v2
       grains:
+        role: minecraft
         minecraft_size: medium
         forge_version: 189
         computercraft_version: 179

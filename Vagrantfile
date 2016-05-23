@@ -71,7 +71,8 @@ Vagrant.configure(2) do |config|
     # The size used (very small) defines how much memory the Java process uses.
     minion.vm.provision "shell", run: "always", inline: <<-SHELL
       mkdir /etc/salt/
-      echo 'forge_version: 189' > /etc/salt/grains
+      echo 'role: minecraft' > /etc/salt/grains
+      echo 'forge_version: 189' >> /etc/salt/grains
       echo 'computercraft_version: 179' >> /etc/salt/grains
       echo 'size: verysmall' >> /etc/salt/grains
     SHELL
