@@ -32,10 +32,10 @@ salt-cloud-bootstrap-script:
 
 # Create Salt user for external authentication with Flask app
 # The users permissions are defined in saltstack/etc/master.conf
-salt-cloud-user:
+salt-cloud-flask-user:
   user.present:
-    - name: salt-cloud
-    - password: $6$H_WomOt8$y2Judd2oYDl7QLvNO5O9QEPDL5/OLTdkRy7UwLRiWc24F3Uth6GxtaZscBnIVnpCflEytJB4fm1CqZTmdBDE9.
+    - name: salt-cloud-flask
+    - password: $6$g_U_4iC1$APZjc8rLjAtvef4t8BIKuzFOLH6oyEQbjpOe/IrLeRLyG..w0FdG49tdPnSMbSICOfoIo35d/1F0ltLeO4A/X0
     - shell: /bin/bash
 
 

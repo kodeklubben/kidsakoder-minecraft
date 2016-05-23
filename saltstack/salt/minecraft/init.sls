@@ -57,6 +57,20 @@ setup-minecraft-forge-symlink:
       - cmd: install-minecraft-forge
 
 
+# Install ComputerCraft mod for Forge
+install-computercraft-mod:
+  file.managed:
+    - name: {{ server.mods_path }}/{{ mods.computercraft.jar_name }}
+    - source: {{ mods.computercraft.link }}
+    - source_hash: {{ mods.computercraft.checksum }}
+    - user: {{ server.user }}
+    - group: {{ server.group }}
+    - makedirs: True
+    - mode: 755
+    - onchanges:
+      - cmd: install-minecraft-forge
+
+
 # Add EULA file required for Minecraft server to run.
 minecraft-eula:
   file.managed:
