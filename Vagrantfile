@@ -9,8 +9,7 @@ Vagrant.configure(2) do |config|
     master.vm.box = "ubuntu/trusty64"
 
     # Network configuration
-    ip = "192.168.100.100"
-    master.vm.network "private_network", ip: "#{ip}"
+    master.vm.network "private_network", ip: "192.168.100.100"
     # Forward port 80 to 8080 for production
     master.vm.network "forwarded_port", guest: 80, host: 8080
     # Forward port 5000 for debug
@@ -20,12 +19,12 @@ Vagrant.configure(2) do |config|
     master.vm.synced_folder ".", "/vagrant"
     master.vm.synced_folder ".", "/opt/kidsakoder-minecraft"
 
-    # Saltstack directories
+    # Salt directories
     master.vm.synced_folder "saltstack/salt", "/srv/salt"
     master.vm.synced_folder "saltstack/pillar", "/srv/pillar"
     master.vm.synced_folder "saltstack/reactor", "/srv/reactor"
 
-    # Saltstack provisioning
+    # Salt provisioning
     master.vm.provision "salt" do |salt|
       salt.install_master = true
       salt.install_type = "stable"
@@ -50,11 +49,11 @@ Vagrant.configure(2) do |config|
     end
 
     # Post message
-    master.vm.post_up_message = "The Salt master and web server is up and running at #{ip}.\n" \
+    master.vm.post_up_message = "The Salt master and web server is up and running.\n" \
                                 "Use http://localhost:8080 for port 80.\n" \
-                                "Use http://localhost:5000 for port 5000.\n" \
-                                "Use the command 'vagrant ssh master' to connect via SSH."
+                                "Use http://localhost:5000 for port 5000.\n"
   end
+
 
   # The Minecraft server
   config.vm.define "mc" do |minion|
@@ -62,19 +61,22 @@ Vagrant.configure(2) do |config|
     minion.vm.box = "ubuntu/trusty64"
 
     # Network configuration
-    ip = "192.168.100.101"
-    minion.vm.network "private_network", ip: "#{ip}"
+    minion.vm.network "private_network", ip: "192.168.100.101"
     # Forward port 25565 for Minecraft
     minion.vm.network "forwarded_port", guest: 25565, host: 25565
 
-    # Saltstack grains
+    # Salt Grains
+    # This creates a static grains file when running vagrant up or vagrant provision
+    # which defines which versions of Forge and ComputerCraft should be installed.
+    # The size used (very small) defines how much memory the Java process uses.
     minion.vm.provision "shell", run: "always", inline: <<-SHELL
       mkdir /etc/salt/
       echo 'forge_version: 189' > /etc/salt/grains
+      echo 'computercraft_version: 179' >> /etc/salt/grains
       echo 'size: verysmall' >> /etc/salt/grains
     SHELL
 
-    # Saltstack provisioning
+    # Salt provisioning
     minion.vm.provision "salt" do |salt|
       salt.minion_config = "saltstack/vagrant/minion.conf"
       salt.minion_key = "saltstack/vagrant/keys/minion.pem"
@@ -89,9 +91,8 @@ Vagrant.configure(2) do |config|
     end
 
     # Post message
-    minion.vm.post_up_message = "The Minecraft Forge server is up and running at #{ip}.\n" \
-                                "Connect to localhost:25565 or #{ip}:25565 to play.\n" \
-                                "Use the command 'vagrant ssh mc' to connect via SSH."
+    minion.vm.post_up_message = "The Minecraft Forge server is up and running.\n" \
+                                "Connect to localhost:25565 to play.\n"
   end
 
 end
