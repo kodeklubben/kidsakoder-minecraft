@@ -30,7 +30,8 @@ salt-cloud-bootstrap-script:
       - pkg: salt-cloud
 
 
-# Create Salt Cloud user for external authentication with Flask app
+# Create Salt user for external authentication with Flask app
+# The users permissions are defined in saltstack/etc/master.conf
 salt-cloud-user:
   user.present:
     - name: salt-cloud
@@ -38,16 +39,17 @@ salt-cloud-user:
     - shell: /bin/bash
 
 
-# Create Azure cloud configs
+# Setup Azure management certificate
+azure-certificate:
+  file.managed:
+    - name: /etc/salt/azure.pem
+    - source: salt://cloud/files/azure.pem
+
+
+# Create Salt Cloud provider configuration from data in Pillar
 # See https://docs.saltstack.com/en/latest/topics/cloud/azure.html#configuration
 azure-provider:
   file.managed:
     - name: /etc/salt/cloud.providers.d/azure.conf
     - source: salt://cloud/cloud.providers.d/azure.conf
-    - template: jinja
-
-azure-profile:
-  file.managed:
-    - name: /etc/salt/cloud.profiles.d/azure.conf
-    - source: salt://cloud/cloud.profiles.d/azure.conf
     - template: jinja
