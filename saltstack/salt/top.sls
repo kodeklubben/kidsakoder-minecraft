@@ -4,8 +4,9 @@
 base:
   # Common packages and users for all minions
   '*':
-    - common
-    - users
+    - common.packages
+    - common.locale
+    - common.users
 
   # Salt master states
   'master':

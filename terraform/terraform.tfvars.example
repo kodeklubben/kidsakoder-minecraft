@@ -1,7 +1,0 @@
-# SSH settings
-ssh.username = ""
-ssh.password = ""
-
-# DNSimple authentication
-dnsimple.email = ""
-dnsimple.token = ""

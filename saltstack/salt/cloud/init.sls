@@ -8,7 +8,7 @@ apache-libcloud:
     - require:
       - pkg: python-pkgs
 
-azure:
+azure-python-sdk:
   pip.installed:
     - name: azure >= 0.10.2, < 1.0.0
     - require:
@@ -30,15 +30,6 @@ salt-cloud-bootstrap-script:
       - pkg: salt-cloud
 
 
-# Create Salt user for external authentication with Flask app
-# The users permissions are defined in saltstack/etc/master.conf
-salt-cloud-flask-user:
-  user.present:
-    - name: salt-cloud-flask
-    - password: $6$g_U_4iC1$APZjc8rLjAtvef4t8BIKuzFOLH6oyEQbjpOe/IrLeRLyG..w0FdG49tdPnSMbSICOfoIo35d/1F0ltLeO4A/X0
-    - shell: /bin/bash
-
-
 # Setup Azure management certificate
 azure-certificate:
   file.managed:
@@ -46,10 +37,25 @@ azure-certificate:
     - source: salt://cloud/files/azure.pem
 
 
-# Create Salt Cloud provider configuration from data in Pillar
+# Create Salt Cloud provider and profiles from data in Pillar
 # See https://docs.saltstack.com/en/latest/topics/cloud/azure.html#configuration
 azure-provider:
   file.managed:
-    - name: /etc/salt/cloud.providers.d/azure.conf
-    - source: salt://cloud/cloud.providers.d/azure.conf
+    - name: /etc/salt/cloud.providers.d/azure-providers.conf
+    - source: salt://cloud/files/azure-providers.conf.j2
     - template: jinja
+
+azure-profiles:
+  file.managed:
+    - name: /etc/salt/cloud.profiles.d/azure-profiles.conf
+    - source: salt://cloud/files/azure-profiles.conf.j2
+    - template: jinja
+
+
+# Create Salt user for external authentication with Flask app
+# The users permissions are defined in saltstack/etc/master.conf
+salt-cloud-flask-user:
+  user.present:
+    - name: salt-cloud-flask
+    - password: $6$g_U_4iC1$APZjc8rLjAtvef4t8BIKuzFOLH6oyEQbjpOe/IrLeRLyG..w0FdG49tdPnSMbSICOfoIo35d/1F0ltLeO4A/X0
+    - shell: /usr/sbin/nologin

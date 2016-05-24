@@ -19,9 +19,9 @@ wget -O /tmp/bootstrap-salt.sh https://bootstrap.saltstack.com
 # Install SaltStack as master
 sh /tmp/bootstrap-salt.sh -M -L -P stable
 
-# Run highstate to get config
-salt-call state.highstate
-
 # Clean up tmp
 rm -r /tmp/saltstack
 rm /tmp/bootstrap-salt.sh
+
+# Run highstate to get config
+salt-call state.apply

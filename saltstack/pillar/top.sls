@@ -6,7 +6,6 @@ base:
   # Pillar data that should be available for all minions
   '*':
     - common
-    - users
 
   # MASTER
   # Salt master configuration
