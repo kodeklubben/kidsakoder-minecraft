@@ -28,6 +28,7 @@ cloud:
   # Salt Cloud provider definition
   providers:
     azure-config:
+      # The name of the Salt Cloud driver to be used.
       driver: azure
 
       # NOTE: Must be filled out.
@@ -66,7 +67,7 @@ cloud:
       # SSH credentials used for temporary access when creating VM with Salt Cloud.
       # This is account will be removed after the Salt state is run.
       ssh_username: salt-bootstrap
-      ssh_password: randompassword
+      ssh_password: BootstrapPassword123
 
       # Cleanup disk, vhd and service when deleting minions
       cleanup_disks: True
@@ -76,4 +77,5 @@ cloud:
       # Minion specific settings
       minion:
         # Set the location of the Salt master
-        master: master.kode-kidza.no
+        # FIXME: This is hardcoded to the first IP in the Azure public subnet
+        master: 10.0.4.4

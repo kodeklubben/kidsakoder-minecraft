@@ -1,0 +1,12 @@
+# This is the Salt Cloud profiles configuration for Azure.
+
+{% for profile, args in pillar['cloud']['profiles'].iteritems() %}
+{{ profile }}:
+  provider: {{ args['provider'] }}
+  size: {{ args['size'] }}
+  grains:
+    role: {{ args['grains']['role'] }}
+    minecraft_size: {{ args['grains']['minecraft_size'] }}
+    forge_version: {{ args['grains']['forge_version'] }}
+    computercraft_version: {{ args['grains']['computercraft_version'] }}
+{% endfor %}

@@ -1,22 +1,3 @@
-### SECRETS PULLED FROM THE FILE secret.tfvars ###
-###################### START ####################
-variable "ssh" {
-  description = "The SSH username and password user for provisioning"
-  default = {
-    username = ""
-    password = ""
-  }
-}
-
-variable "dnsimple" {
-  description = "The email and token for accessing DNSimple"
-  default = {
-    email = ""
-    token = ""
-  }
-}
-###################### STOP #####################
-
 ### AZURE VARIABLES ###
 variable "location" {
   description = "The location of the Azure infrastructure"
@@ -34,11 +15,4 @@ variable "vm_sizes" {
     "0" = "Standard_DS1_v2"
     "1" = "Standard_DS2_v2"
   }
-}
-
-
-### DOMAIN SETTINGS ###
-variable "domain" {
-  description = "The domain to be managed in DNSimple"
-  default = "kode-kidza.no"
 }
