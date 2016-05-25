@@ -15,6 +15,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 WORLD_UPLOAD_PATH = 'world_storage'
 PREVIEW_STORAGE_PATH = 'static/preview_storage'
 TEXTUREPACK_PATH = 'static/texturepack'
+TIMEZONE = 'Europe/Oslo'
 
 # Flask Security
 SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
@@ -39,3 +40,5 @@ CELERY_BROKER_URL = 'amqp://guest@master//'
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_TRACK_STARTED = True
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']

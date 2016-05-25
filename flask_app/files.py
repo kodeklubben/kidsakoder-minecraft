@@ -167,49 +167,61 @@ def generate_world_preview(world_ref):
 
 
 def export_calendar_for_user(cal_user_id=None, filename="export"):
-    """ Create and export iCalendar file with the meetings of the chosen user """
+    """
+    Create and export iCalendar file with the meetings of the chosen user
+
+    :param cal_user_id: User ID to create calendar for
+    :param filename: Filename for the ics file
+    :return: ics file wrapped in a response
+    """
     if cal_user_id is None:
         # Defaults to current user
         cal_user_id = current_user.id
 
     meeting_list = Meeting.get_user_meetings(cal_user_id)
-    tz = timezone('Europe/Oslo')
-    c = Calendar()
+    tz = timezone(app.config['TIMEZONE'])
+    cal = Calendar()
     for meeting in meeting_list:
-        e = Event()
-        e.add('summary', meeting.title)
-        e.add('dtstart', tz.localize(meeting.start_time))
-        e.add('dtend', tz.localize(meeting.end_time))
-        e.add('description',
-              u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'], meeting.participant_count))
-        c.add_component(e)
+        event = Event()
+        event.add('summary', meeting.title)
+        event.add('dtstart', tz.localize(meeting.start_time))
+        event.add('dtend', tz.localize(meeting.end_time))
+        event.add('description',
+                  u'Møte generert av %s. Antall deltakere: %s. ' % (app.config['APP_NAME'],
+                                                                    meeting.participant_count))
+        cal.add_component(event)
 
     export = StringIO.StringIO()
-    export.writelines(c.to_ical())
+    export.writelines(cal.to_ical())
     export.seek(0)
     return send_file(export,
                      attachment_filename=filename + '.ics',
                      as_attachment=True)
 
 
-def show_preview(world_ref):
-    preview_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], world_ref, 'index.html')
-    return preview_path
-
-
 def delete_world_file(file_ref):
+    """
+    Delete a Minecraft world zip file
+
+    :param file_ref: The file to delete
+    :return: True if the file was removed, False if not
+    """
     file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_ref)
     try:
         os.remove(file_path)
+        return True
     except OSError:
         app.logger.warning('Could not remove: ' + file_path)
+        return False
 
 
 def delete_world_preview(file_ref):
     """
-    Delete a generated world preview
-    :param file_ref: File name of the preview to delete
-    :return: Result
+    Delete a generated world preview.
+    Runs as a celery task to improve web app response time
+
+    :param file_ref: Filename of the preview to delete
+    :return: Celery AsyncResult
     """
     from tasks import delete_preview_task
     dir_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], file_ref)
