@@ -159,10 +159,7 @@ def generate_world_preview(world_ref):
              ])
     # Call overviewer to generate
     # Note: singleton arg tuple needs a trailing comma
-    result = generate_preview_task.apply_async((config_path,), task_id=world_ref)
-    # subprocess.call(["overviewer.py", "--config=%s" % config_path])
-    # TODO Clean up tmp files
-
+    result = generate_preview_task.apply_async((config_path, unzip_path), task_id=world_ref)
     return result
 
 

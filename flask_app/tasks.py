@@ -9,6 +9,7 @@ from celery import Celery
 from flask_app import app
 import subprocess
 import shutil
+import os
 
 # Need to import and setup logger, otherwise Salt overrides it
 # See http://stackoverflow.com/questions/28041539/importing-salt-causes-flask-to-output-nothing-in-the-terminal
@@ -23,15 +24,23 @@ celery.conf.update(app.config)
 
 
 @celery.task(name='tasks.generate_preview_task', bind=True)
-def generate_preview_task(self, config_path):
-    # Call overviewer to generate
-    # WINDOWS
-    # subprocess.call(["C:\users\Andreas\overviewer\overviewer.exe", world_path, preview_path])
-    # Linux
+def generate_preview_task(self, config_path, unzip_path):
+    """  """
     task_id = self.request.id # Get own id
     backend = self.backend
     backend.store_result(task_id, None, "SENT") # Set own status to SENT
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
+
+    # TODO Clean up temp files
+    try:
+        os.remove(config_path)
+    except OSError:
+        app.logger.warning('Could not remove: ' + config_path)
+    try:
+        shutil.rmtree(unzip_path)
+    except OSError:
+        app.logger.warning('Could not remove: ' + unzip_path)
+    
     return "Preview complete."
 
 
