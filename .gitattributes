@@ -1,0 +1,4 @@
+# Make sure shell scripts are LF
+*.sh text eol=lf
+
+*.j2 text eol=lf

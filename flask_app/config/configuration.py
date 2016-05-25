@@ -31,8 +31,8 @@ SECURITY_MSG_UNAUTHORIZED = (u'Du har ikke tilgang til å se denne ressursen', '
 
 # Salt Cloud user credentials
 # Used for connection to Salt via Salts LocalCLient API
-SALT_CLOUD_USERNAME = 'salt-cloud'
-SALT_CLOUD_PASSWORD = 'salt-cloud'
+SALT_CLOUD_USERNAME = 'salt-cloud-flask'
+SALT_CLOUD_PASSWORD = 'salt-cloud-flask'
 
 # Celery
 CELERY_BROKER_URL = 'amqp://guest@master//'
