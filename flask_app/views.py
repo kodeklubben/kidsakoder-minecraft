@@ -28,6 +28,9 @@ def home():
     # Default to world selection tab
     # 0 is world selection tab and 1 is meeting details tab
     set_tab = 0
+    # Locale encoding used for day names
+    # preferred_encoding = locale.getpreferredencoding()
+    preferred_encoding = 'UTF-8'
 
     # A form is posted
     if request.method == 'POST':
@@ -65,7 +68,7 @@ def home():
                 form=meeting_form,
                 world=world,
                 action=url_for('home'),
-                locale=locale.getpreferredencoding()
+                locale=preferred_encoding
             )
 
         # Check if a meeting form is posted
@@ -109,7 +112,7 @@ def home():
         form=form,
         world=world,
         action=url_for('home'),
-        locale=locale.getpreferredencoding()
+        locale=preferred_encoding
     )
 
 
@@ -477,7 +480,7 @@ def show_preview(world_id):
             message=u'Ingen verden ID mottatt'
         )
 
-    # TODO Check if file is present
+    # TODO Check if preview files is present
     world = World.get_by_id(world_id)
     preview = tasks.generate_preview_task.AsyncResult(world.file_ref)
     if preview.status == 'PENDING':

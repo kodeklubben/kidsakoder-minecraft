@@ -31,12 +31,14 @@ def generate_preview_task(self, config_path, unzip_path):
     backend.store_result(task_id, None, "SENT")  # Set own status to SENT
     subprocess.call(["overviewer.py", "--config=%s" % config_path])
 
-    # TODO Clean up temp files
+    # Clean up temp files
     try:
+        # Remove config file
         os.remove(config_path)
     except OSError:
         app.logger.warning('Could not remove: ' + config_path)
     try:
+        # Remove unzip directory
         shutil.rmtree(unzip_path)
     except OSError:
         app.logger.warning('Could not remove: ' + unzip_path)
