@@ -1,9 +1,0 @@
-users:
-  kidsakoder:
-    name: kidsakoder
-    password: $6$6zA88d5o$Z3QMmzZgf2hVSbaIkHV7RS6SN965Ih1VYTMneJFtwiZMibP1vpsMFjkXi21gxygyemkwfpjLlGKSHq4mXHkgn0
-    shell: /bin/bash
-    groups:
-      - sudo
-    ssh-keys:
-      - ssh-rsa AAAAB2NzaC1yc2EAAAADAQABAAACAQDPIMjI1D6HBJqBLFNYt/R4qqKgBuX/oYj+calqNv7fBqvrZEggHnjcDcawHvxYTWfDwSeWFbQcqEkS3Y5roFqu4fHeMfJnqZem4HTdpG74FfScdMvOAQ0LCb0RmzygMbvDfe93/nRJSV+OqaSz0DrHdPO96CjRx7yjhWua4RGxypHLP5wE1IpNPCg73xroLp2j5vGlLDknTAi1yrtGPmvLEZ9HTTtDRkn8pSXsb4JsOImLXOSya0Jy8gpdLSaX3JzTiUryi8keneq15ScY32nk+y0qZcRUJOJ8F+EMnV3pXVf+u1q/dSC+RKPCuMTOQ476sbSYVOf834Wplap5dhUEXB9qHECD351XK2RXTu2K3GlFTif8mF9XE6+xA8QzfzsQERiqbDaLny0RpTr/8ZrB8t6pTPEhMLwYqLruwBN1cQMZUR0ZhlYbE8AzpQtmpyQ3f80aBFe0HHcYhlLz5RfBUXkWSnvFCg+UpMqaA0Rl5t9EjIZnDtFi0SSNTwRrvybbgFq41W2+DtbRgra71pmTKlfCqjwekhbUFs/8f0zdaEmp/bOg4ZPWa81Lm/LxYx8+zhOalbyXDo74i2KOlHSJhXHOhiepsgzIdCxbiGYn8PiD/AA2yu5aBhH3gdrnrwDD/2iarahOyzk89i60VIl61R4gZ6+/S2g0kB1sJsf2GQ== kidsakoder

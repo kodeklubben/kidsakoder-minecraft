@@ -26,6 +26,11 @@ resource "azure_instance" "master" {
   username = "${var.ssh_username}"
   password = "${var.ssh_password}"
 
+  # Ignore password field as Terraform detects is a change
+  lifecycle {
+    ignore_changes = ["password"]
+  }
+
   # Enable SSH endpoint
   endpoint {
     name = "SSH"
@@ -42,7 +47,7 @@ resource "azure_instance" "master" {
     private_port = 80
   }
 
-  # Enable endpoints for Salt
+  # Enable endpoints/ports for Salt
   endpoint {
     name = "SALT1"
     protocol = "tcp"
@@ -56,48 +61,35 @@ resource "azure_instance" "master" {
     private_port = 4506
   }
 
-  # Connection details for Terraform provisioner
+  # SSH connection details for Terraform provisioner
   connection {
     user = "${var.ssh_username}"
     password = "${var.ssh_password}"
   }
 
-  # Copy saltstack dir with config, states and pillar
+  # Copy Saltstack directory containing config, states, pillars and etc.
   provisioner "file" {
     source = "${path.root}/../saltstack"
     destination = "/tmp/saltstack"
   }
 
-  # Copy provisioning script
+  # Copy Salt bootstrap/provisioning script
   provisioner "file" {
-    source = "${path.module}/install_master.sh"
-    destination = "/tmp/install_master.sh"
+    source = "${path.module}/bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
   }
 
-  # Run provisioning script as sudo
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/install_master.sh",
-      "cat /tmp/install_master.sh | sudo -E sh -s",
+      "echo '${azure_instance.master.ip_address}' > /tmp/testip"
     ]
   }
-}
 
-
-# A record for internal IP of master server
-resource "dnsimple_record" "internal" {
-  domain = "${var.domain}"
-  name = "${var.dns_master_internal}"
-  value = "${azure_instance.master.ip_address}"
-  type = "A"
-  ttl = 360
-}
-
-# A record for external IP of master server
-resource "dnsimple_record" "external" {
-  domain = "${var.domain}"
-  name = "${var.dns_master_external}"
-  value = "${azure_instance.master.vip_address}"
-  type = "A"
-  ttl = 360
+  # Run the Salt bootstrap/provisioning script as sudo
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/bootstrap.sh",
+      "cat /tmp/bootstrap.sh | sudo -E sh -s",
+    ]
+  }
 }

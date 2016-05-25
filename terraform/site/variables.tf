@@ -3,8 +3,8 @@ variable "location" {}
 
 
 ### Storage
-variable "storage_name" { 
-  description = "The name of the Azure storage service"
+variable "storage_name" {
+  description = "The name of the Azure storage service. Must be unique on Azure"
   default = "kidsakoderstorage"
 }
 
@@ -15,29 +15,29 @@ variable "storage_type" {
 
 
 ### Network
-variable "network_name" { 
+variable "network_name" {
   description = "The name of the Azure virtual network"
   default = "network"
 }
 
-variable "public_subnet_name" { 
+variable "public_subnet_name" {
   description = "The name of public subnet in the virtual network"
   default = "public"
 }
 
-variable "private_subnet_name" { 
+variable "private_subnet_name" {
   description = "The name of private subnet in the virtual network"
-  default = "private" 
+  default = "private"
 }
 
 
 ### Security groups and rules
-variable "public_security_group" { 
+variable "public_security_group" {
   description = "The name of public security group"
-  default = "public" 
+  default = "public"
 }
 
-variable "private_security_group" { 
+variable "private_security_group" {
   description = "The name of private security group"
-  default = "private" 
+  default = "private"
 }

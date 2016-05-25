@@ -19,6 +19,7 @@ minecraft:
     java_log: /opt/minecraft/log/hs_err_pid%p.log
 
 
+  # The pillar data for the different versions of Forge is located in the forge directory
   forge:
     # The name of the executable Forge server jar
     # We symlink the actual jar file to this as it has a lot of versioning info
