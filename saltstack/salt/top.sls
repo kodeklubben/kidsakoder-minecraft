@@ -12,7 +12,8 @@ base:
   'master':
     - cloud
     - webserver
-    - celery
+    - webserver.celery
+    - webserver.apache
     - overviewer
 
   # Minecraft server states determined by grain.
