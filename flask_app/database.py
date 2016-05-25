@@ -19,6 +19,7 @@ def init(app):
     from flask_sqlalchemy import SQLAlchemy
     global db  # Keep local reference to db
     db = SQLAlchemy(app)
+    # Import models so that they are defined in db context
     return db
 
 
