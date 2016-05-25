@@ -10,6 +10,7 @@ import StringIO
 import urllib2
 from urlparse import urlparse
 import os
+import tempfile
 from zipfile import ZipFile
 from flask_security import current_user
 from flask import send_file, jsonify, safe_join, escape, Markup
@@ -47,7 +48,7 @@ def search_for_file(path, filename):
     :param filename: File to look for
     :return: Absolute folder path or False if not found
     """
-    for root, dirs, files in os.walk(path): 
+    for root, dirs, files in os.walk(path):
         for file in files:
             if file == filename:
                 return root
@@ -121,46 +122,48 @@ def save_world(file_data=None, description=""):
 
 
 def generate_world_preview(world_ref):
+    """
+    Generate a preview from a Minecraft world zip file
+
+    :param world_ref: File name of the zip file
+    :return: Celery AsyncResult
+    """
     from tasks import generate_preview_task
-    # create file path
+    # Create file path
     zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
-    # open file:
+    # Open file:
     # TODO Use proper temp folder: tempfile.gettempdir()
-    unzip_path = safe_join_all(app.root_path, 'tmp', world_ref)
-    print('unzipping')
+    temp_dir = tempfile.gettempdir()
+    unzip_path = safe_join_all(temp_dir, world_ref)
     with ZipFile(zip_path, 'r') as world_zip:
         # unzip file
         world_zip.extractall(unzip_path)
 
-    print('finding')
-    # Find minecraft world inside unzipped directory.
-    # TODO locate level.dat file. For user uploaded worlds file structure probably does not contain entire saves dir
-
+    # Locate minecraft world inside unzipped directory.
     world_path = search_for_file(unzip_path, 'level.dat')
-    # path to put preview
+    # Path to put preview
     preview_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], world_ref)
-
+    # Texture path
     texturepack_path = safe_join_all(app.root_path, app.config['TEXTUREPACK_PATH'])
-
-    config_path = safe_join_all(app.root_path, 'tmp', 'overviewer_config_%s' % world_ref)
-
-    # Create config file
+    # Create overviewer config file
+    config_path = safe_join_all(temp_dir, 'overviewer_config_%s' % world_ref)
     with open(config_path, 'w+') as cfile:
         cfile.writelines(
             ['worlds["world"] = "%s" \n \n' % world_path,
-            'renders["normalrender"] = { \n',
-            '   "world": "world", \n',
-            '   "title": "Kart over din Minecraft-verden", \n',
-            '} \n \n', 'outputdir = "%s" \n' % preview_path,
-            'texturepath = "%s" \n' % texturepack_path,
-            'defaultzoom = 12 \n'
-            ])
+             'renders["normalrender"] = { \n',
+             '  "world": "world", \n',
+             '  "title": "Kart over din Minecraft-verden", \n',
+             '} \n \n', 'outputdir = "%s" \n' % preview_path,
+             'texturepath = "%s" \n' % texturepack_path,
+             'defaultzoom = 12 \n'
+             ])
     # Call overviewer to generate
-    result = generate_preview_task.apply_async((config_path,), task_id=world_ref) # Note: singleton arg tuple needs a trailing comma
+    # Note: singleton arg tuple needs a trailing comma
+    result = generate_preview_task.apply_async((config_path,), task_id=world_ref)
     # subprocess.call(["overviewer.py", "--config=%s" % config_path])
     # TODO Clean up tmp files
 
-    return '<p> Verden generert tror jeg </p>'
+    return result
 
 
 def export_calendar_for_user(cal_user_id=None, filename="export"):
@@ -203,6 +206,11 @@ def delete_world_file(file_ref):
 
 
 def delete_world_preview(file_ref):
+    """
+    Delete a generated world preview
+    :param file_ref: File name of the preview to delete
+    :return: Result
+    """
     from tasks import delete_preview_task
     dir_path = safe_join_all(app.root_path, app.config['PREVIEW_STORAGE_PATH'], file_ref)
     result = delete_preview_task.delay(dir_path)
