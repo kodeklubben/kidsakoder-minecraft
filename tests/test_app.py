@@ -4,9 +4,8 @@ Unittests with test client
 # -*- coding: utf-8 -*-
 import pytest
 from flask_app import app, user_datastore
-from flask_app.models import User, World
+from flask_app.models import User, World, Meeting
 from flask_app.database import db, create_db
-from flask_security import current_user
 from celery import current_app
 from datetime import datetime, timedelta
 
@@ -166,6 +165,9 @@ def test_add_meeting(client):
     rv = add_testmeeting(client, title, world_id, start_time, end_time)
     assert 'Nytt møte lagt til' in rv.data
     assert 'Testmeeting-1' in rv.data
+
+    # Make sure we find the meeting in the database
+    assert 'Testmeeting-1' in Meeting.get_meeting_by_id(1).title
 
     # Make sure we can not add meeting with non-existing world
     title = 'Testmeeting-2'
