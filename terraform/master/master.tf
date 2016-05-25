@@ -39,6 +39,14 @@ resource "azure_instance" "master" {
     private_port = 22
   }
 
+  # Enable HTTP endpoint
+  endpoint {
+    name = "HTTP"
+    protocol = "tcp"
+    public_port = 80
+    private_port = 80
+  }
+
   # Enable endpoints/ports for Salt
   endpoint {
     name = "SALT1"

@@ -1,0 +1,20 @@
+{% set flask = pillar['flask'] %}
+
+<VirtualHost *:80>
+    # ServerName localhost
+    ServerAdmin webmaster@localhost
+    # DocumentRoot /vagrant
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    WSGIDaemonProcess {{ flask.app_name }} user={{ flask.user }} group={{ flask.group }} threads=5
+    WSGIScriptAlias / {{ flask.proj_dir }}/{{ flask.wsgi_name }}
+    <Directory {{ flask.proj_dir }}>
+        WSGIProcessGroup {{ flask.app_name }}
+        WSGIApplicationGroup %{GLOBAL}
+        Require all granted
+        Options -Indexes
+    </Directory>
+
+</VirtualHost>
