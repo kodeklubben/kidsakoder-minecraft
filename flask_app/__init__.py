@@ -8,7 +8,6 @@ The flask application package initialization
 
 from flask import Flask
 import logging
-import os
 
 
 # Create Flask app context
@@ -47,7 +46,21 @@ def config_loader():
         pre_logger.append((logging.DEBUG, 'Development config not found'))
 
 
-def main():
+def init_security():
+    """ Initialize Flask-Security """
+    # Initialize database first
+    import database
+    db = database.init(app)
+    import models
+    # Then Flask-Security
+    from flask_security import Security, SQLAlchemyUserDatastore
+    global user_datastore
+    user_datastore = SQLAlchemyUserDatastore(db, models.User, models.Role)
+    security = Security(app, user_datastore)
+    return security
+
+
+def init_flask_app():
     """ Main app init function """
 
     # Initialize file logging
@@ -87,18 +100,9 @@ def main():
     try_locale(our_locales)
     app.logger.debug('Preferred locale encoding: ' + locale.getpreferredencoding())
 
-    # Initialize database
-    #####################
-    import database
-    db = database.init(app)
-    import models
-
-    # Initialize Flask-Security
-    ###########################
-    from flask_security import Security, SQLAlchemyUserDatastore
-    global user_datastore
-    user_datastore = SQLAlchemyUserDatastore(db, models.User, models.Role)
-    security = Security(app, user_datastore)
+    # Initialize database and Flask_Security
+    ########################################
+    init_security()
 
     # Initialize Flask-Admin
     ########################
@@ -117,13 +121,8 @@ def main():
     #########
     import flask_app.views
 
+
+# Load configuration
 config_loader()
-# If files don't exist, assume setup_app.py has not been run
-config_path = os.path.join(app.root_path, 'config')
-if (os.path.isfile(os.path.join(config_path, 'secret_key.py')) and
-        os.path.isfile(os.path.join(config_path, 'secret_config.py'))):
-    main()
-else:
-    print '#########################################'
-    print '# Did you forget to run setup_app.py??? #'
-    print '#########################################'
+
+# init_flask_app() should be run from entrypoint

@@ -36,7 +36,10 @@ def copy_secret_config():
 
 def initialize_db():
     """ Initializes a new database """
+    from flask_app import init_security
     from flask_app.database import create_db
+    # Initialize database context
+    init_security()
     create_db()
 
 

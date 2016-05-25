@@ -1,5 +1,8 @@
-import pytest
+"""
+Unittests with test client
+"""
 
+import pytest
 from flask_app import app, user_datastore
 from flask_app.models import User
 from flask_app.database import db, create_db
@@ -27,6 +30,7 @@ def client(request):
 
     return client
 
+
 def login(client, email, password):
     """ Login to the test client """
     return client.post('/login', data=dict(
@@ -38,7 +42,6 @@ def login(client, email, password):
 def logout(client):
     """ Logout of the test client """
     return client.get('/logout', follow_redirects=True)
-
 
 
 def test_front_page(client):
@@ -98,3 +101,16 @@ def test_admin_access(client):
     assert rv.status == '200 OK'
     rv = client.get('/admin/world', follow_redirects=True)
     assert rv.status == '200 OK'
+
+
+def test_fme_url(client):
+    """ Test that it does not accept invalid url """
+    import json
+    login(client, EMAIL, PASSWORD)
+    url = 'http://www.skummel.no/farlig.exe'
+    rv = client.post('/mc_world_url', data=dict(
+        url=url,
+        description=''
+    ))
+    result_json = json.loads(rv.data)
+    assert result_json['message'] == u'Ugyldig <a href="' + url + u'">URL</a>'
