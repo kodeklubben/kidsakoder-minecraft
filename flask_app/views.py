@@ -99,6 +99,11 @@ def home():
         else:  # Form not valid
             flash(u'Feil i skjema!')
             set_tab = 1
+            try:  # Insert world info
+                world_id = int(form.world_id.data)
+                world = World.get_by_id(world_id)
+            except ValueError:
+                pass
 
     else:  # If not POST
         # Serve blank form
