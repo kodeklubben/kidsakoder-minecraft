@@ -133,9 +133,8 @@ class Meeting(db.Model):
             # Is naive. Assume app config timezone
             tz = pytz.timezone(app.config['TIMEZONE'])
             value = tz.localize(value, is_dst=None)
-            return value.astimezone(pytz.utc)
-        else:
-            return value
+
+        return value.astimezone(pytz.utc)
 
     @property
     def start_time(self):

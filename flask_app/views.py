@@ -82,8 +82,8 @@ def home():
                     meeting.store()
 
                     # Celery stuff
-                    tasks.meeting_test.apply_async()
-                    # tasks.meeting_test.apply_async(eta=meeting.start_time, expires=meeting.end_time)
+                    # tasks.meeting_test.apply_async()
+                    tasks.meeting_test.apply_async(eta=meeting.start_time, expires=meeting.end_time)
 
                     flash(u'Nytt møte lagt til')
                     return redirect(url_for('home'))
