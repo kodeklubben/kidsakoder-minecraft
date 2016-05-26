@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 """
 Unittests with test client
 """
-# -*- coding: utf-8 -*-
 import pytest
 from flask_app import app, user_datastore
 from flask_app.models import User, World, Meeting
