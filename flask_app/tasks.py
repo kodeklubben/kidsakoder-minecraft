@@ -6,6 +6,7 @@ Celery tasks controller
 """
 
 from celery import Celery
+from celery.utils.log import get_task_logger
 from flask_app import app
 import subprocess
 import shutil
@@ -19,8 +20,23 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s"
 import salt.client
 
 
-celery = Celery('tasks', broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
+def make_celery(app):
+    """ Create celery instance that runs tasks in an app context """
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+
+    class ContextTask(TaskBase):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
+
+celery = make_celery(app)
+celery_logger = get_task_logger(__name__)
 
 
 @celery.task(name='tasks.generate_preview_task', bind=True)
@@ -36,12 +52,12 @@ def generate_preview_task(self, config_path, unzip_path):
         # Remove config file
         os.remove(config_path)
     except OSError:
-        app.logger.warning('Could not remove: ' + config_path)
+        celery_logger.warning('Could not remove: ' + config_path)
     try:
         # Remove unzip directory
         shutil.rmtree(unzip_path)
     except OSError:
-        app.logger.warning('Could not remove: ' + unzip_path)
+        celery_logger.warning('Could not remove: ' + unzip_path)
     
     return "Preview complete."
 
@@ -53,7 +69,7 @@ def delete_preview_task(dir_path):
         shutil.rmtree(dir_path)
         return True
     except OSError:
-        app.logger.warning('Could not remove: ' + dir_path)
+        celery_logger.warning('Could not remove: ' + dir_path)
         return False
 
 
