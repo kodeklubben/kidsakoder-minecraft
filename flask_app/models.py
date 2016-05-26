@@ -8,6 +8,8 @@ Database models
 
 from flask_security import UserMixin, RoleMixin
 from database import db
+from flask_app import app
+import pytz, datetime
 
 
 # Table definition for many-many relation between role and user
@@ -69,8 +71,8 @@ class Meeting(db.Model):
     title = db.Column(db.String(50), nullable=False)
     # Start and end time for meeting
     # This should govern the automatic startup and shutdown of Minecraft servers
-    start_time = db.Column(db.DateTime)  # YYYY-MM-DD HH:MM:SS.SSS
-    end_time = db.Column(db.DateTime)
+    _start_time = db.Column('start_time', db.DateTime)  # YYYY-MM-DD HH:MM:SS.SSS
+    _end_time = db.Column('end_time', db.DateTime)
     # The number of Minecraft server instances for meeting
     participant_count = db.Column(db.Integer)
     # The Minecraft world to use for meetings Minecraft servers
@@ -118,6 +120,54 @@ class Meeting(db.Model):
             # If value is not an int, set to None so that we can check later
             int_val = None
         self._world_id = int_val
+
+    @staticmethod
+    def _datetime_helper(value):
+        """
+        Convert datetime from naive to application set timezone
+
+        :param value: datetime object
+        :return: UTC datetime object
+        """
+        if value.tzinfo is None or value.tzinfo.utcoffset(value) is None:
+            # Is naive. Assume app config timezone
+            tz = pytz.timezone(app.config['TIMEZONE'])
+            value = tz.localize(value, is_dst=None)
+            return value.astimezone(pytz.utc)
+        else:
+            return value
+
+    @property
+    def start_time(self):
+        """
+        Meeting start time
+        :return: datetime object
+        """
+        return self._start_time
+
+    @start_time.setter
+    def start_time(self, value):
+        """
+        Set meeting start time
+        :param value: datetime object
+        """
+        self._start_time = Meeting._datetime_helper(value)
+
+    @property
+    def end_time(self):
+        """
+        Meeting end time
+        :return: datetime object
+        """
+        return self._end_time
+
+    @end_time.setter
+    def end_time(self, value):
+        """
+        Set meeting end time
+        :param value: datetime object
+        """
+        self._end_time = Meeting._datetime_helper(value)
 
     def store(self):
         """ Store this meeting to the database """
