@@ -1,33 +1,36 @@
-# Add user
+# Add user for connecting with public SSH key
 add-user:
   user.present:
     - name: {{ pillar['user']['name'] }}
     - shell: {{ pillar['user']['shell'] }}
-    - password: {{ pillar['user']['password'] }}
+    - empty_password: True
     - groups:
-      - {{ pillar['user']['group'] }}
-
-add-user-ssh-key:
+      - sudo
+  # Put the public SSH key in the authorized keys file
   ssh_auth.present:
     - user: {{ pillar['user']['name'] }}
-    - names:
-      - {{ pillar['user']['ssh-key'] }}
+    - source: salt://common/files/kidsakoder.pub
+  # Allow sudo without password
+  file.managed:
+    - name: /etc/sudoers.d/kidsakoder
+    - contents:
+      - {{ pillar['user']['name'] }} ALL=(ALL) NOPASSWD:ALL
 
 
-# SSHD Configuration
-sshd-allowusers:
+# SSH daemon configuration to limit access
+sshd-config:
   file.managed:
     - name: /etc/ssh/sshd_config
     - source: salt://common/files/sshd_config.j2
     - template: jinja
 
-restart-sshd:
+sshd-service:
   service.running:
     - name: ssh
     - enable: True
     - restart: True
-    - onchanges:
-      - file: sshd-allowusers
+    - watch:
+      - file: sshd-config
 
 
 # Make sure Salt Bootstrap user is not enabled.

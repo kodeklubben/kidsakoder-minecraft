@@ -5,7 +5,6 @@ variable "network_name" {}
 variable "subnet_name" {}
 variable "vm_image" {}
 variable "vm_size" {}
-variable "domain" {}
 variable "ssh_password" {}
 
 variable "ssh_username" {

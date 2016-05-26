@@ -14,10 +14,10 @@ cp -r /tmp/saltstack/salt/ /srv/salt/
 # Copy Salt Reactors
 cp -r /tmp/saltstack/reactor/ /srv/reactor/
 
-# Download SaltStack bootstrap script
+# Download Salt bootstrap script
 wget -O /tmp/bootstrap-salt.sh https://bootstrap.saltstack.com
-# Install SaltStack as master
-sh /tmp/bootstrap-salt.sh -M -L -P stable
+# Install Salt as master
+sh /tmp/bootstrap-salt.sh -M -L -P stable 2015.8
 
 # Clean up tmp
 rm -r /tmp/saltstack

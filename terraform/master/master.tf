@@ -1,6 +1,6 @@
 # Hosted service required in order to create virtual machine
 resource "azure_hosted_service" "master" {
-  name = "kidsakoder-hs-master"
+  name = "kidsakoder-master"
   location = "${var.location}"
   ephemeral_contents = false
 }
