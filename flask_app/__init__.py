@@ -39,11 +39,12 @@ def config_loader():
     except IOError:
         pre_logger.append((logging.WARNING, 'Secret config file not found. Skipping'))
 
-    try:  # Load development configuration overrides
-        app.config.from_pyfile('config/development.py')
-        pre_logger.append((logging.WARNING, 'Loading development config'))
-    except IOError:
-        pre_logger.append((logging.DEBUG, 'Development config not found'))
+    if app.testing or True:
+        try:  # Load development configuration overrides
+            app.config.from_pyfile('config/development.py')
+            pre_logger.append((logging.WARNING, 'Loading development config'))
+        except IOError:
+            pre_logger.append((logging.DEBUG, 'Development config not found'))
 
 
 def init_security():
