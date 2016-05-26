@@ -28,3 +28,4 @@ touch-flask-log:
     - name: {{ flask.log_dir }}/flask_app.log
     - user: {{ flask.user }}
     - group: {{ flask.group }}
+    - mode: 664
