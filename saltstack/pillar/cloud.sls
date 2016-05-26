@@ -8,6 +8,7 @@ cloud:
     small:
       provider: azure-config
       size: Standard_DS1_v2
+      script_args: stable 2015.8
       grains:
         role: minecraft
         minecraft_size: small
@@ -18,6 +19,7 @@ cloud:
     medium:
       provider: azure-config
       size: Standard_DS2_v2
+      script_args: stable 2015.8
       grains:
         role: minecraft
         minecraft_size: medium
@@ -69,7 +71,7 @@ cloud:
       ssh_username: salt-bootstrap
       ssh_password: BootstrapPassword123
 
-      # Cleanup disk, vhd and service when deleting minions
+      # Cleanup Azure disk, vhd and service when deleting minions
       cleanup_disks: True
       cleanup_vhds: True
       cleanup_services: True

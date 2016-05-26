@@ -33,3 +33,8 @@ module "master" {
   # Use random password for bootstrapping/provisioning the server with Terraform
   ssh_password = "${uuid()}"
 }
+
+# Display the address of the master server
+output "master_server_address" {
+  value = "${module.master.hosted_service_url}"
+}

@@ -3,9 +3,12 @@
 
 Vagrant.configure(2) do |config|
 
-  # The Salt master server
+  # MASTER SERVER
   config.vm.define "master" do |master|
+    # Define the hostname of the machine
     master.vm.hostname = "master"
+
+    # Use Ubuntus box
     master.vm.box = "ubuntu/trusty64"
 
     # Network configuration
@@ -26,21 +29,39 @@ Vagrant.configure(2) do |config|
 
     # Salt provisioning
     master.vm.provision "salt" do |salt|
+      # Salt install configuration
       salt.install_master = true
+      # Use stable Salt version 2015.8
       salt.install_type = "stable"
+      salt.install_args = "2015.8"
+
+      # Salt master configuration
       salt.master_config = "saltstack/etc/master.conf"
+
+      # Grain that sets special settings for Vagrant development.
+      # See grains file and saltstack/salt/top.sls for more info.
+      salt.grains_config = "saltstack/vagrant/grains/master"
+
+      # Minion config
       salt.minion_config = "saltstack/etc/master_minion.conf"
+
+      # Define keys for master and mc machines
+      salt.master_key = "saltstack/vagrant/keys/master.pem"
+      salt.master_pub = "saltstack/vagrant/keys/master.pub"
+      salt.minion_key = "saltstack/vagrant/keys/master.pem"
+      salt.minion_pub = "saltstack/vagrant/keys/master.pub"
       salt.seed_master = {
         master: "saltstack/vagrant/keys/master.pub",
         mc: "saltstack/vagrant/keys/minion.pub"
       }
-      salt.minion_key = "saltstack/vagrant/keys/master.pem"
-      salt.minion_pub = "saltstack/vagrant/keys/master.pub"
+
+      # Apply states on start
       salt.run_highstate = true
       salt.colorize = true
 
-      # For debugging
+      # Enable for debugging
       # salt.verbose = true
+      # salt.log_level = "warning"
     end
 
     # Virtualbox settings
@@ -55,9 +76,12 @@ Vagrant.configure(2) do |config|
   end
 
 
-  # The Minecraft server
+  # MINECRAFT SERVER
   config.vm.define "mc" do |minion|
+    # Define the hostname of the machine
     minion.vm.hostname = "mc"
+
+    # Use Ubuntus box
     minion.vm.box = "ubuntu/trusty64"
 
     # Network configuration
@@ -65,25 +89,30 @@ Vagrant.configure(2) do |config|
     # Forward port 25565 for Minecraft
     minion.vm.network "forwarded_port", guest: 25565, host: 25565
 
-    # Salt Grains
-    # This creates a static grains file when running vagrant up or vagrant provision
-    # which defines which versions of Forge and ComputerCraft should be installed.
-    # The size used (very small) defines how much memory the Java process uses.
-    minion.vm.provision "shell", run: "always", inline: <<-SHELL
-      mkdir /etc/salt/
-      echo 'role: minecraft' > /etc/salt/grains
-      echo 'forge_version: 189' >> /etc/salt/grains
-      echo 'computercraft_version: 179' >> /etc/salt/grains
-      echo 'size: verysmall' >> /etc/salt/grains
-    SHELL
-
     # Salt provisioning
     minion.vm.provision "salt" do |salt|
+      # Use stable Salt version 2015.8
+      salt.install_type = "stable"
+      salt.install_args = "2015.8"
+
+      # Grain that sets special settings for Minecraft server.
+      # See grains file and saltstack/salt/top.sls for more info.
+      salt.grains_config = "saltstack/vagrant/grains/mc"
+
+      # Minion config
       salt.minion_config = "saltstack/vagrant/minion.conf"
+
+      # Minion keys
       salt.minion_key = "saltstack/vagrant/keys/minion.pem"
       salt.minion_pub = "saltstack/vagrant/keys/minion.pub"
+
+      # Apply states on start
       salt.run_highstate = true
       salt.colorize = true
+
+      # Enable for debugging
+      # salt.verbose = true
+      # salt.log_level = "warning"
     end
 
     # Virtualbox settings
@@ -95,5 +124,4 @@ Vagrant.configure(2) do |config|
     minion.vm.post_up_message = "The Minecraft Forge server is up and running.\n" \
                                 "Connect to localhost:25565 to play.\n"
   end
-
 end

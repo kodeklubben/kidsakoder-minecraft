@@ -1,4 +1,8 @@
 # Make sure shell scripts are LF
 *.sh text eol=lf
 
+# Make sure all files with Jinja templates are LF
 *.j2 text eol=lf
+
+# Make sure SSH pubkeys are LF
+*.pub text eol=lf

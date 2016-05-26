@@ -13,14 +13,6 @@ flask-user:
     - name: {{ flask.user }}
     - shell: /bin/bash
 
-# VAGRANT SPECIFIC
-# Adds vagrant user to flask group so we can run Flask app from vagrant user
-add-vagrant-user-to-flask:
-  group.present:
-    - name: {{ flask.group }}
-    - addusers:
-      - vagrant
-
 # Create log directory for Flask
 create-log-dir:
   file.directory:
@@ -30,9 +22,10 @@ create-log-dir:
     - mode: 775
 
 # Touch flask log file so it has group permissions
-# NOTE: This is a hack
+# NOTE: This is a hack so we can run Flask app as vagrant user
 touch-flask-log:
   file.managed:
     - name: {{ flask.log_dir }}/flask_app.log
     - user: {{ flask.user }}
     - group: {{ flask.group }}
+    - mode: 664

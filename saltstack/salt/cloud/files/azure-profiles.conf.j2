@@ -4,6 +4,7 @@
 {{ profile }}:
   provider: {{ args['provider'] }}
   size: {{ args['size'] }}
+  script_args: {{ args['script_args'] }}
   grains:
     role: {{ args['grains']['role'] }}
     minecraft_size: {{ args['grains']['minecraft_size'] }}

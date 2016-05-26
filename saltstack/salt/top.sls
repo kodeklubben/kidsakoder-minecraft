@@ -16,7 +16,13 @@ base:
     - webserver.apache
     - overviewer
 
-  # Minecraft server states determined by grain.
+  # Minecraft server states determined by grain
   'role:minecraft':
     - match: grain
     - minecraft
+
+  # DEVELOPMENT ONLY
+  # This allows us to install some extra devtools when running in Vagrant
+  'role:development':
+    - match: grain
+    - development
