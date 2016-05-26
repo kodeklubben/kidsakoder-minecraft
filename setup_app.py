@@ -40,6 +40,7 @@ def initialize_db():
     from flask_app.database import create_db
     # Initialize database context
     init_security()
+    # Drop and create tables
     create_db()
 
 

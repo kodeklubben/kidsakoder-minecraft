@@ -11,6 +11,7 @@ import urllib2
 from urlparse import urlparse
 import os
 import tempfile
+import shutil
 from zipfile import ZipFile
 from flask_security import current_user
 from flask import send_file, jsonify, safe_join, escape, Markup
@@ -104,18 +105,50 @@ def save_world(file_data=None, description=""):
     world = World(user_id=current_user.id)
     # Construct file name with world ID and user ID for reference. End with arbitrary string and zip extension
     # Example: 7_3_mc_world.zip
-    file_name = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world.zip'
-    file_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_name)
+    file_ref_noext = str(world.id) + '_' + str(current_user.id) + '_' + 'mc_world'
+    file_ref = file_ref_noext + '.zip'
+    # Full path to save zip. Include filename, but not file extension
+    if app.config['ABSOLUTE_WORLD_UPLOAD_PATH']:
+        save_path = safe_join_all(app.config['ABSOLUTE_WORLD_UPLOAD_PATH'], file_ref_noext)
+    else:
+        save_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], file_ref_noext)
+    temp_dir = tempfile.gettempdir()
+    # Temporary zip file
+    zip_path = safe_join_all(temp_dir, file_ref)
+    # Temporary unzip directory
+    unzip_path = safe_join_all(temp_dir, file_ref_noext)
 
     # Check if file_data comes from a form submission
     if isinstance(file_data, FileStorage):
-        file_data.save(file_path)
+        file_data.save(zip_path)
     else:  # Else assume file_data has read() function
-        with open(file_path, 'wb') as world_file:
-            world_file.write(file_data.read())
+        with open(zip_path, 'wb') as world_zip:
+            world_zip.write(file_data.read())
+
+    # Rezip
+    #######
+    with ZipFile(zip_path, 'r') as world_zip:
+        # unzip file
+        world_zip.extractall(unzip_path)
+    # Locate minecraft world inside unzipped directory
+    level_path = search_for_file(unzip_path, 'level.dat')
+    # Make zip file
+    shutil.make_archive(save_path, 'zip', level_path)
+
+    # Clean up temp files
+    try:
+        # Remove zip file
+        os.remove(zip_path)
+    except OSError:
+        pass
+    try:
+        # Remove unzip directory
+        shutil.rmtree(unzip_path)
+    except OSError:
+        pass
 
     # Save world details to database
-    world.file_ref = file_name
+    world.file_ref = file_ref
     world.description = description
     world.store()
     return world
@@ -130,9 +163,11 @@ def generate_world_preview(world_ref):
     """
     from tasks import generate_preview_task
     # Create file path
-    zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
+    if app.config['ABSOLUTE_WORLD_UPLOAD_PATH']:
+        zip_path = safe_join_all(app.config['ABSOLUTE_WORLD_UPLOAD_PATH'], world_ref)
+    else:
+        zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
     # Open file:
-    # TODO Use proper temp folder: tempfile.gettempdir()
     temp_dir = tempfile.gettempdir()
     unzip_path = safe_join_all(temp_dir, world_ref)
     with ZipFile(zip_path, 'r') as world_zip:

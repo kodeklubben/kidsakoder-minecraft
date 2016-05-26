@@ -12,6 +12,9 @@ APP_LOG_FILE = '/var/log/flask/flask_app.log'
 # SESSION_COOKIE_SECURE = True # Should be set when using https
 CSRF_ENABLED = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+# Set if absolute upload path is needed.
+# Else set to None, False or empty string
+ABSOLUTE_WORLD_UPLOAD_PATH = None
 WORLD_UPLOAD_PATH = 'world_storage'
 PREVIEW_STORAGE_PATH = 'static/preview_storage'
 TEXTUREPACK_PATH = 'static/texturepack'
@@ -39,6 +42,8 @@ SALT_CLOUD_PASSWORD = 'salt-cloud-flask'
 CELERY_BROKER_URL = 'amqp://guest@master//'
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_TRACK_STARTED = True
+# Disable rate limits if they are not used
+CELERY_DISABLE_RATE_LIMITS = True
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
