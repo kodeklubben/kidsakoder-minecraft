@@ -17,6 +17,7 @@ import sys
 import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
 import salt.client
+import salt.config
 
 
 celery = Celery('tasks', broker=app.config['CELERY_BROKER_URL'])
@@ -42,7 +43,7 @@ def generate_preview_task(self, config_path, unzip_path):
         shutil.rmtree(unzip_path)
     except OSError:
         app.logger.warning('Could not remove: ' + unzip_path)
-    
+
     return "Preview complete."
 
 
@@ -70,23 +71,29 @@ def meeting_test():
 # See: https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.cloud.html for more info on the Cloud module
 
 
-def _async(fun, arg=[]):
+def _async(fun, arg=[], tgt=None):
     """
     Helper method for asynchronous Salt calls
     """
+    if not tgt:
+        tgt = 'master'
+
     client = salt.client.LocalClient()
-    client.cmd_async(tgt='master', fun=fun, arg=arg,
+    client.cmd_async(tgt=tgt, fun=fun, arg=arg,
                      username=app.config['SALT_CLOUD_USERNAME'],
                      password=app.config['SALT_CLOUD_PASSWORD'],
                      eauth='pam')
 
 
-def _sync(fun, arg=[]):
+def _sync(fun, arg=[], tgt=None):
     """
     Helper method for synchronous Salt calls
     """
+    if not tgt:
+        tgt = 'master'
+
     client = salt.client.LocalClient()
-    return client.cmd(tgt='master', fun=fun, arg=arg,
+    return client.cmd(tgt=tgt, fun=fun, arg=arg,
                       username=app.config['SALT_CLOUD_USERNAME'],
                       password=app.config['SALT_CLOUD_PASSWORD'],
                       eauth='pam')
@@ -109,23 +116,20 @@ def create_machines(hostnames, profile):
     Creates a number of virtual machines from a list of hostnames.
     Note: Hostnames must be unique in Azure.
     Profiles can be found in saltstack/salt/cloud/cloud.profiles/azure.conf
+    or by calling list_profiles()
     """
     # Go through hostnames and create async jobs for each of them
     for host in hostnames:
         _async(fun='cloud.profile', arg=[profile, host])
 
 
-def create_machines_with_options(hostnames, options):
+def list_profiles():
     """
-    WIP
-
-    Creates a number of virtual machines from a list of hostnames.
-    Similar to regular create_machine method, however here you need to
-    specifiy all your own options.
+    Returns a list of the Salt Cloud profiles available.
     """
-    # Go through hostnames and create async jobs for each of them
-    for host in hostnames:
-        _async(fun='cloud.profile', arg=[profile, host])
+    cloud_config = salt.config.cloud_config('/etc/salt/cloud')
+    if cloud_config['profiles']:
+        return cloud_config['profiles'].keys()
 
 
 @celery.task(name='tasks.destroy_machines')
@@ -141,16 +145,11 @@ def list_machines():
     """
     List information about all active machines synchronous.
     """
-    return _sync(fun='cloud.query')
-
-
-@celery.task(name='tasks.start_machines')
-def start_machines(hostnames):
-    """
-    Start virtual machines from a list of hostnames as strings.
-    """
-    for host in hostnames:
-        _action('start', host)
+    query = _sync(fun='cloud.query')
+    try:
+        return query['master']['azure-config']['azure']
+    except KeyError:
+        pass
 
 
 @celery.task(name='tasks.stop_machines')
@@ -159,7 +158,7 @@ def stop_machines(hostnames):
     Stop virtual machines from a list of hostnames as strings.
     """
     for host in hostnames:
-        _action('stop', host)
+        _async(fun='system.halt', tgt=host)
 
 
 @celery.task(name='tasks.restart_machines')
@@ -168,4 +167,4 @@ def restart_machines(hostnames):
     Restart virtual machines from a list of hostnames as strings.
     """
     for host in hostnames:
-        _action('reboot', host)
+        _async(fun='system.reboot', tgt=host)
