@@ -1,0 +1,43 @@
+---
+- hosts: master
+  become: true
+  become_user: root
+
+  tasks:
+  - name: Make sure project directory is there
+    file: path=/opt/kidsakoder-minecraft state=directory
+          owner=flask
+          group=flask
+          mode=0755
+
+  - name: Checkout project from github
+    git: repo=https://github.com/szeestraten/kidsakoder-minecraft.git
+         dest=/opt/kidsakoder-minecraft
+    become: true
+    become_user: flask
+
+  - name: Upload Flask secret files
+    copy: src=../flask_app/config/secret_key.py
+          dest=/opt/kidsakoder-minecraft/flask_app/config/secret_key.py
+          owner=flask
+          group=flask
+
+  - name: Upload Flask secret files
+    copy: src=../flask_app/config/secret_config.py
+          dest=/opt/kidsakoder-minecraft/flask_app/config/secret_config.py
+          owner=flask
+          group=flask
+
+  - name: Apply Salt states
+    command: salt master state.apply
+    notify:
+      - restart celeryd
+      - restart apache2
+
+  handlers:
+  - name: restart celeryd
+    service: name=celeryd state=restarted
+
+  - name: restart apache2
+    service: name=apache2 state=restarted
+    become: root

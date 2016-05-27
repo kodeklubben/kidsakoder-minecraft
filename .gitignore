@@ -125,3 +125,6 @@ preview_storage/
 
 #various
 *.zip
+
+# Ansible retry files
+*.retry

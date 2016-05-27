@@ -18,6 +18,8 @@ Vagrant.configure(2) do |config|
     # Forward port 5000 for debug
     master.vm.network "forwarded_port", guest: 5000, host: 5000
 
+    master.ssh.forward_agent = true
+
     # Sync project directory
     master.vm.synced_folder ".", "/vagrant"
     master.vm.synced_folder ".", "/opt/kidsakoder-minecraft"
