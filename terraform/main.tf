@@ -9,6 +9,9 @@ provider "azure" {
 module "site" {
   source = "./site"
 
+  # We add an prefix to the Azure storage service as it needs to be unique
+  prefix_name = "${var.prefix_name}"
+
   # Set the location of the resources
   location = "${var.location}"
 }
@@ -17,6 +20,9 @@ module "site" {
 # Master module sets up the Salt master server
 module "master" {
   source = "./master"
+
+  # We add an prefix to the Azure hosted
+  prefix_name = "${var.prefix_name}"
 
   # Set the location of the server
   location = "${var.location}"

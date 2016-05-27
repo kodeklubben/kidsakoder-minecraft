@@ -1,3 +1,11 @@
+#################
+### CHANGE ME ###
+variable "prefix_name" {
+  description = "The prefix of the services in the Azure infrastructure."
+  default = "kidsakoder"
+}
+#################
+
 ### AZURE VARIABLES ###
 variable "location" {
   description = "The location of the Azure infrastructure"

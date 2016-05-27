@@ -1,5 +1,6 @@
 # Variables set when using module
 variable "location" {}
+variable "prefix_name" {}
 variable "storage_name" {}
 variable "network_name" {}
 variable "subnet_name" {}
