@@ -3,6 +3,7 @@
 Unittests with test client
 """
 import pytest
+import json
 from flask_app import app, user_datastore
 from flask_app.models import User, World, Meeting
 from flask_app.database import db, create_db
@@ -136,14 +137,19 @@ def test_admin_access(client):
 
 
 def test_fme_url(client):
-    """ Test that it does not accept invalid url """
-    import json
+    """ Make sure the client does not accept non-FME files """
+    # FME is used for temporary storing files resieved from kartverket.
+
     login(client, EMAIL, PASSWORD)
+
+    # Post an invalid url
     url = 'http://www.skummel.no/farlig.exe'
     rv = client.post('/mc_world_url', data=dict(
         url=url,
         description=''
     ))
+
+    # Make sure the result is an error message
     result_json = json.loads(rv.data)
     assert result_json['message'] == u'Ugyldig <a href="' + url + u'">URL</a>'
 
