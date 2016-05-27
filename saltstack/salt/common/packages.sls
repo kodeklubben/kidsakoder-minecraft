@@ -11,5 +11,9 @@ python-pkgs:
 # Install odbc dependencies required for pyodbc
 odbc-dependencies:
   pkg.installed:
-    - names:
-      - unixodbc-dev
+    - name: unixodbc-dev
+
+# ACL package necessary for Ansible deployment
+acl-pkg:
+  pkg.installed:
+    - name: acl

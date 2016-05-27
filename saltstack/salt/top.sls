@@ -26,3 +26,5 @@ base:
   'role:development':
     - match: grain
     - development
+    - development.testing
+    - development.ansible
