@@ -526,9 +526,8 @@ def show_preview(world_id):
         ), 200
 
 
-@app.route('/server_list/<int:meeting_id>')
-@app.route('/tjener_liste/', defaults={'meeting_id': None})
-@app.route('/tjener_liste/<int:meeting_id>')
+@app.route('/tjenerliste/', defaults={'meeting_id': None})
+@app.route('/tjenerliste/<int:meeting_id>')
 @login_required
 def server_list(meeting_id):
     """ Render server list page for specified meeting """
