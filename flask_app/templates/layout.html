@@ -38,12 +38,10 @@
                     </li>
                     <li>
                     {% if current_user.has_role('admin') %}
-                        <a href="{{ url_for('admin.index') }}">
+                        <a href="{{ url_for('admin.index') }}">Admin Panel</a>
                     {% else %}
-                        <a href="{{ url_for('user') }}">
+                        <a href="{{ url_for('user') }}">Innstillinger</a>
                     {% endif %}
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        {{ current_user.email }}</a>
                     </li>
                 </ul>
                 {% endif %}
