@@ -17,11 +17,12 @@ cp -r /tmp/saltstack/reactor/ /srv/reactor/
 # Download Salt bootstrap script
 wget -O /tmp/bootstrap-salt.sh https://bootstrap.saltstack.com
 # Install Salt as master
+# See https://docs.saltstack.com/en/latest/topics/tutorials/salt_bootstrap.html
 sh /tmp/bootstrap-salt.sh -M -L -P stable 2015.8
 
 # Clean up tmp
 rm -r /tmp/saltstack
 rm /tmp/bootstrap-salt.sh
 
-# Run highstate to get config
+# Run the Salt states to finish bootstrap
 salt-call state.apply
