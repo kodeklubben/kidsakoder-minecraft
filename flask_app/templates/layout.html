@@ -38,7 +38,7 @@
                     </li>
                     <li>
                     {% if current_user.has_role('admin') %}
-                        <a href="{{ url_for('admin.index') }}">Admin Panel</a>
+                        <a href="{{ url_for('admin.index') }}">Adminpanel</a>
                     {% else %}
                         <a href="{{ url_for('user') }}">Innstillinger</a>
                     {% endif %}
