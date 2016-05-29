@@ -162,6 +162,9 @@ def generate_world_preview(world_ref):
     :return: Celery AsyncResult
     """
     from tasks import generate_preview_task
+    # World ref without file extension
+    if world_ref.endswith('.zip'):
+        world_ref_noext = world_ref[0:-4]
     # Create file path
     if app.config['ABSOLUTE_WORLD_UPLOAD_PATH']:
         zip_path = safe_join_all(app.config['ABSOLUTE_WORLD_UPLOAD_PATH'], world_ref)
@@ -169,7 +172,7 @@ def generate_world_preview(world_ref):
         zip_path = safe_join_all(app.root_path, app.config['WORLD_UPLOAD_PATH'], world_ref)
     # Open file:
     temp_dir = tempfile.gettempdir()
-    unzip_path = safe_join_all(temp_dir, world_ref)
+    unzip_path = safe_join_all(temp_dir, world_ref_noext)
     with ZipFile(zip_path, 'r') as world_zip:
         # unzip file
         world_zip.extractall(unzip_path)

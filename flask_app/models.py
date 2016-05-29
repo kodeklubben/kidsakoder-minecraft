@@ -9,7 +9,7 @@ Database models
 from flask_security import UserMixin, RoleMixin
 from database import db
 from flask_app import app
-import pytz, datetime
+import pytz
 
 
 # Table definition for many-many relation between role and user
@@ -122,19 +122,37 @@ class Meeting(db.Model):
         self._world_id = int_val
 
     @staticmethod
-    def _datetime_helper(value):
+    def _is_naive_datetime(value):
+        return value.tzinfo is None or value.tzinfo.utcoffset(value) is None
+
+    @staticmethod
+    def _datetime_to_utc(value):
         """
-        Convert datetime from naive to application set timezone
+        Convert naive datetime to application set timezone
+        Then store as UTC in model / database
 
         :param value: datetime object
         :return: UTC datetime object
         """
-        if value.tzinfo is None or value.tzinfo.utcoffset(value) is None:
+        if Meeting._is_naive_datetime(value):
             # Is naive. Assume app config timezone
             tz = pytz.timezone(app.config['TIMEZONE'])
             value = tz.localize(value, is_dst=None)
 
         return value.astimezone(pytz.utc)
+
+    @staticmethod
+    def _datetime_to_local(value):
+        """
+        Read out UTC datetime as application set timezone
+        :param value: datetime object
+        :return: Local datetime object
+        """
+        if Meeting._is_naive_datetime(value):
+            tz = pytz.utc
+            value = tz.localize(value, is_dst=None)
+
+        return value.astimezone(pytz.timezone(app.config['TIMEZONE']))
 
     @property
     def start_time(self):
@@ -142,7 +160,7 @@ class Meeting(db.Model):
         Meeting start time
         :return: datetime object
         """
-        return self._start_time
+        return Meeting._datetime_to_local(self._start_time)
 
     @start_time.setter
     def start_time(self, value):
@@ -150,7 +168,7 @@ class Meeting(db.Model):
         Set meeting start time
         :param value: datetime object
         """
-        self._start_time = Meeting._datetime_helper(value)
+        self._start_time = Meeting._datetime_to_utc(value)
 
     @property
     def end_time(self):
@@ -158,7 +176,7 @@ class Meeting(db.Model):
         Meeting end time
         :return: datetime object
         """
-        return self._end_time
+        return Meeting._datetime_to_local(self._end_time)
 
     @end_time.setter
     def end_time(self, value):
@@ -166,7 +184,7 @@ class Meeting(db.Model):
         Set meeting end time
         :param value: datetime object
         """
-        self._end_time = Meeting._datetime_helper(value)
+        self._end_time = Meeting._datetime_to_utc(value)
 
     def store(self):
         """ Store this meeting to the database """
