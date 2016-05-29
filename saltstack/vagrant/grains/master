@@ -1,1 +1,2 @@
+# The role of this machine. Used for installing some extra things for the Vagrant environment
 role: development

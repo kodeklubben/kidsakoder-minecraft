@@ -21,7 +21,7 @@ base:
     - match: grain
     - minecraft
 
-  # VAGRANT ONLY DEVELOPMENT STATES
+  # Development states used in when in the Vagrant development environment
   'role:development':
     - match: grain
     - development

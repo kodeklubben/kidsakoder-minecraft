@@ -1,3 +1,5 @@
+# Pillar for things related to the Minecraft server
+
 minecraft:
   server:
     # The user and group account that owns and runs Minecraft
@@ -10,10 +12,10 @@ minecraft:
     # The path to the Minecraft mods for Forge
     mods_path: /opt/minecraft/mods
 
-    # Default Minecraft instance memory sizes
-    # These values should be overwritten by the other sizes in the sizes directory
+    # Default Minecraft Java process memory sizes
+    # These values should be overwritten by the other sizes in sizes/ directory
     max_mem: 512M
-    min_mem: 512M
+    min_mem: 256M
 
     # The location of the error logs for the Java process
     java_log: /opt/minecraft/log/hs_err_pid%p.log
@@ -26,7 +28,7 @@ minecraft:
     jar_symlink_name: forge-universal.jar
 
 
-  # Minecraft Server Properties
+  # Minecraft server properties and settings
   # See http://minecraft.gamepedia.com/Server.properties for more information
   properties:
     # The port to be used for Minecraft

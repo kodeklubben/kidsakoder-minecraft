@@ -1,4 +1,11 @@
+# The role of this machine.
 role: minecraft
+
+# Minecraft Forge server version. See /pillar/minecraft/forge/
 forge_version: 189
+
+# ComputerCraft mod version. See /pillar/minecraft/mods/computercraft/
 computercraft_version: 179
+
+# Determines how much memory Minecraft uses. See /pillar/minecraft/sizes/
 size: verysmall

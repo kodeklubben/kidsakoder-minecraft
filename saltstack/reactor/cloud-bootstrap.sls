@@ -9,8 +9,8 @@ add_azure_endpoint:
     - arg:
       - salt-cloud -f add_input_endpoint azure-config service={{ data['name'] }} deployment={{ data['name'] }} role={{ data['name'] }} name=MINECRAFT local_port=25565 port=25565 protocol=tcp
 
-# After the minion has been created by Salt Cloud, it needs to run highstate
-# to pull down its configuration
+# After the minion has been created by Salt Cloud, we need to get the latest
+# configuration from the master by applying the state
 run_highstate:
   cmd.state.apply:
     - tgt: {{ data['name'] }}
