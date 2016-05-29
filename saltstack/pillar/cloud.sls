@@ -26,6 +26,29 @@ cloud:
         forge_version: 189
         computercraft_version: 179
 
+    # EXAMPLE PROFILE
+    # Add more profiles here if necessary
+    example-profile:
+      # Which provider this profile belongs to
+      provider: azure-config
+      # The size of the Azure virtual machine
+      size: Standard_DS1_v2
+      # The Salt bootstrap arguments to be used when Salt Cloud creates a new minion
+      # Here we specify that we wish to install the stable version of 2015.8 release of Salt
+      script_args: stable 2015.8
+      # Specify the Salt grains for all minions created with this profile
+      # These grains will be set in /etc/salt/grains on the minions
+      # See salt/top.sls and pillar/top.sls for how we match on the grain level
+      grains:
+        # This determines the role of the minion and which states apply to it
+        role: minecraft
+        # Determines the how much memory the Minecraft Java process will use
+        minecraft_size: small
+        # Determines the version of Minecraft Forge
+        forge_version: 188
+        # Determines the version of the ComputerCraft
+        computercraft_version: 178
+
 
   # Salt Cloud provider definition
   providers:
@@ -33,20 +56,16 @@ cloud:
       # The name of the Salt Cloud driver to be used.
       driver: azure
 
-      # NOTE: Must be filled out.
-      # The Azure subscription ID to be used. This can be found in the Azure portal
-      # https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade
+      # NOTE: CHANGE ME
+      # The Azure subscription ID to be used.
       subscription_id: 'd8a5f553-66ae-46a1-a5f4-c599cc2bb502'
 
-      # NOTE: Must be filled out.
+      # NOTE: CHANGE ME
       # The name of the storage service in Azure to be used for the VMs.
-      # This much match the name of the storage service defined and created in Terraform.
-      # See terraform/site/variables.tf for more details
       media_link: https://kidsakoderstorage.blob.core.windows.net/vhds
 
       # The name of the location of where to create VMs.
       # This much match the name of the storage service defined and created in Terraform.
-      # See terraform/variables.tf for more details.
       location: 'North Europe'
 
       # Virtual network name
@@ -76,7 +95,7 @@ cloud:
       cleanup_vhds: True
       cleanup_services: True
 
-      # Minion specific settings
+      # Minion configuration for new minions created with this provider
       minion:
         # Set the location of the Salt master
         # FIXME: This is hardcoded to the first IP in the Azure public subnet

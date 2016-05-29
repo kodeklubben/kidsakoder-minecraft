@@ -97,7 +97,7 @@ Vagrant.configure(2) do |config|
       salt.install_type = "stable"
       salt.install_args = "2015.8"
 
-      # Grain that sets special settings for Minecraft server.
+      # Grain that defines this to be a Minecraft server.
       # See grains file and saltstack/salt/top.sls for more info.
       salt.grains_config = "saltstack/vagrant/grains/mc"
 
@@ -124,6 +124,7 @@ Vagrant.configure(2) do |config|
 
     # Post message
     minion.vm.post_up_message = "The Minecraft Forge server is up and running.\n" \
-                                "Connect to localhost:25565 to play.\n"
+                                "See saltstack/vagrant/grains/mc for which versions of Forge and ComputerCraft.\n" \
+                                "Connect to localhost:25565 in Minecraft to play.\n"
   end
 end

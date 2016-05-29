@@ -2,7 +2,7 @@
 # https://docs.saltstack.com/en/latest/ref/states/top.html
 
 base:
-  # Common packages and users for all minions
+  # Common states for all minions
   '*':
     - common.packages
     - common.locale
@@ -16,15 +16,13 @@ base:
     - webserver.apache
     - overviewer
 
-  # Minecraft server states determined by grain
+  # Minecraft server states determined by the role grain
   'role:minecraft':
     - match: grain
     - minecraft
 
-  # DEVELOPMENT ONLY
-  # This allows us to install some extra devtools when running in Vagrant
+  # Development states used in when in the Vagrant development environment
   'role:development':
     - match: grain
     - development
     - development.testing
-    - development.ansible

@@ -1,12 +1,14 @@
-# Hosted service required in order to create virtual machine
+### Hosted service
+# In order to create the instance below, we need an hosted service.
 resource "azure_hosted_service" "master" {
   name = "${var.prefix_name}-master"
   location = "${var.location}"
   ephemeral_contents = false
+  description = "Hosted service for the master server instance"
 }
 
 
-# Virtual machine instance for master server
+### Instance
 resource "azure_instance" "master" {
   # Hostname of instance
   name = "master"
@@ -15,18 +17,20 @@ resource "azure_instance" "master" {
   image = "${var.vm_image}"
   size = "${var.vm_size}"
 
-  # Azure resources
+  # The hosted service that this instance belongs to
   hosted_service_name = "${azure_hosted_service.master.name}"
-  storage_service_name = "${var.storage_name}"
+
+  # Azure resources the site module and main.tf
   location = "${var.location}"
+  storage_service_name = "${var.storage_name}"
   virtual_network = "${var.network_name}"
   subnet = "${var.subnet_name}"
 
-  # Create account with the following credentials
+  # Create account with the credentials from main.tf
   username = "${var.ssh_username}"
   password = "${var.ssh_password}"
 
-  # Ignore password field as Terraform detects is a change
+  # Ignore password field change, as we generate a new one everytime in main.tf
   lifecycle {
     ignore_changes = ["password"]
   }
@@ -47,7 +51,7 @@ resource "azure_instance" "master" {
     private_port = 80
   }
 
-  # Enable endpoints/ports for Salt
+  # Enable endpoints for Salt
   endpoint {
     name = "SALT1"
     protocol = "tcp"
@@ -77,12 +81,6 @@ resource "azure_instance" "master" {
   provisioner "file" {
     source = "${path.module}/bootstrap.sh"
     destination = "/tmp/bootstrap.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo '${azure_instance.master.ip_address}' > /tmp/testip"
-    ]
   }
 
   # Run the Salt bootstrap/provisioning script as sudo

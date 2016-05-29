@@ -1,3 +1,5 @@
+# Pillar for things related to the web server, Flask and Celery
+
 flask:
   # The user that Flask/wsgi will be run as
   user: flask

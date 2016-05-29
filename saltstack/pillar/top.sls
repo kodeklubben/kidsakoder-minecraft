@@ -2,25 +2,27 @@
 # https://docs.saltstack.com/en/latest/ref/states/top.html
 
 base:
-  # COMMON
-  # Pillar data that should be available for all minions
+  # Common pillar data for all minions
   '*':
     - common
 
-  # MASTER
-  # Salt master configuration
+  # Salt master pillar data
   'master':
     - cloud
     - webserver
 
-  # MINECRAFT
-  # Minecraft server states determined by grain.
+  # Minecraft server pillar determined by the role grain.
   'role:minecraft':
     - match: grain
     - minecraft
 
-  # Forge Server version determined by Salt grain.
-  # See minecraft/forge/ directory for the versions available
+  # NOTE: The following section uses grains to determine what pillar data
+  # This allows us to map grain values to pillar individual files
+  # For exmaple, when writing states, we can simply use the pillar data
+  # which is determined by the pillar file which is mapped by the grain value
+
+  # Forge Server version
+  # See pillar/minecraft/forge/ for the versions available
   {% set forge_version = salt['grains.get']('forge_version', '') %}
   {% if forge_version %}
   'forge_version:{{ forge_version }}':
@@ -28,8 +30,8 @@ base:
     - minecraft.forge.{{ forge_version }}
   {% endif %}
 
-  # ComputerCraft version determined by Salt grain.
-  # See minecraft/mods/computercraft/ directory for the versions available.
+  # ComputerCraft version
+  # See pillar/minecraft/mods/computercraft/ for the versions available
   {% set computercraft_version = salt['grains.get']('computercraft_version', '') %}
   {% if computercraft_version %}
   'computercraft_version:{{ computercraft_version }}':
@@ -37,8 +39,8 @@ base:
     - minecraft.mods.computercraft.{{ computercraft_version }}
   {% endif %}
 
-  # Minecraft instance sizes determined by Salt grain.
-  # See minecraft/sizes/ directory for the sizes available.
+  # Minecraft instance sizes
+  # See pillar/minecraft/sizes/ for the sizes available
   {% set size = salt['grains.get']('minecraft_size', '') %}
   {% if size %}
   'minecraft_size:{{ size }}':

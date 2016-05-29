@@ -4,8 +4,10 @@ variable "location" {}
 
 
 ### Storage
+# See: https://www.terraform.io/docs/providers/azure/r/storage_service.html
+# NOTE: We add an prefix to this name in storage.tf
 variable "storage_name" {
-  description = "The name of the Azure storage service. Must be unique on Azure so we add an prefix in storage.tf"
+  description = "The name of the Azure storage service"
   default = "storage"
 }
 
@@ -16,6 +18,7 @@ variable "storage_type" {
 
 
 ### Network
+# See: https://www.terraform.io/docs/providers/azure/r/virtual_network.html
 variable "network_name" {
   description = "The name of the Azure virtual network"
   default = "network"
@@ -33,6 +36,7 @@ variable "private_subnet_name" {
 
 
 ### Security groups and rules
+# See: https://www.terraform.io/docs/providers/azure/r/security_group.html
 variable "public_security_group" {
   description = "The name of public security group"
   default = "public"

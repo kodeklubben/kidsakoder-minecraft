@@ -1,15 +1,22 @@
+### NOTE ###
+# We are using the Azure (Service Management) provider in Terraform,
+# not the newer AzureRM (Resource Manager) provider.
+# See https://www.terraform.io/docs/providers/azure/index.html for more info.
+############
+
 ### PROVIDERS ###
 # Azure Provider
 provider "azure" {
+  # Looks for the publish settings file in the same directory.
   publish_settings = "${file("secret.publishsettings")}"
 }
 
 ### MODULES ###
-# Site module sets up all the shared resources necessary such as storage and network
+# Site module sets up all the shared resources such as storage and network.
 module "site" {
   source = "./site"
 
-  # We add an prefix to the Azure storage service as it needs to be unique
+  # Add an prefix to the Azure storage service as it needs to be unique
   prefix_name = "${var.prefix_name}"
 
   # Set the location of the resources
