@@ -208,7 +208,7 @@ class World(db.Model):
     file_ref = db.Column(db.String(255), unique=True)
     # Whether a preview for this world should have been generated already
     # If True; a preview may or may not actually exist
-    preview = db.Column(db.Boolean)
+    preview = db.Column(db.Boolean)  # Not currently used
     # Intended for a random or specified seed for procedural world generation
     # if this feature is implemented in the future
     seed = db.Column(db.String(100))
