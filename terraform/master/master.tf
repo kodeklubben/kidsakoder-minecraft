@@ -25,6 +25,7 @@ resource "azure_instance" "master" {
   storage_service_name = "${var.storage_name}"
   virtual_network = "${var.network_name}"
   subnet = "${var.subnet_name}"
+  security_group = "${var.security_group_name}"
 
   # Create account with the credentials from main.tf
   username = "${var.ssh_username}"

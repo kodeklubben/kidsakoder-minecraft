@@ -4,6 +4,7 @@ variable "prefix_name" {}
 variable "storage_name" {}
 variable "network_name" {}
 variable "subnet_name" {}
+variable "security_group_name" {}
 variable "vm_image" {}
 variable "vm_size" {}
 variable "ssh_password" {}

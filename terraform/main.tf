@@ -42,6 +42,7 @@ module "master" {
   network_name = "${module.site.network_name}"
   storage_name = "${module.site.storage_name}"
   subnet_name = "${module.site.public_subnet_name}"
+  security_group_name = "${module.site.public_security_group_name}"
 
   # Use random password for bootstrapping/provisioning the server with Terraform
   ssh_password = "${uuid()}"
